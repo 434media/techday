@@ -88,7 +88,7 @@ function Hero() {
   )
 }
 
-export default function Home() {
+export default function Index() {
   return (
     <div className="overflow-hidden">
       <Hero />
