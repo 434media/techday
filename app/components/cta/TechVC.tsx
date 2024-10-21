@@ -189,7 +189,7 @@ export function TechVC() {
    }
 
    return (
-      <div className="overflow-hidden py-16 sm:py-24 lg:py-40">
+      <div className="overflow-hidden py-16 sm:py-24">
          <Container>
             <FadeIn>
                <div ref={setReferenceWindowRef}>

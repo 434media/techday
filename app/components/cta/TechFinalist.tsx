@@ -153,7 +153,7 @@ function TopicCard({
                         {name}
                      </motion.p>
                      <div className="py-10">
-                        <p className="text-sm text-neutral-700">{description}</p>
+                        <p className="text-sm text-neutral-300">{description}</p>
                         <a
                            href={link}
                            target="_blank"
@@ -188,7 +188,7 @@ export function TechFinalist() {
    }
 
    return (
-      <div className="overflow-hidden py-16 sm:py-24 lg:py-40">
+      <div className="overflow-hidden py-16 sm:py-24">
          <Container>
             <FadeIn>
                <div ref={setReferenceWindowRef}>
@@ -258,39 +258,39 @@ const trackFinalist = [
       name: 'David Wessels',
       title: 'Founder',
       topic: 'JUST-IN-TRAPS',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Autonomous feral hog trapping system combining advanced machine learning and computer vision, helping farmers and property owners manage hog populations without impacting other wildlife.',
+      link: 'https://www.linkedin.com/company/just-in-traps/about/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5622AQHdXSq_VSQt5w/feedshare-shrink_1280/feedshare-shrink_1280/0/1729101572592?e=1732147200&v=beta&t=64O-vTpadyddP4dbP7FdiZLi1ops25Z8vfOAfxuPoGo',
       name: 'David Esra',
       title: 'Founder',
       topic: 'BobiHealth',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Transforming maternal healthcare with AI-driven insights for pregnant women, especially those facing high-risk pregnancies. Empowering proactive care and bridging health equity gaps in underserved communities.',
+      link: 'https://www.bobihealth.com/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5622AQEL7PEYNdxezg/feedshare-shrink_1280/feedshare-shrink_1280/0/1729101572751?e=1732147200&v=beta&t=J87fY7t-qhQW69eXhP8UTbEPZRisK7PHNpeDTAGYnpk',
       name: 'José Alberto Díaz García',
       title: 'Founder',
       topic: "Balam",
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'A fintech solution providing Stablecoin-backed remittances to banks and fintechs—80% cheaper and 10x faster—via APIs, SDKs, and co-branded WhatsApp channels.',
+      link: 'https://www.linkedin.com/company/balam-pay/about/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5622AQGLB9pSQPB16Q/feedshare-shrink_1280/feedshare-shrink_1280/0/1729101572531?e=1732147200&v=beta&t=r8TOkm8AqVkoznf_XZ7R3A0UrXAhpp6l3GOfNBXpoc8',
       name: 'Kyle Walker',
       title: 'Founder',
       topic: "Axicle, Inc",
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Revolutionizing fleet safety with a smart fifth wheel hitch enhanced with sensors, AI, and robotics to reduce trucking accidents and eliminate supply chain inefficiencies.',
+      link: 'https://www.axicleengineering.com/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5622AQF2Op90TXdhXQ/feedshare-shrink_1280/feedshare-shrink_1280/0/1729101572623?e=1732147200&v=beta&t=wnjLo73ixAoQrxsMt6MM2Xm4Xnfx4jY9UjRL-u4grj4',
       name: 'Nicholas Kaufmann',
       title: 'Founder',
       topic: 'Wild Forge',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'A game-changing digital platform that combines gaming with real-world exploration. Kids create digital champions inspired by their surroundings, fostering creativity, confidence, and outdoor discovery.',
+      link: 'https://www.linkedin.com/in/nicholas-kaufmann-0954a69a/',
    },
 ];
