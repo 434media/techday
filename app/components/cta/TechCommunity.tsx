@@ -144,7 +144,7 @@ function TopicCard({
                      <img
                         alt="profile headshot of speaker"
                         src={img}
-                        className="mt-6 w-full h-60 lg:h-96 object-cover rounded-t-3xl"
+                        className="mt-6 w-full h-60 object-cover rounded-t-3xl lg:hidden"
                      />
                      <motion.p
                         className="text-base font-medium text-black dark:text-white mt-4"
