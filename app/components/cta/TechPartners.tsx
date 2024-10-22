@@ -72,9 +72,11 @@ export function TechPartners({
     ],
     partners: [
       { name: 'IBM', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570609/hashing2_g4on33.svg', alt: 'IBM' },
-      { name: 'Google', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570438/google_rp9nql.svg', alt: 'Google' },
-      { name: 'AWS', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570946/amazonwebservices_juiivn.svg', alt: 'AWS' },
-      { name: 'Prime Example', image: 'https://theprimeexample.org/wp-content/uploads/2023/10/logo.png', alt: 'Prime Example' },
       { name: 'KIPP', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729606469/kipp_oao5ca.svg', alt: 'KIPP' },
+      { name: 'Massive', image: 'https://cdn.prod.website-files.com/5eb4731c69fe0858908ee740/5f57d9ba54bfd7c23fd4f144_massive%20logo%402x.png', alt: 'Massive' },
+      { name: 'AWS', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570946/amazonwebservices_juiivn.svg', alt: 'AWS' },
+      { name: 'Dux Capital', image: 'https://media.licdn.com/dms/image/v2/C4E0BAQG2Ky4Ql03whA/company-logo_200_200/company-logo_200_200/0/1674223925710/duxcapital_logo?e=1737590400&v=beta&t=r9HtAfLKQS8Mq0jE6wuucPJ57R3wi0ecZ_Z6764bXfQ', alt: 'Dux Capital' },
+      { name: 'Google', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570438/google_rp9nql.svg', alt: 'Google' },
+      { name: 'Prime Example', image: 'https://theprimeexample.org/wp-content/uploads/2023/10/logo.png', alt: 'Prime Example' },
     ],
   };
