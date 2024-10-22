@@ -20,7 +20,7 @@ export function TechPartners({
             <div className="h-px flex-auto bg-neutral-200" />
           </FadeIn>
           <FadeInStagger faster>
-            <ul role="list" className="mt-4 grid grid-cols-2 place-items-center gap-0.5 overflow-hidden sm:mx-0 md:grid-cols-4 md:place-items-start">
+            <ul role="list" className="mt-4 grid grid-cols-2 place-items-center gap-0.5 overflow-hidden sm:mx-0 md:grid-cols-5 md:place-items-start">
               {clients.sponsors.map(({ name, image, alt }) => (
                 <li key={name} className="p-8 sm:p-10">
                   <FadeIn>
@@ -63,8 +63,8 @@ export function TechPartners({
   const clients = {
     sponsors: [
       { name: 'AT&T', image: 'https://simpleicons.org/icons/atandt.svg', alt: 'AT&T' },
-      { name: 'Rackspace', image: 'https://www.rackspace.com/sites/default/files/2024-06/option%20a.png', alt: 'Rackspace' },
       { name: 'Bexar County Economic Development Department', image: 'https://www.bexar.org/ImageRepository/Document?documentId=19121', alt: 'Bexar County Economic Development Department' },
+      { name: 'Rackspace', image: 'https://www.rackspace.com/sites/default/files/2024-06/option%20a.png', alt: 'Rackspace' },
       { name: 'MGV Capital Group', image: 'https://media.licdn.com/dms/image/v2/C4E0BAQEFHjzTrWlkeA/company-logo_200_200/company-logo_200_200/0/1630629517687/mgv_capital_group_logo?e=1737590400&v=beta&t=PirKmvqV_N5W7VuSic4fVNM0ckVoCcgZHVgKO2C7gek', alt: 'MGV Capital Group' },
       { name: 'Port San Antonio', image: 'https://www.portsanantonio.us/sites/default/files/topLogo.png', alt: 'Port San Antonio' },
       { name: 'JP Morgan Chase', image: 'https://www.jpmorganchase.com/content/dam/jpmorganchase/images/logos/jpmc-logo.svg', alt: 'JP Morgan Chase' },
