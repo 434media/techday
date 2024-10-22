@@ -168,7 +168,7 @@ function TopicCard({
                            rel="noopener noreferrer"
                            className="mt-4 block text-sm text-blue-500 underline"
                         >
-                           Learn more
+                           Meet the speaker
                         </a>
                      </div>
                   </motion.div>
@@ -272,8 +272,8 @@ const trackTalks = [
       title: 'GP at MGV Capital',
       topic: 'State of the VC Industry and Outlook (US/Texas/LATAM)',
       time: '10:00 AM - 11:00 AM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'A comprehensive overview of the current venture capital landscape, focusing on trends, challenges, and opportunities in the United States, Texas, and Latin America. ',
+      link: 'https://www.linkedin.com/in/marianogonvas/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5603AQG3uLhFqQjsng/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1709881310086?e=1733356800&v=beta&t=G5eC1GdO-kdeCfUbEJVhrSCx4_XfzTjiXLh9XurxQpA',
@@ -281,8 +281,8 @@ const trackTalks = [
       title: 'GP at Dux Capital',
       topic: 'State of the VC Industry and Outlook (US/Texas/LATAM)',
       time: '10:00 AM - 11:00 AM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'A comprehensive overview of the current venture capital landscape, focusing on trends, challenges, and opportunities in the United States, Texas, and Latin America.',
+      link: 'https://www.linkedin.com/in/jlsdux/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQG9n962eJu2Nw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1598575510339?e=1733356800&v=beta&t=-hKGp61NYCvT783RDHe-tfxaw9aS2Z6iLDWdl621vps',
@@ -290,8 +290,8 @@ const trackTalks = [
       title: 'GP at Massive.VC',
       topic: 'State of the VC Industry and Outlook (US/Texas/LATAM)',
       time: '10:00 PM - 11:00 AM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'A comprehensive overview of the current venture capital landscape, focusing on trends, challenges, and opportunities in the United States, Texas, and Latin America.',
+      link: 'https://www.linkedin.com/in/davidgmandell/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5603AQHYN5pUj0_lGg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1719029563415?e=1733356800&v=beta&t=KNQ7DhRmTodFQ0m-7EF6-UCynxFyB0iTb2E7oTvKOIw',
@@ -299,25 +299,25 @@ const trackTalks = [
       title: 'Entrepreneur Agent at MGV Capital',
       topic: 'The Venture Mindset: Achieving Extraordinary Growth',
       time: '11:20 PM - 12:10 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Featuring a distinguished speaker from Stanford University, this session explores the mindset and strategies necessary for startups to achieve exponential growth.',
+      link: 'https://www.linkedin.com/in/paolavillarrealcarvajal/',
    },
    {
-      img: 'https://img.notionusercontent.com/s3/prod-files-secure%2Fcdd6ab39-b2ad-4b58-8e2e-897f04f27d12%2F1a2d9955-70a6-4041-bf7e-6c950d792dc7%2F2ed836e0-5998-4f7c-af25-d971eeb0d6dc.png/size/w=380?exp=1728018833&sig=Mccfa6kwuo1FFEjLnhuV1zeUR8Rg3w3dS1lwCHsjff8',
+      img: 'https://techbloc.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fcdd6ab39-b2ad-4b58-8e2e-897f04f27d12%2F1a2d9955-70a6-4041-bf7e-6c950d792dc7%2F2ed836e0-5998-4f7c-af25-d971eeb0d6dc.png?table=block&id=73ec5f7a-0183-40e9-be29-fdec8b7d7439&spaceId=cdd6ab39-b2ad-4b58-8e2e-897f04f27d12&width=2000&userId=&cache=v2',
       name: 'Will Conway',
       title: 'CEO Mailgun (exited)',
       topic: 'The Venture Mindset: Achieving Extraordinary Growth',
       time: '11:20 PM - 12:10 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Featuring a distinguished speaker from Stanford University, this session explores the mindset and strategies necessary for startups to achieve exponential growth.',
+      link: 'https://www.linkedin.com/in/wconway/',
    },
    {
-      img: 'https://img.notionusercontent.com/s3/prod-files-secure%2Fcdd6ab39-b2ad-4b58-8e2e-897f04f27d12%2Fb1b66207-df60-47ff-8415-ed7986e2aee4%2F1516293869790.jpeg/size/w=400?exp=1728019027&sig=KHXzS6q1HynQMKtWmMHX7bYwcsr4g-ekG0_yXGb1mvw',
+      img: 'https://media.licdn.com/dms/image/v2/C5103AQF--XaoVr9XBQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516293869795?e=1735171200&v=beta&t=q3wKj_PZQC3cX7d-90YEdErFJ2ilG2izsOjrdUmasc8',
       name: 'Ilya Strebulaev ',
       title: 'VC & Private Equity at Massive.VC',
       topic: 'The Venture Mindset: Achieving Extraordinary Growth',
       time: '11:20 PM - 12:10 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Featuring a distinguished speaker from Stanford University, this session explores the mindset and strategies necessary for startups to achieve exponential growth.',
+      link: 'https://www.linkedin.com/in/ilyavcandpe/',
    },
 ];

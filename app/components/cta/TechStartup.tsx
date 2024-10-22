@@ -168,7 +168,7 @@ function TopicCard({
                            rel="noopener noreferrer"
                            className="mt-4 block text-sm text-blue-500 underline"
                         >
-                           Learn more
+                           Meet the speaker
                         </a>
                      </div>
                   </motion.div>
@@ -269,8 +269,8 @@ const trackTalks = [
       title: 'Global Enterprise Discount Manager',
       topic: 'Leveraging Funding and Support from Hyperscalers',
       time: '10:00 AM - 11:00 AM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Overview of funding mechanisms and support programs available from major hyperscalers (AWS, Azure, GCP). How to apply for and maximize benefits from these programs Case studies of startups that successfully leveraged these programs. Practical tips on building relationships with hyperscaler account managers and solution architects. Additional speakers: Matthew Parker, and Zach Symm',
+      link: 'https://www.linkedin.com/in/justinpelletier/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5603AQE5YVIWjui8ig/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1708466408918?e=1733356800&v=beta&t=-LqWlPr8JvcaeW-YB2EZuDDKIcBAjYJhQhBHQKXdsRY',
@@ -278,8 +278,8 @@ const trackTalks = [
       title: 'Director at Rackspace',
       topic: 'Security Best Practices in the Cloud',
       time: '11:20 PM - 12:10 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'A session focused on mastering cloud security through the shared responsibility model, covering essential practices like identity management and encryption, automated security assessments, incident response planning, and real-world breach case studies with key lessons learned.',
+      link: 'https://www.linkedin.com/in/david-schrader-b051103/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5603AQFR392MmuIxCQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1709319601485?e=1733356800&v=beta&t=8ke7py5lHyBQ5CRmxwqyuOBrlHhwD8-yYtaC2ME8Pzc',
@@ -287,25 +287,25 @@ const trackTalks = [
       title: 'Director, Cyber Security at Rackspace',
       topic: 'Security Best Practices in the Cloud',
       time: '11:20 PM - 12:10 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'A session focused on mastering cloud security through the shared responsibility model, covering essential practices like identity management and encryption, automated security assessments, incident response planning, and real-world breach case studies with key lessons learned.',
+      link: 'https://www.linkedin.com/in/john-crabaugh/overlay/about-this-profile/',
    },
    {
-      img: 'https://media.licdn.com/dms/image/v2/C5603AQF7CIGMXAoK7A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516346829339?e=1733356800&v=beta&t=FCzKLuXCE4NZOXZUKyQyLb4acNxcivOJZVyEBmehvtE',
+      img: 'https://media.licdn.com/dms/image/v2/D5603AQFEamlpnENOKw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1729191101199?e=1735171200&v=beta&t=5mPK_Z05TsQgiTQClry20E6HPxecBP71cUEbei3SMNU',
       name: 'Zachary Symm',
       title: 'Product Manager for Managed Public Cloud',
       topic: 'Security Best Practices in the Cloud',
       time: '11:20 AM - 12:10 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'A session focused on mastering cloud security through the shared responsibility model, covering essential practices like identity management and encryption, automated security assessments, incident response planning, and real-world breach case studies with key lessons learned.',
+      link: 'https://www.linkedin.com/in/zsymm/',
    },
    {
-      img: 'https://techbloc.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fcdd6ab39-b2ad-4b58-8e2e-897f04f27d12%2F7e89fbb1-a847-4b4d-a565-c3fa63a4ff86%2F1691540993462.jpeg?table=block&id=d8155c9c-af65-4588-9fa1-740ea06a5766&spaceId=cdd6ab39-b2ad-4b58-8e2e-897f04f27d12&width=400&userId=&cache=v2',
+      img: 'https://media.licdn.com/dms/image/v2/D5603AQGUOD-xAb1bJQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1667440147089?e=1735171200&v=beta&t=TY_LlZgmbh1OAHEWDuN2gmSIkO95kiy7o2jVAGBXsxs',
       name: 'Matthew Parker',
       title: 'Senior Manager, Cloud Practice Engineering at Rackspace',
       topic: 'Balancing Simplicity and Complexity in Cloud Architecture',
       time: '12:30 PM - 1:20 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'A session on designing simple, maintainable cloud architectures, with strategies to balance complexity for scalability, tools to manage it, and real-world examples from high-growth environments.',
+      link: 'https://www.linkedin.com/in/matthew-parker-a8b859148/',
    },
 ];

@@ -168,7 +168,7 @@ function TopicCard({
                            rel="noopener noreferrer"
                            className="mt-4 block text-sm text-blue-500 underline"
                         >
-                           Learn more
+                           Meet the speaker
                         </a>
                      </div>
                   </motion.div>
@@ -269,8 +269,8 @@ const trackTalks = [
       title: 'GTM for Emerging Tech',
       topic: 'Navigating the Cloud-Native Landscape',
       time: '10:00 AM - 11:00 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Explore the latest trends, technologies, and best practices to help you navigate the complex world of cloud-native applications.',
+      link: 'https://www.linkedin.com/in/launchhacker/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/C5603AQGsZ9se9i77Mw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1662253194415?e=1730937600&v=beta&t=3tEt69I_y3SeMIkP4t74GLg7ifbYI0LbY23AGT1lw0M',
@@ -278,8 +278,8 @@ const trackTalks = [
       title: 'Director of Data Science at Haven for Hope',
       topic: 'Building a Data Science Toolchain with R and Python',
       time: '11:20 PM - 12:10 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Learn how to build a powerful toolchain to tackle complex data challenges',
+      link: 'https://www.linkedin.com/in/ryanorsinger/',
    },
    {
       img: 'https://res.cloudinary.com/jessebubble/image/upload/v1727650955/Rachel_Davis_Headshot_Square_Crop_t79rms.jpg',
@@ -287,8 +287,8 @@ const trackTalks = [
       title: 'Workshop Experience Designer + Facilitator',
       topic: "Team Comms That Don't Suck: Just Lego",
       time: '12:30 PM - 1:20 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Join us for a hands-on workshop on effective team communication! Inspired by LEGO Serious Play, this interactive session will help you improve your communication skills, collaborate more effectively, and achieve better outcomes.',
+      link: 'https://www.linkedin.com/in/rachdavis/',
    },
    {
       img: 'https://res.cloudinary.com/jessebubble/image/upload/v1727650955/Wes_Headshot_Square_Crop_nwcx18.jpg',
@@ -296,8 +296,8 @@ const trackTalks = [
       title: 'Technology Leader',
       topic: "Team Comms That Don't Suck: Just Lego",
       time: '12:30 PM - 1:20 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Join us for a hands-on workshop on effective team communication! Inspired by LEGO Serious Play, this interactive session will help you improve your communication skills, collaborate more effectively, and achieve better outcomes.',
+      link: 'https://www.linkedin.com/in/wesetheredge/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5603AQEpGeK5VHopuw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1722698749875?e=1730937600&v=beta&t=CcZWlOyBQ5voQ1MU96qJ2bWPUlAH-E3W-mWxXXDSKSw',
@@ -305,8 +305,8 @@ const trackTalks = [
       title: 'DOTNET User Group',
       topic: 'Test Driven Development From Database to UI',
       time: '1:40 PM - 2:30 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'Learn how to write effective tests and ensure code quality throughout your development process.',
+      link: 'https://www.linkedin.com/in/patrick-robinson-dev/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/D5603AQH7KT3-KFQqLw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1676941396548?e=1730937600&v=beta&t=eaS_P0DthA7fCLhFDg7aVmMGT_p40_k8WxyVbGsuVzI',
@@ -315,7 +315,7 @@ const trackTalks = [
       topic: "Exploring Swarm: OpenAI's Multi-agent Framework",
       time: '2:50 PM - 3:40 PM',
       description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      link: 'https://www.linkedin.com/in/samadahmed/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/C5603AQGw6v8HH2SfTA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1660914421679?e=1730937600&v=beta&t=P4914QHsloxWqjZ5irl4NGAPVMsAEGL3i8tNnEtVr-c',
@@ -323,7 +323,7 @@ const trackTalks = [
       title: 'Google Developer Groups',
       topic: 'The Power of Multi-Modal AI in Our Daily Lives',
       time: '4:00 PM - 5:00 PM',
-      description: 'Learn how to leverage funding and support from hyperscalers to maximize your enterprise discounts.',
-      link: 'https://example.com/justin-pelletier',
+      description: 'This talk will delve into the latest advancements and real-world applications of AI that combine multiple modalities like text, images, and audio.',
+      link: 'https://www.linkedin.com/in/sagarkewalramani/',
    },
 ];
