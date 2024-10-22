@@ -193,10 +193,10 @@ export function TechFinalist() {
             <FadeIn>
                <div ref={setReferenceWindowRef}>
                   <h3 className="max-w-3xl text-pretty text-4xl font-medium tracking-tighter text-neutral-950 data-[dark]:text-white sm:text-6xl">
-                     Tech Startup Track by Rackspace
+                     Tech Fuel $100K Pitch Competition
                   </h3>
-                  <h2 className="mt-6 font-mono text-xs/5 font-semibold uppercase tracking-widest text-neutral-500 data-[dark]:text-neutral-400">
-                     Elevate Your Tech Strategy
+                  <h2 className="mt-6 max-w-xl text-xl text-neutral-600">
+                     Wrap up the day with the thrilling Tech Fuel $100K Pitch Competition, powered by <strong>Bexar County Innovation Fund</strong>
                   </h2>
                </div>
             </FadeIn>
