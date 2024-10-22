@@ -326,7 +326,7 @@ const trackTalks = [
       description: 'This session will focus on designing simple and maintainable cloud architectures. Covering the principles of simplicity, identifying areas where complexity is necessary, and using tools and services to manage complexity. The session plans to also discusses strategies for incremental adoption of complex services and provides case studies on maintaining simplicity in high-growth environments.',
       link: 'https://www.linkedin.com/in/jonathan-loeffler-52b490287/',
    },
-   {
+   /* {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQG44keUIcTfog/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1540742325545?e=1735171200&v=beta&t=wUHTQzFF-F1ZHCl-2hodZWtzyuDtnS_aDu9DCHaSo1g',
       name: 'Tom Prather',
       title: 'Manager, Fanatical AWS Support',
@@ -334,7 +334,7 @@ const trackTalks = [
       time: '12:30 PM - 1:20 PM',
       description: 'This session will focus on designing simple and maintainable cloud architectures. Covering the principles of simplicity, identifying areas where complexity is necessary, and using tools and services to manage complexity. The session plans to also discusses strategies for incremental adoption of complex services and provides case studies on maintaining simplicity in high-growth environments.',
       link: 'https://www.linkedin.com/in/tom-prather-8b749012/',
-   },
+   }, */
    {
       img: 'https://media.licdn.com/dms/image/v2/C5603AQHa95urSZwfYg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1574129101028?e=1735171200&v=beta&t=Ba_JbDSZlHUyIHavmVEJsgn8YSth8q-7K2d-qsnh3dM',
       name: 'Chris Clark',
@@ -344,7 +344,7 @@ const trackTalks = [
       description: 'The session focuses on designing scalable cloud architectures. Covering key principles and best practices for building scalable systems, including choosing appropriate storage, compute, and networking services. The talk plans to also explore multi-region deployments and disaster recovery strategies, as well as the benefits of using serverless technologies for automatic scaling, providing real-world examples of scalable architectures and lessons learned from successful implementations.',
       link: 'https://www.linkedin.com/in/chris-clark-10700373/',
    },
-   {
+   /* {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQHEIfMn8DTT1A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1517666899367?e=1735171200&v=beta&t=Pd7vh5o77yO-07I4Ez10pIrTK2uoaNVX1RsLyQMWmOU',
       name: 'Gerry Le Canu',
       title: 'Principal Solutions Architect',
@@ -352,7 +352,7 @@ const trackTalks = [
       time: '1:40 PM - 2:30 PM',
       description: 'The session focuses on designing scalable cloud architectures. Covering key principles and best practices for building scalable systems, including choosing appropriate storage, compute, and networking services. The talk plans to also explore multi-region deployments and disaster recovery strategies, as well as the benefits of using serverless technologies for automatic scaling, providing real-world examples of scalable architectures and lessons learned from successful implementations.',
       link: 'https://www.linkedin.com/in/glecanu/',
-   },
+   }, */
    {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQGQdYx_Hvrmrg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1608075520355?e=1735171200&v=beta&t=Draln9vBhL1VbnM91aojAo3vQU5o9jne4oJB185urSM',
       name: 'Eddie Dennis',
@@ -398,7 +398,7 @@ const trackTalks = [
       description: "During this session, we’ll sit down with an expert panel assembled by the JPMorgan Startup Banking team to unravel the nuances and gain valuable insights into the merits and demerits of each choice, empowering you as a founder to make informed and strategic decisions.",
       link: 'https://www.linkedin.com/in/trunty/',
    },
-   {
+   /* {
       img: 'https://media.licdn.com/dms/image/v2/D5603AQH3XwCeybYVbw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1724512855638?e=1735171200&v=beta&t=sD_sLjwHb4j4jv3mDClwtId9EUe50PcrxvR--HplSps',
       name: 'Sebastian Garzon',
       title: 'Executive Director, Alamo Angels',
@@ -406,7 +406,7 @@ const trackTalks = [
       time: '4:00 PM - 5:00 PM',
       description: "During this session, we’ll sit down with an expert panel assembled by the JPMorgan Startup Banking team to unravel the nuances and gain valuable insights into the merits and demerits of each choice, empowering you as a founder to make informed and strategic decisions.",
       link: 'https://www.linkedin.com/in/juansebastiangarzon/',
-   },
+   }, */
    {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQG9n962eJu2Nw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1598575510339?e=1735171200&v=beta&t=gMZxlljYYiSbQ1fBSawJuv6wHoUpsR5da1PNHmYcJZs',
       name: 'David Mandell',
