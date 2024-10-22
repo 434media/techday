@@ -15,6 +15,7 @@ import { TechCommunity } from "~/components/cta/TechCommunity";
 import { TechFinalist } from "~/components/cta/TechFinalist";
 import { TechPartners } from "~/components/cta/TechPartners";
 import { TechHost } from "~/components/cta/TechHost";
+import { Footer } from "~/components/ui/Footer";
 
 export const meta: MetaFunction = () => {
   return [
@@ -108,6 +109,7 @@ export default function Index() {
           <TechBloc />
         </Container>
       </main>
+      <Footer />
       
     </div>
   )

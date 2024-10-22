@@ -3,7 +3,7 @@ import { FadeIn } from '~/components/ui/FadeIn';
 
 export function TechFuel() {
    return (
-      <div className="mt-24 sm:mt-32 lg:mt-40">
+      <div className="mt-24 sm:mt-32 lg:mt-40 pb-16 lg:pb-32">
          <Container className="">
             <FadeIn>
                <h2 className="font-mono text-xs/5 font-semibold uppercase tracking-widest text-neutral-500">
