@@ -63,13 +63,14 @@ function Hero() {
           }
         />
         <div className="pb-24 pt-16 sm:pb-32 sm:pt-24 md:pb-48 md:pt-32">
-          <h1 className="font-display text-balance text-6xl/[0.9] font-medium tracking-tight text-gray-950 sm:text-8xl/[0.8] md:text-9xl/[0.8]">
-            Tech Day 2024
-          </h1>
-          <p className="mt-8 max-w-lg text-xl/7 font-medium text-gray-950/75 sm:text-2xl/8 flex items-center gap-1">
-            Your Complete Guide to San Antonio's Tech Ecosystem
-          </p> 
-          <div className="mt-12 flex flex-col gap-x-6 gap-y-4 sm:flex-row">
+          <div className="max-w-3xl -mt-16 lg:-mt-10">
+            <img
+              src="https://res.cloudinary.com/jessebubble/image/upload/v1729617458/techday2024_k8iwxv.svg"
+              alt="Tech Day Stamp logo"
+              className="w-full h-96"
+            />
+          </div>
+          <div className="mt-8 flex flex-col gap-x-6 gap-y-4 sm:flex-row">
             <Button 
               href="https://airtable.com/apptfFi1y2StuEQ7s/pagcUDiOUo0NzSooJ/form"
               variant="primary"
