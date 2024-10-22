@@ -75,6 +75,6 @@ export function TechPartners({
       { name: 'Google', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570438/google_rp9nql.svg', alt: 'Google' },
       { name: 'AWS', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570946/amazonwebservices_juiivn.svg', alt: 'AWS' },
       { name: 'Prime Example', image: 'https://theprimeexample.org/wp-content/uploads/2023/10/logo.png', alt: 'Prime Example' },
-      { name: 'KIPP', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570308/hashing_kkdqfr.svg', alt: 'KIPP' },
+      { name: 'KIPP', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729606469/kipp_oao5ca.svg', alt: 'KIPP' },
     ],
   };
