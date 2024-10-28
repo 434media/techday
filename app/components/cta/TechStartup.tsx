@@ -336,6 +336,15 @@ const trackTalks = [
       link: 'https://www.linkedin.com/in/tom-prather-8b749012/',
    },
    {
+      img: 'https://media.licdn.com/dms/image/v2/C4E03AQHAgeh2qcE5Ow/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1559201540721?e=1735776000&v=beta&t=m_sRw82D7O79pV_k4W8avToNhN7pUALHSYprFF3F73Q',
+      name: 'Stephen McCracken',
+      title: 'Senior Cloud Engineer, Rackspace',
+      topic: 'Balancing Simplicity and Complexity in Cloud Architecture',
+      time: '12:30 PM - 1:20 PM',
+      description: 'This session will focus on designing simple and maintainable cloud architectures. Covering the principles of simplicity, identifying areas where complexity is necessary, and using tools and services to manage complexity. The session plans to also discusses strategies for incremental adoption of complex services and provides case studies on maintaining simplicity in high-growth environments.',
+      link: 'https://www.linkedin.com/in/sjmccracken/',
+   },
+   {
       img: 'https://media.licdn.com/dms/image/v2/C5603AQHa95urSZwfYg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1574129101028?e=1735171200&v=beta&t=Ba_JbDSZlHUyIHavmVEJsgn8YSth8q-7K2d-qsnh3dM',
       name: 'Chris Clark',
       title: 'Mobile Security Engineer at Meta',
@@ -345,13 +354,13 @@ const trackTalks = [
       link: 'https://www.linkedin.com/in/chris-clark-10700373/',
    },
    {
-      img: 'https://media.licdn.com/dms/image/v2/C4E03AQHEIfMn8DTT1A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1517666899367?e=1735171200&v=beta&t=Pd7vh5o77yO-07I4Ez10pIrTK2uoaNVX1RsLyQMWmOU',
-      name: 'Gerry Le Canu',
-      title: 'Principal Solutions Architect',
+      img: 'https://media.licdn.com/dms/image/v2/C4E03AQGK9AZo235t8g/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1571235319614?e=1735776000&v=beta&t=xWnd4qwgwRIdcJuJUQmxtcs2UDkLiumRAkIvx60Ehnw',
+      name: 'Adrian Ellington',
+      title: 'Azure Solution Architect',
       topic: 'Building Scalable Architectures to Support Business Growth',
       time: '1:40 PM - 2:30 PM',
       description: 'The session focuses on designing scalable cloud architectures. Covering key principles and best practices for building scalable systems, including choosing appropriate storage, compute, and networking services. The talk plans to also explore multi-region deployments and disaster recovery strategies, as well as the benefits of using serverless technologies for automatic scaling, providing real-world examples of scalable architectures and lessons learned from successful implementations.',
-      link: 'https://www.linkedin.com/in/glecanu/',
+      link: 'https://www.linkedin.com/in/adrianellington/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQGQdYx_Hvrmrg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1608075520355?e=1735171200&v=beta&t=Draln9vBhL1VbnM91aojAo3vQU5o9jne4oJB185urSM',
@@ -415,5 +424,14 @@ const trackTalks = [
       time: '4:00 PM - 5:00 PM',
       description: "During this session, we’ll sit down with an expert panel assembled by the JPMorgan Startup Banking team to unravel the nuances and gain valuable insights into the merits and demerits of each choice, empowering you as a founder to make informed and strategic decisions.",
       link: 'https://www.linkedin.com/in/davidgmandell/',
+   },
+   {
+      img: 'https://media.licdn.com/dms/image/v2/D4E03AQH_wMrKIlH9sw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1706036567374?e=1735776000&v=beta&t=5PJMGcxxldIqBeRh34_2UdgWsEQcZjh9qcceJl_cY2s',
+      name: 'Aman Sohail',
+      title: 'Director of Partnerships, MassChallenge',
+      topic: 'Forks in the Road: Navigating the Best Funding Paths for Your Technology Company',
+      time: '4:00 PM - 5:00 PM',
+      description: "During this session, we’ll sit down with an expert panel assembled by the JPMorgan Startup Banking team to unravel the nuances and gain valuable insights into the merits and demerits of each choice, empowering you as a founder to make informed and strategic decisions.",
+      link: 'https://www.linkedin.com/in/amansohail/',
    },
 ];
