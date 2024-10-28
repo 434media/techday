@@ -161,7 +161,7 @@ function TopicCard({
                            {time}
                         </span>
                         <p className="text-2xl bg-gradient-to-r from-[#fff1be] from-[28%] via-[#ee87cb] via-[70%] to-[#b060ff] bg-clip-text text-transparent">{topic}</p>
-                        <p className="text-sm text-neutral-300">{description}</p>
+                        <p className="text-sm text-neutral-300 max-w-2xl">{description}</p>
                         <a
                            href={link}
                            target="_blank"
@@ -285,6 +285,15 @@ const trackTalks = [
       link: 'https://www.linkedin.com/in/jlsdux/',
    },
    {
+      img: 'https://media.licdn.com/dms/image/v2/D5603AQHXpobz64WIdg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1706052217356?e=1735776000&v=beta&t=mWj8eL52R8p4MdSTGyJfjdwdKA3cDToQNpdvoDVK7iM',
+      name: 'Oksana Malysheva',
+      title: 'Managing Partner, Sputnik ATX VC',
+      topic: 'State of the VC Industry and Outlook (US/Texas/LATAM)',
+      time: '10:00 AM - 11:00 AM',
+      description: 'A comprehensive overview of the current venture capital landscape, focusing on trends, challenges, and opportunities in the United States, Texas, and Latin America.',
+      link: 'https://www.linkedin.com/in/oksana-malysheva-62193a3/',
+   },
+   {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQG9n962eJu2Nw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1598575510339?e=1733356800&v=beta&t=-hKGp61NYCvT783RDHe-tfxaw9aS2Z6iLDWdl621vps',
       name: 'David Mandell',
       title: 'Co-Founder, Managing Director, Massive',
@@ -303,6 +312,15 @@ const trackTalks = [
       link: 'https://www.linkedin.com/in/pat-matthews/',
    },
    {
+      img: 'https://media.licdn.com/dms/image/v2/D4E03AQHiljg4p8HQSA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1670625431764?e=1735776000&v=beta&t=qCG5cCbKPLc3pBf6-RxLeyp1cZ9G3UCrJfAFS7q19dc',
+      name: 'Damaris Mendoza',
+      title: 'Partner, 500 Startups',
+      topic: 'State of the VC Industry and Outlook (US/Texas/LATAM)',
+      time: '10:00 AM - 11:00 AM',
+      description: 'A comprehensive overview of the current venture capital landscape, focusing on trends, challenges, and opportunities in the United States, Texas, and Latin America.',
+      link: 'https://www.linkedin.com/in/damaris-mendoza-loera/',
+   },
+   {
       img: 'https://res.cloudinary.com/jessebubble/image/upload/v1714685480/ileana2_mif5p4.jpg',
       name: 'Ileana Gonzalez',
       title: 'Tech Bloc CEO',
@@ -319,6 +337,15 @@ const trackTalks = [
       time: '11:20 AM - 12:10 PM',
       description: 'Explores the strategies needed to cultivate a robust tech ecosystem, with a focus on creating supportive environments for startups through partnerships, infrastructure, policy, and investment.',
       link: 'https://www.linkedin.com/in/betoaltamirano/',
+   },
+   {
+      img: 'https://media.licdn.com/dms/image/v2/D5603AQFfYXbAXTlfZA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1714991427157?e=1735776000&v=beta&t=b_0Znx_H4hM2rSWCrXNHwenxszDfw3VnbL-B-PUi8SU',
+      name: 'Michelle Williams ',
+      title: 'VP, MassChallenge',
+      topic: 'Building a Strong Tech Ecosystem: Fostering Innovation and Growth',
+      time: '11:20 AM - 12:10 PM',
+      description: 'Explores the strategies needed to cultivate a robust tech ecosystem, with a focus on creating supportive environments for startups through partnerships, infrastructure, policy, and investment.',
+      link: 'https://www.linkedin.com/in/bemichellew/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/C5603AQFE-JVOVyqTLQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1660506371887?e=1735171200&v=beta&t=KhYbJ-jFkvUQ1S2UIk-VWwjgjllPIH_zMpC3dYLZwkM',
@@ -357,6 +384,42 @@ const trackTalks = [
       link: 'https://www.linkedin.com/in/lalaelizondo/',
    },
    {
+      img: 'https://media.licdn.com/dms/image/v2/D5603AQFljHxwaHvnOw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1694543701224?e=1735776000&v=beta&t=vtxh787JdCgm9Z1gPOQIvNciCKZ_9hmUcCrHp28S-rI',
+      name: 'Mario Garcia',
+      title: 'Executive Director, Angel Hub',
+      topic: 'Fundraising Decoded: Preparing for Success',
+      time: '12:30 PM - 1:20 PM',
+      description: 'This topic delves into the critical aspects of startup fundraising, providing actionable insights to help entrepreneurs secure the capital they need.',
+      link: 'https://www.linkedin.com/in/marioagarciad/',
+   },
+   {
+      img: 'https://media.licdn.com/dms/image/v2/C4E03AQFFmOsvKGknhw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1633716249610?e=1735776000&v=beta&t=7JMMpFHZUkVI9Yn47-GVZu7HK41VSivTypzIcWr_AcM',
+      name: 'Joshua Sanchez',
+      title: 'Co-Founder & CEO at FloatMe',
+      topic: 'Fundraising Decoded: Preparing for Success',
+      time: '12:30 PM - 1:20 PM',
+      description: 'This topic delves into the critical aspects of startup fundraising, providing actionable insights to help entrepreneurs secure the capital they need.',
+      link: 'https://www.linkedin.com/in/joshsanchezbusiness/',
+   },
+   {
+      img: 'https://media.licdn.com/dms/image/v2/D5603AQE0YaM5pInZCA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1729131151498?e=1735776000&v=beta&t=2dTho7qptjQCF7e_EYssgdNQ1RzscrqRxZxtqhVQy4I',
+      name: 'Justin Mckenzie',
+      title: 'Executive Director, Boerne-Kendall Angel Network',
+      topic: 'Fundraising Decoded: Preparing for Success',
+      time: '12:30 PM - 1:20 PM',
+      description: 'This topic delves into the critical aspects of startup fundraising, providing actionable insights to help entrepreneurs secure the capital they need.',
+      link: 'https://www.linkedin.com/in/justinmckenzie/',
+   },
+   {
+      img: 'https://media.licdn.com/dms/image/v2/D4E03AQEk8hEXtpxsLA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1694143449340?e=1735776000&v=beta&t=SErym_Qk0Ogr624GzB0exTWOFJRb31YOPFwXqK0Eau0',
+      name: 'Andrea Campos',
+      title: 'CEO and Founder at Yana',
+      topic: 'Artificial Intelligence: Harnessing Generative AI',
+      time: '1:40 PM - 2:30 PM',
+      description: 'A deep dive into the transformative potential of generative AI and how startups can leverage this cutting-edge technology to drive innovation and efficiency.',
+      link: 'https://www.linkedin.com/in/andrea-campos-guerra/',
+   },
+   {
       img: 'https://media.licdn.com/dms/image/v2/D5603AQFyk95S1QTHrg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1726093637576?e=1735171200&v=beta&t=vVjFpDvHbKDJAdayCgr8KhA4PUpSP8C6Hf0uJ5-pZM4',
       name: 'Fernando Huerta',
       title: 'Founder of Seals AI',
@@ -364,6 +427,15 @@ const trackTalks = [
       time: '1:40 PM - 2:30 PM',
       description: 'A deep dive into the transformative potential of generative AI and how startups can leverage this cutting-edge technology to drive innovation and efficiency.',
       link: 'https://www.linkedin.com/in/fernando-huerta-zuniga/',
+   },
+   {
+      img: 'https://media.licdn.com/dms/image/v2/C5603AQGJE1mR4yQKkw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1552182893579?e=1735776000&v=beta&t=USxwT1PIU5eSpKlsa9uSKGCSkUhZ_TvZnVwj7p7c9TU',
+      name: 'Robert Tietzch',
+      title: 'Senior, CSM Architect, IBM',
+      topic: 'Artificial Intelligence: Harnessing Generative AI',
+      time: '1:40 PM - 2:30 PM',
+      description: 'A deep dive into the transformative potential of generative AI and how startups can leverage this cutting-edge technology to drive innovation and efficiency.',
+      link: 'https://www.linkedin.com/in/robtch/',
    },
    {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQEVYVqWFlxkEQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1643490984831?e=1735171200&v=beta&t=V3lim6VEck7UY5ZJud5tT8kAe7-NgLlIag4Lubs1xRU',
@@ -393,6 +465,15 @@ const trackTalks = [
       link: 'https://www.linkedin.com/in/paolavillarrealcarvajal/',
    },
    {
+      img: 'https://media.licdn.com/dms/image/v2/C5603AQG4e9m8QCIKOQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1667957161334?e=1735776000&v=beta&t=1QyZeEUZBX-2xQHxd7J7xgIRsv8Z5htnCPdA5uHC_a8',
+      name: 'Rene Lomeli',
+      title: 'Partner, 500 Startups',
+      topic: 'Cultivating a Growth Mindset: Strategies for Startup Success',
+      time: '2:50 PM - 3:40 PM',
+      description: 'This session will explore the mindset and strategies that drive startups to achieve rapid growth, focusing on scaling challenges, building a resilient company culture, and fostering continuous innovation.',
+      link: 'https://www.linkedin.com/in/rlomeli88/',
+   },
+   {
       img: 'https://media.licdn.com/dms/image/v2/C4D03AQHw77uqYWdM7w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1586534382510?e=1735171200&v=beta&t=0-hz8FMc6IxmxXD28FHfjw0wvnTlLg0X5tPpTU7zGkM',
       name: 'Travis Runty',
       title: 'CTO, Public Cloud',
@@ -409,6 +490,15 @@ const trackTalks = [
       time: '4:00 PM - 5:00 PM',
       description: 'This session will examine the evolving cybersecurity landscape for startups, offering expert insights on the latest security measures and strategies to protect digital assets in a complex digital world.',
       link: 'https://www.linkedin.com/in/santiagofuentesr/',
+   },
+   {
+      img: 'https://media.licdn.com/dms/image/v2/C4E03AQHRj9TnfqzyZw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1548440450639?e=1735776000&v=beta&t=6BLRNCaXntcwpny-i7AZLCUKuOHpsyL0LPsA_8JwvAI',
+      name: 'Will Garrett',
+      title: 'VP Cybersecurity, Port San Antonio',
+      topic: 'Cybersecurity: Protecting Your Business',
+      time: '4:00 PM - 5:00 PM',
+      description: 'This session will examine the evolving cybersecurity landscape for startups, offering expert insights on the latest security measures and strategies to protect digital assets in a complex digital world.',
+      link: 'https://www.linkedin.com/in/willgarrettbsf/',
    },
    
    
