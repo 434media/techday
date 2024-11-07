@@ -312,7 +312,7 @@ const trackTalks = [
       description: 'A comprehensive overview of the current venture capital landscape, focusing on trends, challenges, and opportunities in the United States, Texas, and Latin America.',
       link: 'https://www.linkedin.com/in/pat-matthews/',
    },
-   {
+  /*  {
       img: 'https://media.licdn.com/dms/image/v2/D4E03AQHiljg4p8HQSA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1670625431764?e=1735776000&v=beta&t=qCG5cCbKPLc3pBf6-RxLeyp1cZ9G3UCrJfAFS7q19dc',
       name: 'Damaris Mendoza',
       title: 'Partner, 500 Startups',
@@ -320,7 +320,7 @@ const trackTalks = [
       time: '10:00 AM - 11:00 AM',
       description: 'A comprehensive overview of the current venture capital landscape, focusing on trends, challenges, and opportunities in the United States, Texas, and Latin America.',
       link: 'https://www.linkedin.com/in/damaris-mendoza-loera/',
-   },
+   }, */
    {
       img: 'https://res.cloudinary.com/jessebubble/image/upload/v1714685480/ileana2_mif5p4.jpg',
       name: 'Ileana Gonzalez',
@@ -384,7 +384,7 @@ const trackTalks = [
       description: 'This topic delves into the critical aspects of startup fundraising, providing actionable insights to help entrepreneurs secure the capital they need.',
       link: 'https://www.linkedin.com/in/lalaelizondo/',
    },
-   {
+  /*  {
       img: 'https://media.licdn.com/dms/image/v2/D5603AQFljHxwaHvnOw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1694543701224?e=1735776000&v=beta&t=vtxh787JdCgm9Z1gPOQIvNciCKZ_9hmUcCrHp28S-rI',
       name: 'Mario Garcia',
       title: 'Executive Director, Angel Hub',
@@ -392,7 +392,7 @@ const trackTalks = [
       time: '12:30 PM - 1:20 PM',
       description: 'This topic delves into the critical aspects of startup fundraising, providing actionable insights to help entrepreneurs secure the capital they need.',
       link: 'https://www.linkedin.com/in/marioagarciad/',
-   },
+   }, */
    {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQFFmOsvKGknhw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1633716249610?e=1735776000&v=beta&t=7JMMpFHZUkVI9Yn47-GVZu7HK41VSivTypzIcWr_AcM',
       name: 'Joshua Sanchez',
@@ -448,7 +448,7 @@ const trackTalks = [
       link: 'https://www.linkedin.com/in/alfgarcia/',
    },
    {
-      img: 'https://media.licdn.com/dms/image/v2/D4D35AQGfDS0N547Vqg/profile-framedphoto-shrink_800_800/profile-framedphoto-shrink_800_800/0/1729275528831?e=1730217600&v=beta&t=y6pa0WeBmlS4ARjWOBFc_RUVNxSK0tJNgEdrKqCMNBQ',
+      img: 'https://media.licdn.com/dms/image/v2/C5603AQH7Oi8nYklOVQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1651615742412?e=1736380800&v=beta&t=lrMJ0qZliKgF-yy-TE7DFYqT_I85A_2SJPpde488Rrg',
       name: 'Jose Alberto Diaz',
       title: 'CEO - Co-founder @Balam l Clip, Stori and Endeavor',
       topic: 'Cultivating a Growth Mindset: Strategies for Startup Success',

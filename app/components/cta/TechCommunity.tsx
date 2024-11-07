@@ -265,7 +265,7 @@ export function TechCommunity() {
 
 const trackTalks = [
    {
-      img: 'https://media.licdn.com/dms/image/v2/D4D03AQFYYmtKG1joKw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1724906114965?e=1730937600&v=beta&t=J86H9bzNYXV2-k2_Hr0F90FzbKuTUQTg7yKlEHsx3Sc',
+      img: 'https://media.licdn.com/dms/image/v2/D4D03AQFYYmtKG1joKw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1724906114965?e=1736380800&v=beta&t=HdHXzVh5EbpKuzIvMYOVqMa8Qh8fnqGhdrhGH_zGlRI',
       name: 'Crystal Poenisch',
       title: 'GTM for Emerging Tech',
       topic: 'Navigating the Cloud-Native Landscape',
@@ -274,7 +274,7 @@ const trackTalks = [
       link: 'https://www.linkedin.com/in/launchhacker/',
    },
    {
-      img: 'https://media.licdn.com/dms/image/v2/C5603AQGsZ9se9i77Mw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1662253194415?e=1730937600&v=beta&t=3tEt69I_y3SeMIkP4t74GLg7ifbYI0LbY23AGT1lw0M',
+      img: 'https://media.licdn.com/dms/image/v2/C5603AQGsZ9se9i77Mw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1662253194415?e=1736380800&v=beta&t=o_g5ocyjyz9f3_mh-xAyH1xt1OR0WJH78-kraOs0fTM',
       name: 'Ryan Orsinger',
       title: 'Director of Data Science at Haven for Hope',
       topic: 'Building a Data Science Toolchain with R and Python',

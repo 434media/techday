@@ -327,7 +327,7 @@ const trackTalks = [
       description: 'This session will focus on designing simple and maintainable cloud architectures. Covering the principles of simplicity, identifying areas where complexity is necessary, and using tools and services to manage complexity. The session plans to also discusses strategies for incremental adoption of complex services and provides case studies on maintaining simplicity in high-growth environments.',
       link: 'https://www.linkedin.com/in/jonathan-loeffler-52b490287/',
    },
-   {
+   /* {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQG44keUIcTfog/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1540742325545?e=1735171200&v=beta&t=wUHTQzFF-F1ZHCl-2hodZWtzyuDtnS_aDu9DCHaSo1g',
       name: 'Tom Prather',
       title: 'Manager, Fanatical AWS Support',
@@ -335,7 +335,7 @@ const trackTalks = [
       time: '12:30 PM - 1:20 PM',
       description: 'This session will focus on designing simple and maintainable cloud architectures. Covering the principles of simplicity, identifying areas where complexity is necessary, and using tools and services to manage complexity. The session plans to also discusses strategies for incremental adoption of complex services and provides case studies on maintaining simplicity in high-growth environments.',
       link: 'https://www.linkedin.com/in/tom-prather-8b749012/',
-   },
+   }, */
    {
       img: 'https://media.licdn.com/dms/image/v2/C4E03AQHAgeh2qcE5Ow/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1559201540721?e=1735776000&v=beta&t=m_sRw82D7O79pV_k4W8avToNhN7pUALHSYprFF3F73Q',
       name: 'Stephen McCracken',
