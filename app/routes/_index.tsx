@@ -99,10 +99,10 @@ export default function Index() {
         <Container className="mt-10">
           <TechHost />
           <TechPartners />
-          <TechDemo />
           <TechStartup />
           <TechVC />
           <TechCommunity />
+          <TechDemo />
           <TechForm />
           <TechFinalist />
           <TechFuel />
