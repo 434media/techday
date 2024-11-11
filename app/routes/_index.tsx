@@ -15,6 +15,7 @@ import { TechFinalist } from "~/components/cta/TechFinalist";
 import { TechPartners } from "~/components/cta/TechPartners";
 import { TechHost } from "~/components/cta/TechHost";
 import { Footer } from "~/components/ui/Footer";
+import { TechDemo } from "~/components/cta/TechDemo";
 
 export const meta: MetaFunction = () => {
   return [
@@ -98,6 +99,7 @@ export default function Index() {
         <Container className="mt-10">
           <TechHost />
           <TechPartners />
+          <TechDemo />
           <TechStartup />
           <TechVC />
           <TechCommunity />
