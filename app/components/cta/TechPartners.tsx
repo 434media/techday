@@ -95,7 +95,6 @@ export function TechPartners({
       { name: 'balam', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1730048684/flyers-19-square_2_osq1gp.png', alt: 'balam' },
       { name: 'Angel Hub', image: 'https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_300,w_300,f_auto,q_auto/1375226/940696_318615.png', alt: 'Angel Hub' },
       { name: 'nonprofits', image: 'https://www.nonprofitshq.com/wp-content/uploads/2024/05/cropped-logo.a912fc655cad6691d55a.png', alt: 'nonprofits' },
-      { name: 'AEM', image: 'https://scontent-dfw5-1.xx.fbcdn.net/v/t39.30808-6/327059111_762481845311324_358368972635129650_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=iGxJxZE66mcQ7kNvgHtv6Y7&_nc_zt=23&_nc_ht=scontent-dfw5-1.xx&_nc_gid=AtdKu9JQ91LjsebkLt_TMxL&oh=00_AYAY7tTtYNgutFnkIqdUSSMdx8qpNMhcoE-rHT1P9Kfcew&oe=67384044', alt: 'AEM' },
       { name: 'AWS', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570946/amazonwebservices_juiivn.svg', alt: 'AWS' },
       { name: 'Google', image: 'https://res.cloudinary.com/jessebubble/image/upload/v1729570438/google_rp9nql.svg', alt: 'Google' },
     ],

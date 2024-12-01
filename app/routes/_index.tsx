@@ -5,13 +5,10 @@ import { Button } from "~/components/ui/Button";
 import { Navbar } from "~/components/ui/Navbar";
 import { Link } from "@remix-run/react";
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
-import { TechFuel } from "~/components/cta/TechFuel";
-import { TechForm } from "~/components/cta/TechForm";
 import { TechStartup } from "~/components/cta/TechStartup";
 import { TechBloc } from "~/components/cta/TechBloc";
 import { TechVC } from "~/components/cta/TechVC";
 import { TechCommunity } from "~/components/cta/TechCommunity";
-import { TechFinalist } from "~/components/cta/TechFinalist";
 import { TechPartners } from "~/components/cta/TechPartners";
 import { TechHost } from "~/components/cta/TechHost";
 import { Footer } from "~/components/ui/Footer";
@@ -103,9 +100,6 @@ export default function Index() {
           <TechVC />
           <TechCommunity />
           <TechDemo />
-          <TechForm />
-          <TechFinalist />
-          <TechFuel />
           <TechBloc />
         </Container>
       </main>

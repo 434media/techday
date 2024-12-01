@@ -273,7 +273,7 @@ import {
        link: 'https://www.nonprofitshq.com/',
     },
     {
-       img: 'https://media.licdn.com/dms/image/v2/D5603AQGXjOutnVLjnw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1729808900639?e=1736985600&v=beta&t=8Kfqqoiw6rIG4k0FiDB3YyMBT3PsN8kKgTIiDzHW3JY',
+       img: 'https://media.licdn.com/dms/image/v2/D4D03AQGg_q5QNSeirg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1731601360479?e=1738800000&v=beta&t=JZWemJ2GzOaPG31V7svhOuKGjBC67C5QhGlX15RFtII',
        name: 'John Martin',
        title: 'Co-founder of SAFEtech',
        topic: 'SAFEtech',
@@ -327,7 +327,7 @@ import {
        link: 'https://www.chamoy.io/',
     },
     {
-       img: 'https://media.licdn.com/dms/image/v2/C4E03AQEsqTXkho3NOA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1643661689604?e=1736985600&v=beta&t=DjQSd5iizUXoUlxSitucb_tzEwFCKQ7j8LzTVXiNYxg',
+       img: 'https://cdn.discordapp.com/attachments/1306352194047447145/1306445272645111818/signal-2024-11-13-20-26-03-737.jpg?ex=674d1af9&is=674bc979&hm=76f1feea1ba87408570687618f1595ab720c474a8fc277c85d67e3573f7d101a&',
        name: 'Sean Gangwer',
        title: 'Business Solutions Technologies Consulting',
        topic: 'The Tech Whisperers',
