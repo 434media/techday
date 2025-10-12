@@ -5,22 +5,14 @@ import crypto from "crypto"
 
 const isDevelopment = process.env.NODE_ENV === "development"
 
-const airtableBaseId = process.env.AIRTABLE_BASE_ID
-const airtableApiKey = process.env.AIRTABLE_API_KEY
-const turnstileSecretKey = process.env.TURNSTILE_SECRET_KEY
-const mailchimpApiKey = process.env.MAILCHIMP_API_KEY
-const mailchimpListId = process.env.MAILCHIMP_AUDIENCE_ID
-
-if (!airtableBaseId || !airtableApiKey) {
-  throw new Error("Airtable configuration is missing")
-}
-
-const base = new Airtable({ apiKey: airtableApiKey }).base(airtableBaseId)
-
-const mailchimpDatacenter = mailchimpApiKey ? mailchimpApiKey.split("-").pop() : null
-
 export async function POST(request: Request) {
   try {
+    const airtableBaseId = process.env.AIRTABLE_BASE_ID
+    const airtableApiKey = process.env.AIRTABLE_API_KEY
+    const turnstileSecretKey = process.env.TURNSTILE_SECRET_KEY
+    const mailchimpApiKey = process.env.MAILCHIMP_API_KEY
+    const mailchimpListId = process.env.MAILCHIMP_AUDIENCE_ID
+
     const { email } = await request.json()
     const turnstileToken = request.headers.get("cf-turnstile-response")
     const remoteIp = request.headers.get("CF-Connecting-IP")
@@ -30,7 +22,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Server configuration error" }, { status: 500 })
     }
 
+    const base = new Airtable({ apiKey: airtableApiKey }).base(airtableBaseId)
+
     const mailchimpEnabled = mailchimpApiKey && mailchimpListId
+    const mailchimpDatacenter = mailchimpApiKey ? mailchimpApiKey.split("-").pop() : null
+
     if (!mailchimpEnabled) {
       console.warn("Mailchimp integration disabled - missing API key or Audience ID")
     }
@@ -99,7 +95,7 @@ export async function POST(request: Request) {
           headers: {
             "Content-Type": "application/json",
           },
-          validateStatus: (status) => status < 500, // Don't throw on 4xx errors
+          validateStatus: (status) => status < 500,
         },
       )
 
@@ -129,7 +125,6 @@ export async function POST(request: Request) {
           errors.push("Mailchimp authentication failed")
         } else if (responseData?.title === "Member Exists") {
           console.log("Email already exists in Mailchimp, updating tags")
-          // Try to update existing member with tags
           try {
             const emailHash = crypto.createHash("md5").update(email.toLowerCase()).digest("hex")
             await axios.patch(
