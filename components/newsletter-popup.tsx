@@ -112,7 +112,7 @@ export function NewsletterPopup() {
       {/* Floating Circle Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="hidden md:block fixed bottom-36 left-70 md:bottom-20 md:left-300 z-40 overflow-hidden transition-transform rotate-2 hover:scale-105 active:scale-95"
+        className="hidden fixed bottom-36 left-70 md:bottom-20 md:left-300 z-40 overflow-hidden transition-transform rotate-2 hover:scale-105 active:scale-95"
         whileHover={{ rotate: 2 }}
         whileTap={{ scale: 0.95 }}
         aria-label="Open newsletter signup"
