@@ -22,7 +22,7 @@ export function AnniversaryPopup() {
           filter: "drop-shadow(0 0 20px rgba(220, 38, 38, 0.6))",
         }}
         whileHover={{
-          scale: 1.1,
+          scale: 1.05,
           filter: "drop-shadow(0 0 30px rgba(220, 38, 38, 0.9))",
         }}
         whileTap={{ scale: 0.95 }}

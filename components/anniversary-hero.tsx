@@ -20,7 +20,15 @@ export function AnniversaryHero() {
       <div className="md:max-w-5xl md:mx-auto relative z-10 w-full h-full flex items-center justify-center">
         {/* Aspect ratio container */}
         <div className="relative w-full max-h-full overflow-hidden rounded-lg shadow-2xl aspect-[4/5] md:aspect-video">
-          <video ref={videoRef} autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover">
+          <video 
+            ref={videoRef} 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            className="absolute inset-0 h-full w-full object-cover"
+            poster="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/tb-poster.webp"
+          >
             <source
               src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc-anniversary.mov"
               type="video/mp4"
