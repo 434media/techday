@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { ArrowRight, X } from "lucide-react"
 import Image from "next/image"
+import { AnimatedButton } from "./ui/animated-button"
 
 declare global {
   interface Window {
@@ -159,12 +160,7 @@ export function NewsletterPopup() {
                 </button>
 
                 <div className="relative h-2/5 flex-shrink-0 overflow-hidden">
-                  <Image
-                    src="https://devsa-assets.s3.us-east-2.amazonaws.com/techday-pics/td3.jpg"
-                    alt="Tech Day Conference"
-                    fill
-                    className="object-cover"
-                  />
+                  <Image src="/images/design-mode/td3(3).jpg" alt="Tech Day Conference" fill className="object-cover" />
                 </div>
 
                 <div className="flex-1 flex flex-col p-6">
@@ -201,13 +197,7 @@ export function NewsletterPopup() {
                           whileFocus={{ scale: 1.01 }}
                           className="w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20"
                         />
-                        <motion.button
-                          type="submit"
-                          disabled={isSubmitting}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="group flex w-full items-center justify-center rounded-md bg-red-600 px-6 py-3 font-mono text-base font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
+                        <AnimatedButton type="submit" disabled={isSubmitting} fullWidth size="md" className="group">
                           {isSubmitting ? (
                             "Submitting..."
                           ) : (
@@ -216,7 +206,7 @@ export function NewsletterPopup() {
                               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </>
                           )}
-                        </motion.button>
+                        </AnimatedButton>
                         {!isDevelopment && <div ref={turnstileRef} data-size="flexible" className="w-full" />}
                         {error && (
                           <motion.p

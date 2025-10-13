@@ -1,9 +1,10 @@
 "use client"
 import { useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { ArrowRightIcon, X } from "lucide-react"
+import { ArrowRightCircleIcon, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { AnimatedButton } from "./ui/animated-button"
 
 export function AnniversaryPopup() {
   const [isOpen, setIsOpen] = useState(false)
@@ -91,11 +92,10 @@ export function AnniversaryPopup() {
                     collaboration, and growth. Join us as we celebrate 10 years of building the future together.
                   </p>
 
-                  <Link
-                    href="/anniversary"
-                    className="cursor-pointer flex w-full items-center justify-center rounded-md bg-red-600 px-6 py-3 font-mono text-sm font-semibold text-white transition-colors hover:bg-red-700 flex-shrink-0"
-                  >
-                    Don't Be A Goober <ArrowRightIcon className="ml-2 h-4 w-4" />
+                  <Link href="/anniversary" className="flex-shrink-0">
+                    <AnimatedButton fullWidth size="sm" className="cursor-pointer font-mono">
+                      Don't Be A Goober <ArrowRightCircleIcon className="ml-2 h-4 w-4" />
+                    </AnimatedButton>
                   </Link>
                 </div>
               </div>
@@ -106,3 +106,4 @@ export function AnniversaryPopup() {
     </>
   )
 }
+
