@@ -17,8 +17,14 @@ export function AnniversaryPopup() {
       {/* Floating Cube Button */}
       <motion.button
         onClick={handleClick}
-        className="fixed left-39 top-28 md:left-36 md:top-16 z-40 overflow-hidden transition-transform"
-        whileHover={{ scale: 1.1 }}
+        className="fixed left-39 top-28 md:left-36 md:top-20 lg:top-10 z-40 overflow-visible transition-transform cursor-pointer"
+        style={{
+          filter: "drop-shadow(0 0 20px rgba(220, 38, 38, 0.6))",
+        }}
+        whileHover={{
+          scale: 1.1,
+          filter: "drop-shadow(0 0 30px rgba(220, 38, 38, 0.9))",
+        }}
         whileTap={{ scale: 0.95 }}
         aria-label="Celebrate 10 years of Tech Bloc"
       >
@@ -66,7 +72,7 @@ export function AnniversaryPopup() {
                 {/* Image Section - 2/5 of height */}
                 <div className="h-[40%] overflow-hidden flex-shrink-0">
                   <Image
-                    src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/guber.png"
+                    src="/images/design-mode/guber(4).png"
                     alt="Tech Bloc Anniversary"
                     width={400}
                     height={300}
@@ -87,7 +93,7 @@ export function AnniversaryPopup() {
 
                   <Link
                     href="/anniversary"
-                    className="flex w-full items-center justify-center rounded-md bg-red-600 px-6 py-3 font-mono text-sm font-semibold text-white transition-colors hover:bg-red-700 flex-shrink-0"
+                    className="cursor-pointer flex w-full items-center justify-center rounded-md bg-red-600 px-6 py-3 font-mono text-sm font-semibold text-white transition-colors hover:bg-red-700 flex-shrink-0"
                   >
                     Don't Be A Goober <ArrowRightIcon className="ml-2 h-4 w-4" />
                   </Link>
