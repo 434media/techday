@@ -205,4 +205,8 @@
   .animate-marquee-slow {
     animation: marquee-slow 60s linear infinite;
   }
+
+  .animate-marquee-fast {
+    animation: marquee 25s linear infinite;
+  }
 }

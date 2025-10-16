@@ -202,7 +202,7 @@ export function AnniversaryCarousel() {
           className="relative overflow-hidden"
           style={{ "--marquee-gap": "2rem" } as React.CSSProperties}
         >
-          <div className="flex gap-8 animate-marquee">
+          <div className="flex gap-8 animate-marquee-fast md:animate-marquee">
             {/* First set of images */}
             {anniversaryImages.map((image, index) => (
               <div key={`first-${index}`} className="flex w-80 shrink-0 flex-col justify-end">
