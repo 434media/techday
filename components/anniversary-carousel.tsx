@@ -24,6 +24,11 @@ const anniversaryImages: CarouselImage[] = [
     alt: "Tech Bloc 2019 - Year 5 attendees and speakers",
     aspectRatio: "wide",
   },
+    {
+    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc29.jpeg",
+    alt: "Tech Bloc attendees and speakers from the last 10 years",
+    aspectRatio: "portrait",
+  },
   {
     src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc6.jpeg",
     alt: "Tech Bloc 2020 - Year 6 attendees and speakers",
@@ -34,7 +39,7 @@ const anniversaryImages: CarouselImage[] = [
     alt: "Tech Bloc 2021 - Year 7 attendees and speakers",
     aspectRatio: "portrait",
   },
-	 {
+  {
     src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc32-wide.jpeg",
     alt: "Tech Bloc attendees and speakers from the last 10 years",
     aspectRatio: "wide",
@@ -150,11 +155,6 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc29.jpeg",
-    alt: "Tech Bloc attendees and speakers from the last 10 years",
-    aspectRatio: "portrait",
-  },
-  {
     src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc31-wide.jpeg",
     alt: "Tech Bloc attendees and speakers from the last 10 years",
     aspectRatio: "wide",
@@ -164,7 +164,7 @@ const anniversaryImages: CarouselImage[] = [
     alt: "Tech Bloc attendees and speakers from the last 10 years",
     aspectRatio: "portrait",
   },
-	  {
+  {
     src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc16.jpeg",
     alt: "Tech Bloc attendees and speakers from the last 10 years",
     aspectRatio: "portrait",
@@ -188,7 +188,10 @@ const anniversaryImages: CarouselImage[] = [
 
 export function AnniversaryCarousel() {
   return (
-    <section className="relative w-full mb-10 md:mb-0 py-12 md:py-16 lg:py-20" data-testid="anniversary-carousel-container">
+    <section
+      className="relative w-full mb-10 md:mb-0 py-12 md:py-16 lg:py-20"
+      data-testid="anniversary-carousel-container"
+    >
       <div className="flex flex-col gap-8 md:gap-12 lg:gap-16">
         <div className="sr-only">
           <h1>Celebrating 10 Years of Tech Bloc</h1>
@@ -198,11 +201,8 @@ export function AnniversaryCarousel() {
           </p>
         </div>
 
-        <div
-          className="relative overflow-hidden"
-          style={{ "--marquee-gap": "2rem" } as React.CSSProperties}
-        >
-          <div className="flex gap-8 animate-marquee-fast md:animate-marquee">
+        <div className="relative overflow-hidden" style={{ "--marquee-gap": "2rem" } as React.CSSProperties}>
+          <div className="flex gap-8 animate-marquee">
             {/* First set of images */}
             {anniversaryImages.map((image, index) => (
               <div key={`first-${index}`} className="flex w-80 shrink-0 flex-col justify-end">
