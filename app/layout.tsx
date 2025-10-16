@@ -5,6 +5,7 @@
   import { Footer } from "@/components/footer"
   import { Analytics } from "@vercel/analytics/next"
   import { Suspense } from "react"
+import { Navbar } from "@/components/navbar"
 
   const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -131,6 +132,7 @@
         </head>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}>
           <Suspense fallback={<div>Loading...</div>}>
+            <Navbar />
             {children}
             <Footer />
             <Analytics />
