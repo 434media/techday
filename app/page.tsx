@@ -1,11 +1,13 @@
-import { AnniversaryCarousel } from "@/components/anniversary-carousel"
-import { WebGLBackground } from "@/components/webgl-background"
+import { Hero } from "@/components/sections/hero"
+import { About } from "@/components/sections/about"
+import { Sponsors } from "@/components/sections/sponsors"
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="relative" role="main" aria-label="Tech Bloc 10 Year Anniversary">
-      <WebGLBackground />
-      <AnniversaryCarousel />
+    <main className="min-h-screen">
+      <Hero />
+      <About />
+      <Sponsors />
     </main>
   )
 }

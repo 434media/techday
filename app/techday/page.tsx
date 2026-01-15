@@ -1,0 +1,218 @@
+"use client"
+
+import { SpeakerCard, type Speaker } from "@/components/sections/speaker-card"
+import { Schedule } from "@/components/sections/schedule"
+import { Sponsors } from "@/components/sections/sponsors"
+import { EasterEggArrow } from "@/components/easter-eggs"
+import { motion } from "motion/react"
+import Link from "next/link"
+
+// Sample speakers - will be fetched from Firestore
+const speakers: Speaker[] = [
+  {
+    id: "1",
+    name: "Sarah Chen",
+    role: "Partner",
+    company: "TechStars SA",
+    image: "/professional-woman-tech-executive-portrait.jpg",
+    track: "founders",
+  },
+  {
+    id: "2",
+    name: "Michael Rodriguez",
+    role: "VP of Engineering",
+    company: "Rackspace",
+    image: "/professional-man-tech-executive-portrait.jpg",
+    track: "founders",
+  },
+  {
+    id: "3",
+    name: "Dr. Amanda Foster",
+    role: "Chief Innovation Officer",
+    company: "UT Health SA",
+    image: "/professional-woman-doctor.png",
+    track: "emerging",
+  },
+  {
+    id: "4",
+    name: "Col. James Patterson",
+    role: "Cybersecurity Director",
+    company: "USAA",
+    image: "/professional-man-military-executive-portrait.jpg",
+    track: "emerging",
+  },
+  {
+    id: "5",
+    name: "Alex Kim",
+    role: "Founder & CEO",
+    company: "DataMesh",
+    image: "/professional-asian-man-startup-founder-portrait.jpg",
+    track: "founders",
+  },
+  {
+    id: "6",
+    name: "Jordan Martinez",
+    role: "Co-Founder",
+    company: "CloudNative SA",
+    image: "/professional-person-tech-startup-portrait.jpg",
+    track: "founders",
+  },
+]
+
+export default function TechDayPage() {
+  return (
+    <main className="min-h-screen">
+      {/* Hero */}
+      <section className="relative pt-32 pb-20 px-4 bg-white">
+        {/* Easter Egg Arrow - Top Right */}
+        <EasterEggArrow type="video" position="top-6 right-4 md:right-8 lg:right-12 z-20" />
+        <div className="max-w-7xl mx-auto text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">APRIL 2026 • SAN ANTONIO</p>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
+              Tech Day <span className="text-primary">2026</span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
+              A full day celebrating San Antonio&apos;s tech community with two tracks of inspiring sessions, networking
+              opportunities, and the Tech Fuel pitch competition finals.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/register"
+                className="px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all"
+              >
+                Register Now
+              </Link>
+              <a
+                href="#schedule"
+                className="px-8 py-4 bg-transparent border-2 border-foreground text-foreground font-semibold rounded-md hover:bg-foreground hover:text-white transition-all"
+              >
+                View Schedule
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Speakers Section */}
+      <section className="py-24 bg-muted">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">MEET THE SPEAKERS</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
+              Industry Leaders & Innovators
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Learn from the best minds in San Antonio&apos;s tech ecosystem and beyond.
+            </p>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {speakers.map((speaker, index) => (
+              <SpeakerCard key={speaker.id} speaker={speaker} index={index} />
+            ))}
+          </div>
+
+          {/* More speakers coming */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="mt-12 text-center p-8 border-2 border-dashed border-border rounded-lg"
+          >
+            <p className="text-muted-foreground font-mono">More speakers to be announced...</p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Schedule Section */}
+      <div id="schedule">
+        <Schedule />
+      </div>
+
+      {/* Tracks Overview */}
+      <section className="relative py-24 bg-white">
+        {/* Easter Egg Arrow - Top Right */}
+        <EasterEggArrow type="anniversary" position="top-6 right-4 md:right-8 lg:right-12 z-20" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">TWO TRACKS</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">Choose Your Path</h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Emerging Industries Track */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative p-8 bg-muted border border-primary/30 rounded-lg overflow-hidden shadow-sm"
+            >
+              <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+              <h3 className="text-2xl font-bold text-foreground mb-4 leading-snug">Emerging Industries</h3>
+              <p className="text-muted-foreground mb-6 leading-relaxed">
+                Explore cutting-edge technologies transforming San Antonio: AI/ML, cybersecurity, healthcare innovation,
+                aerospace, and clean energy.
+              </p>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-center gap-2 text-foreground font-medium">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  AI & Healthcare Innovation
+                </li>
+                <li className="flex items-center gap-2 text-foreground font-medium">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  Cybersecurity: The New Frontier
+                </li>
+                <li className="flex items-center gap-2 text-foreground font-medium">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  Space Tech & Aerospace
+                </li>
+              </ul>
+            </motion.div>
+
+            {/* Founders & Investors Track */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative p-8 bg-muted border border-foreground/20 rounded-lg overflow-hidden shadow-sm"
+            >
+              <div className="absolute top-0 left-0 right-0 h-1 bg-foreground" />
+              <h3 className="text-2xl font-bold text-foreground mb-4 leading-snug">Founders & Investors</h3>
+              <p className="text-muted-foreground mb-6 leading-relaxed">
+                Learn from successful founders and connect with investors. Fundraising strategies, building in public,
+                and scaling your startup.
+              </p>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-center gap-2 text-foreground font-medium">
+                  <span className="w-1.5 h-1.5 bg-foreground rounded-full" />
+                  Leveraging Hyperscaler Funding
+                </li>
+                <li className="flex items-center gap-2 text-foreground font-medium">
+                  <span className="w-1.5 h-1.5 bg-foreground rounded-full" />
+                  Building in Public Panel
+                </li>
+                <li className="flex items-center gap-2 text-foreground font-medium">
+                  <span className="w-1.5 h-1.5 bg-foreground rounded-full" />
+                  Investor Office Hours
+                </li>
+              </ul>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <Sponsors />
+    </main>
+  )
+}

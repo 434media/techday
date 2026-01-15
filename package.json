@@ -17,6 +17,7 @@
     "botid": "^1.5.8",
     "canvas-confetti": "^1.9.3",
     "lucide-react": "^0.545.0",
+    "maath": "^0.10.8",
     "motion": "^12.23.24",
     "next": "^16.0.7",
     "react": "^19.2.1",

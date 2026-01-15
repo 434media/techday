@@ -225,20 +225,28 @@ function ScrollImage({ image, index }: { image: CarouselImage; index: number }) 
         opacity,
         rotate,
       }}
-      className={`relative py-8 md:py-12 flex items-center ${
+      className={`relative py-6 md:py-10 flex items-center ${
         isLeft ? "justify-start pl-16 md:pl-24 lg:pl-32" : "justify-end pr-4 md:pr-12 lg:pr-24"
       }`}
     >
       <div
-        className={`relative w-full ${isWide ? "max-w-3xl md:max-w-4xl lg:max-w-6xl" : "max-w-md md:max-w-lg lg:max-w-2xl"}`}
+        className={`relative w-full ${
+          isWide 
+            ? "max-w-3xl md:max-w-4xl lg:max-w-5xl" 
+            : "max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
+        }`}
       >
-        <div className="relative overflow-hidden rounded-2xl shadow-2xl border-4 border-white/20">
+        <div className={`relative overflow-hidden rounded-2xl shadow-2xl border-4 border-black/10 ${
+          !isWide ? "max-h-[60vh] md:max-h-[70vh]" : ""
+        }`}>
           <Image
             src={image.src || "/placeholder.svg"}
             alt="Tech Bloc anniversary memory"
-            width={isWide ? 1920 : 1200}
-            height={isWide ? 1080 : 1600}
-            className="w-full h-auto object-cover grayscale"
+            width={isWide ? 1920 : 800}
+            height={isWide ? 1080 : 1000}
+            className={`w-full h-auto object-cover grayscale ${
+              !isWide ? "max-h-[60vh] md:max-h-[70vh] object-top" : ""
+            }`}
             loading="lazy"
           />
         </div>
@@ -259,7 +267,7 @@ export function AnniversaryCarousel() {
   return (
     <div ref={containerRef} className="relative w-full z-10">
       <motion.div
-        className="fixed left-2 md:left-12 top-24 bottom-8 w-1 bg-white/10 rounded-full z-40"
+        className="fixed left-2 md:left-12 top-24 bottom-8 w-1 bg-black/10 rounded-full z-40"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
@@ -278,7 +286,7 @@ export function AnniversaryCarousel() {
           className="max-w-7xl mx-auto text-center"
         >
           <motion.h1
-            className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 font-mono leading-tight"
+            className="text-5xl md:text-7xl lg:text-8xl font-bold text-black mb-6 font-mono leading-tight"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
@@ -286,7 +294,7 @@ export function AnniversaryCarousel() {
             What is <span className="block md:inline">Tech Bloc?</span>
           </motion.h1>
           <motion.p
-            className="text-xl md:text-2xl lg:text-3xl text-white/80 font-light max-w-3xl mx-auto leading-relaxed tracking-tighter md:tracking-tight"
+            className="text-xl md:text-2xl lg:text-3xl text-black/70 font-light max-w-3xl mx-auto leading-relaxed tracking-tighter md:tracking-tight"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.8 }}
@@ -298,14 +306,14 @@ export function AnniversaryCarousel() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.8 }}
-            className="mt-12 text-white/60 text-sm md:text-base"
+            className="mt-12 text-black/50 text-sm md:text-base"
           >
             Scroll to explore our journey
           </motion.div>
         </motion.div>
       </div>
 
-      <div className="relative space-y-12 md:space-y-16">
+      <div className="relative space-y-8 md:space-y-12">
         {anniversaryImages.map((image, index) => (
           <ScrollImage key={index} image={image} index={index} />
         ))}
@@ -319,10 +327,10 @@ export function AnniversaryCarousel() {
           viewport={{ once: false, amount: 0.5 }}
           className="text-center max-w-5xl mx-auto"
         >
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 font-mono leading-tight">
-            Thank you for being part of San Antonio's <span className="">tech revolution</span>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-black mb-6 font-mono leading-tight">
+            Thank you for being part of San Antonio's <span className="text-red-600">tech revolution</span>
           </h2>
-          <p className="text-lg md:text-xl lg:text-2xl text-white/80 font-light max-w-3xl mx-auto leading-relaxed tracking-tight">
+          <p className="text-lg md:text-xl lg:text-2xl text-black/70 font-light max-w-3xl mx-auto leading-relaxed tracking-tight">
             Join us in December as we celebrate 10 years of building the future together!
           </p>
         </motion.div>
