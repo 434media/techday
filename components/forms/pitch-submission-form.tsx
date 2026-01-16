@@ -69,15 +69,34 @@ export function PitchSubmissionForm() {
     }))
   }
 
+  const [error, setError] = useState<string | null>(null)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(null)
 
-    // Simulate API call - will connect to Firestore
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      const response = await fetch("/api/pitch", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
 
-    setIsSubmitting(false)
-    setSubmitted(true)
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit pitch")
+      }
+
+      setSubmitted(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -102,6 +121,13 @@ export function PitchSubmissionForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Error Display */}
+      {error && (
+        <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Company Information */}
       <div className="space-y-6">
         <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Company Information</h3>

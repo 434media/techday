@@ -62,19 +62,35 @@ export function RegistrationForm() {
     }))
   }
 
+  const [error, setError] = useState<string | null>(null)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(null)
 
-    // Simulate API call - will connect to Firestore
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
 
-    // Generate ticket ID
-    const id = `TD26-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
-    setTicketId(id)
+      const data = await response.json()
 
-    setIsSubmitting(false)
-    setSubmitted(true)
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to register")
+      }
+
+      setTicketId(data.ticketId)
+      setSubmitted(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -130,6 +146,13 @@ export function RegistrationForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Error Display */}
+      {error && (
+        <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Personal Information */}
       <div className="space-y-6">
         <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Personal Information</h3>

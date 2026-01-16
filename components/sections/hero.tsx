@@ -29,7 +29,7 @@ export function Hero() {
         <MadeInSAEasterEgg type="anniversary" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20 md:py-32">
         {/* Date Badge */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}

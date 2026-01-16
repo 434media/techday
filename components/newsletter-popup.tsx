@@ -1,23 +1,11 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { ArrowRight, X } from "lucide-react"
 import Image from "next/image"
 import { AnimatedButton } from "./ui/animated-button"
-
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (element: HTMLElement, options: { sitekey: string; callback: (token: string) => void }) => string
-      getResponse: (widgetId: string) => string | null
-      reset: (widgetId: string) => void
-    }
-  }
-}
-
-const isDevelopment = process.env.NODE_ENV === "development"
 
 export function NewsletterPopup() {
   const [isOpen, setIsOpen] = useState(false)
@@ -25,36 +13,6 @@ export function NewsletterPopup() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const turnstileRef = useRef<HTMLDivElement>(null)
-  const [turnstileWidget, setTurnstileWidget] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!isDevelopment && isOpen && !window.turnstile) {
-      const script = document.createElement("script")
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
-      script.async = true
-      script.defer = true
-      document.body.appendChild(script)
-
-      script.onload = () => {
-        if (window.turnstile && turnstileRef.current && !turnstileWidget) {
-          const widgetId = window.turnstile.render(turnstileRef.current, {
-            sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "",
-            callback: (token: string) => {
-              console.log("[v0] Turnstile token received")
-            },
-          })
-          setTurnstileWidget(widgetId)
-        }
-      }
-
-      return () => {
-        if (document.body.contains(script)) {
-          document.body.removeChild(script)
-        }
-      }
-    }
-  }, [isOpen, turnstileWidget])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -62,24 +20,10 @@ export function NewsletterPopup() {
     setError(null)
 
     try {
-      let turnstileResponse = undefined
-
-      if (!isDevelopment) {
-        if (!window.turnstile || !turnstileWidget) {
-          throw new Error("Turnstile is not initialized")
-        }
-
-        turnstileResponse = window.turnstile.getResponse(turnstileWidget)
-        if (!turnstileResponse) {
-          throw new Error("Please complete the verification")
-        }
-      }
-
       const response = await fetch("/api/newsletter", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(turnstileResponse && { "cf-turnstile-response": turnstileResponse }),
         },
         body: JSON.stringify({ email }),
       })
@@ -89,9 +33,6 @@ export function NewsletterPopup() {
       if (response.ok) {
         setEmail("")
         setIsSubmitted(true)
-        if (!isDevelopment && turnstileWidget && window.turnstile) {
-          window.turnstile.reset(turnstileWidget)
-        }
         // Close popup after 3 seconds
         setTimeout(() => {
           setIsSubmitted(false)
@@ -101,7 +42,7 @@ export function NewsletterPopup() {
         throw new Error(responseData.error || "Newsletter subscription failed")
       }
     } catch (error) {
-      console.error("[v0] Error subscribing to newsletter:", error)
+      console.error("Error subscribing to newsletter:", error)
       setError(error instanceof Error ? error.message : "An error occurred. Please try again.")
     } finally {
       setIsSubmitting(false)
@@ -159,12 +100,12 @@ export function NewsletterPopup() {
                   <X className="h-5 w-5" />
                 </button>
 
-                <div className="relative h-2/5 flex-shrink-0 overflow-hidden">
+                <div className="relative h-2/5 shrink-0 overflow-hidden">
                   <Image src="/images/design-mode/td3(3).jpg" alt="Tech Day Conference" fill className="object-cover" />
                 </div>
 
                 <div className="flex-1 flex flex-col p-6">
-                  <div className="mb-4 flex-shrink-0">
+                  <div className="mb-4 shrink-0">
                     <h2 className="mb-2 font-mono text-xl font-bold text-red-600 md:text-2xl">Get Notified</h2>
                     <p className="text-sm leading-relaxed text-gray-700 md:text-base">
                       Be the first to know when tracks and session information becomes available
@@ -207,7 +148,6 @@ export function NewsletterPopup() {
                             </>
                           )}
                         </AnimatedButton>
-                        {!isDevelopment && <div ref={turnstileRef} data-size="flexible" className="w-full" />}
                         {error && (
                           <motion.p
                             initial={{ opacity: 0, y: -10 }}

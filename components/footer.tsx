@@ -22,7 +22,7 @@ export function Footer() {
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Invented Here. San Antonio&apos;s premier technology conference.
+              The technology conference focused on founders, startups and the future of San Antonio&apos;s tech ecosystem.
             </p>
           </div>
 

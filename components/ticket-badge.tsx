@@ -48,14 +48,14 @@ export function TicketBadge({
 
       {/* Lanyard strings */}
       <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-24 h-8 overflow-hidden">
-        <div className="absolute left-0 top-0 w-1 h-full bg-primary/60 rotate-[20deg] origin-bottom" />
-        <div className="absolute right-0 top-0 w-1 h-full bg-primary/60 -rotate-[20deg] origin-bottom" />
+        <div className="absolute left-0 top-0 w-1 h-full bg-primary/60 rotate-20 origin-bottom" />
+        <div className="absolute right-0 top-0 w-1 h-full bg-primary/60 -rotate-20 origin-bottom" />
       </div>
 
       {/* Badge container */}
-      <div className="relative bg-white rounded-lg overflow-hidden shadow-xl border-2 border-border min-w-[280px]">
+      <div className="relative bg-white rounded-lg overflow-hidden shadow-xl border-2 border-border min-w-70">
         {/* Top colored band with type */}
-        <div className={`bg-gradient-to-r ${typeColors[type]} px-4 py-2 text-white`}>
+        <div className={`bg-linear-to-r ${typeColors[type]} px-4 py-2 text-white`}>
           <div className="flex items-center justify-between">
             <Image
               src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/10Years_Red.svg"
@@ -76,8 +76,8 @@ export function TicketBadge({
 
           {/* Perforated divider */}
           <div className="my-4 border-t-2 border-dashed border-border relative">
-            <div className="absolute -left-[2px] top-1/2 -translate-y-1/2 w-4 h-4 bg-background rounded-full border-2 border-border" />
-            <div className="absolute -right-[2px] top-1/2 -translate-y-1/2 w-4 h-4 bg-background rounded-full border-2 border-border" />
+            <div className="absolute -left-0.5 top-1/2 -translate-y-1/2 w-4 h-4 bg-background rounded-full border-2 border-border" />
+            <div className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-4 h-4 bg-background rounded-full border-2 border-border" />
           </div>
 
           {/* Event info */}
@@ -89,7 +89,7 @@ export function TicketBadge({
           {/* Barcode */}
           {showBarcode && (
             <div className="mt-4">
-              <div className="flex justify-center gap-[2px] h-10">
+              <div className="flex justify-center gap-0.5 h-10">
                 {Array.from({ length: 35 }).map((_, i) => (
                   <div
                     key={i}
@@ -129,9 +129,9 @@ export function EventTicket({ className = "", variant = "horizontal" }: EventTic
         <div className="bg-white rounded-2xl overflow-hidden shadow-2xl border border-border max-w-xs">
           {/* Ticket stub perforation */}
           <div className="absolute top-24 left-0 right-0 flex items-center justify-between">
-            <div className="w-4 h-8 bg-background rounded-r-full -ml-[2px]" />
+            <div className="w-4 h-8 bg-background rounded-r-full -ml-0.5" />
             <div className="flex-1 border-t-2 border-dashed border-border" />
-            <div className="w-4 h-8 bg-background rounded-l-full -mr-[2px]" />
+            <div className="w-4 h-8 bg-background rounded-l-full -mr-0.5" />
           </div>
 
           {/* Header section */}
@@ -246,15 +246,15 @@ export function EventTicket({ className = "", variant = "horizontal" }: EventTic
 
         {/* Perforated divider */}
         <div className="relative w-0 border-r-2 border-dashed border-border">
-          <div className="absolute -top-[2px] left-1/2 -translate-x-1/2 w-8 h-4 bg-background rounded-b-full" />
-          <div className="absolute -bottom-[2px] left-1/2 -translate-x-1/2 w-8 h-4 bg-background rounded-t-full" />
+          <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-4 bg-background rounded-b-full" />
+          <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-8 h-4 bg-background rounded-t-full" />
         </div>
 
         {/* Right section - Stub */}
         <div className="w-36 bg-muted/50 p-4 flex flex-col items-center justify-center">
           {/* QR Code placeholder - deterministic pattern */}
           <div className="w-20 h-20 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm">
-            <div className="grid grid-cols-4 gap-[2px]">
+            <div className="grid grid-cols-4 gap-0.5">
               {[1,1,0,1, 0,1,1,0, 1,0,0,1, 1,1,0,1].map((filled, i) => (
                 <div
                   key={i}
