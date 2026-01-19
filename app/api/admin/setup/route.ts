@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { adminDb, adminAuth, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type UserDocument } from "@/lib/firebase/collections"
 
+export const dynamic = "force-dynamic"
+
 // This endpoint is for initial admin setup
 // It should only work when there are NO admin users in the system
 // After the first admin is created, this endpoint becomes inactive

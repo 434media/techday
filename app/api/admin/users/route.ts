@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { adminDb, adminAuth, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type UserDocument, type UserRole, type Permission } from "@/lib/firebase/collections"
 
+export const dynamic = "force-dynamic"
+
 // Middleware helper to verify admin token
 async function verifyAdminToken(request: Request): Promise<{ uid: string; email: string } | null> {
   try {

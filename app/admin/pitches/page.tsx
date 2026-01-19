@@ -49,7 +49,9 @@ export default function PitchesPage() {
       const params = new URLSearchParams()
       if (status) params.set("status", status)
 
-      const response = await fetch(`/api/admin/data/pitches?${params}`)
+      const response = await fetch(`/api/admin/data/pitches?${params}`, {
+        credentials: "include",
+      })
       const data = await response.json()
       setPitches(data.pitches || [])
     } catch (error) {
@@ -65,6 +67,7 @@ export default function PitchesPage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, status: newStatus, reviewNotes }),
+        credentials: "include",
       })
 
       if (response.ok) {
@@ -76,16 +79,83 @@ export default function PitchesPage() {
     }
   }
 
+  const exportToCSV = () => {
+    const headers = [
+      "Company Name",
+      "Founder Name",
+      "Email",
+      "Website",
+      "Industry",
+      "Stage",
+      "Team Size",
+      "Funding Raised",
+      "Funding Goal",
+      "Status",
+      "Submitted Date",
+      "Pitch Summary",
+      "Problem",
+      "Solution",
+    ]
+    const rows = pitches.map((pitch) => [
+      pitch.companyName || "",
+      pitch.founderName || "",
+      pitch.email || "",
+      pitch.website || "",
+      pitch.industry || "",
+      pitch.stage || "",
+      pitch.teamSize || "",
+      pitch.fundingRaised || "",
+      pitch.fundingGoal || "",
+      pitch.status || "",
+      pitch.submittedAt ? new Date(pitch.submittedAt).toLocaleDateString() : "",
+      pitch.pitch || "",
+      pitch.problem || "",
+      pitch.solution || "",
+    ])
+
+    // Escape CSV values that contain commas, quotes, or newlines
+    const escapeCSV = (value: string) => {
+      if (value.includes(",") || value.includes('"') || value.includes("\n")) {
+        return `"${value.replace(/"/g, '""')}"`
+      }
+      return value
+    }
+
+    const csv = [headers, ...rows]
+      .map((row) => row.map(escapeCSV).join(","))
+      .join("\n")
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `pitch-submissions-${new Date().toISOString().split("T")[0]}.csv`
+    a.click()
+    window.URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="p-8 lg:p-12">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-black mb-1">
-          Pitch Submissions
-        </h1>
-        <p className="text-sm text-neutral-500">
-          {pitches.length} applications
-        </p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-black mb-1">
+            Pitch Submissions
+          </h1>
+          <p className="text-sm text-neutral-500">
+            {pitches.length} applications
+          </p>
+        </div>
+        <button
+          onClick={exportToCSV}
+          disabled={pitches.length === 0}
+          className="px-4 py-2 text-sm font-medium bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Export CSV
+        </button>
       </div>
 
       {/* Filters */}

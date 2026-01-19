@@ -24,9 +24,10 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-neutral-50 pt-16">
       <AdminSidebar />
-      <main className="ml-64 min-h-screen">
+      {/* Add extra padding on mobile for the admin header bar */}
+      <main className="ml-0 lg:ml-64 min-h-screen pt-14 lg:pt-0">
         {children}
       </main>
     </div>

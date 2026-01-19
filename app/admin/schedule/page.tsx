@@ -47,7 +47,9 @@ export default function SchedulePage() {
   async function fetchSessions() {
     setIsLoading(true)
     try {
-      const response = await fetch("/api/admin/content/schedule")
+      const response = await fetch("/api/admin/content/schedule", {
+        credentials: "include",
+      })
       const data = await response.json()
       setSessions(data.sessions || [])
     } catch (error) {
@@ -66,6 +68,7 @@ export default function SchedulePage() {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(session),
+        credentials: "include",
       })
 
       if (response.ok) {
@@ -84,6 +87,7 @@ export default function SchedulePage() {
     try {
       const response = await fetch(`/api/admin/content/schedule?id=${id}`, {
         method: "DELETE",
+        credentials: "include",
       })
 
       if (response.ok) {

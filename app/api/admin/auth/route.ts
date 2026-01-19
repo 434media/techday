@@ -3,6 +3,8 @@ import { cookies } from "next/headers"
 import { isApprovedAdmin, getPublicAdminByEmail, getSecurityQuestion, verifyCredentials } from "@/lib/admin/config"
 import crypto from "crypto"
 
+export const dynamic = "force-dynamic"
+
 // Simple session-based auth using signed cookies
 // Security Question + PIN authentication
 
@@ -12,6 +14,7 @@ const SESSION_DURATION = 60 * 60 * 24 * 7 // 7 days in seconds
 
 // Create signed session token
 function createSessionToken(email: string): string {
+  console.log("[Auth] Creating token with SECRET length:", SESSION_SECRET.length, "starts with:", SESSION_SECRET.substring(0, 5))
   const payload = {
     email,
     exp: Date.now() + SESSION_DURATION * 1000,
@@ -21,6 +24,7 @@ function createSessionToken(email: string): string {
     .createHmac("sha256", SESSION_SECRET)
     .update(data)
     .digest("hex")
+  console.log("[Auth] Created signature:", signature.substring(0, 20))
   return Buffer.from(`${data}.${signature}`).toString("base64")
 }
 
@@ -28,7 +32,10 @@ function createSessionToken(email: string): string {
 function verifySessionToken(token: string): { email: string } | null {
   try {
     const decoded = Buffer.from(token, "base64").toString("utf-8")
-    const [data, signature] = decoded.split(".")
+    const lastDotIndex = decoded.lastIndexOf(".")
+    if (lastDotIndex === -1) return null
+    const data = decoded.substring(0, lastDotIndex)
+    const signature = decoded.substring(lastDotIndex + 1)
     
     const expectedSignature = crypto
       .createHmac("sha256", SESSION_SECRET)

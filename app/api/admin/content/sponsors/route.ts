@@ -3,6 +3,8 @@ import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type SponsorContent } from "@/lib/firebase/collections"
 import { verifyAdminSession, sessionHasPermission } from "@/lib/admin/session"
 
+export const dynamic = "force-dynamic"
+
 type SponsorTier = "platinum" | "gold" | "silver" | "bronze" | "community"
 
 interface SponsorsData {

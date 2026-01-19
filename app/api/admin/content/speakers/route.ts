@@ -3,6 +3,8 @@ import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type SpeakerContent } from "@/lib/firebase/collections"
 import { verifyAdminSession, sessionHasPermission } from "@/lib/admin/session"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   const session = await verifyAdminSession()
   if (!session) {

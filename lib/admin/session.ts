@@ -16,30 +16,55 @@ export async function verifyAdminSession(): Promise<SessionUser | null> {
     const cookieStore = await cookies()
     const sessionToken = cookieStore.get("admin_session")?.value
     
+    console.log("[Session] Cookie present:", !!sessionToken)
+    console.log("[Session] SECRET length:", SESSION_SECRET.length, "starts with:", SESSION_SECRET.substring(0, 5))
+    
     if (!sessionToken) return null
     
     const decoded = Buffer.from(sessionToken, "base64").toString("utf-8")
-    const [data, signature] = decoded.split(".")
+    const lastDotIndex = decoded.lastIndexOf(".")
+    if (lastDotIndex === -1) {
+      console.log("[Session] No dot separator found")
+      return null
+    }
+    const data = decoded.substring(0, lastDotIndex)
+    const signature = decoded.substring(lastDotIndex + 1)
+    
+    console.log("[Session] Token data:", data.substring(0, 50))
     
     const expectedSignature = crypto
       .createHmac("sha256", SESSION_SECRET)
       .update(data)
       .digest("hex")
     
-    if (signature !== expectedSignature) return null
+    console.log("[Session] Expected sig:", expectedSignature.substring(0, 20))
+    console.log("[Session] Received sig:", signature?.substring(0, 20))
+    
+    if (signature !== expectedSignature) {
+      console.log("[Session] Signature mismatch")
+      return null
+    }
     
     const payload = JSON.parse(data)
-    if (payload.exp < Date.now()) return null
+    if (payload.exp < Date.now()) {
+      console.log("[Session] Token expired")
+      return null
+    }
     
     const admin = getAdminByEmail(payload.email)
-    if (!admin) return null
+    if (!admin) {
+      console.log("[Session] Admin not found for:", payload.email)
+      return null
+    }
     
+    console.log("[Session] Valid session for:", admin.email)
     return {
       email: admin.email,
       name: admin.name,
       role: admin.role,
     }
-  } catch {
+  } catch (error) {
+    console.log("[Session] Error:", error)
     return null
   }
 }

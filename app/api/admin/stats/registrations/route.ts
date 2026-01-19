@@ -5,6 +5,8 @@ import { COLLECTIONS } from "@/lib/firebase/collections"
 import { isApprovedAdmin } from "@/lib/admin/config"
 import crypto from "crypto"
 
+export const dynamic = "force-dynamic"
+
 const SESSION_SECRET = process.env.ADMIN_SESSION_SECRET || "change-this-in-production"
 
 // Verify admin session
@@ -16,7 +18,10 @@ async function verifySession(): Promise<string | null> {
     if (!sessionToken) return null
     
     const decoded = Buffer.from(sessionToken, "base64").toString("utf-8")
-    const [data, signature] = decoded.split(".")
+    const lastDotIndex = decoded.lastIndexOf(".")
+    if (lastDotIndex === -1) return null
+    const data = decoded.substring(0, lastDotIndex)
+    const signature = decoded.substring(lastDotIndex + 1)
     
     const expectedSignature = crypto
       .createHmac("sha256", SESSION_SECRET)

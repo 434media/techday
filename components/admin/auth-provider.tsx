@@ -21,7 +21,10 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   const checkSession = useCallback(async () => {
     try {
-      const response = await fetch("/api/admin/auth")
+      const response = await fetch("/api/admin/auth", {
+        credentials: "include",
+        cache: "no-store",
+      })
       const data = await response.json()
       
       if (data.authenticated && data.user) {
@@ -46,6 +49,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, action: "get-question" }),
+        credentials: "include",
       })
       
       const data = await response.json()
@@ -65,6 +69,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, answer, pin, action: "verify" }),
+        credentials: "include",
       })
       
       const data = await response.json()
@@ -82,7 +87,10 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch("/api/admin/auth", { method: "DELETE" })
+      await fetch("/api/admin/auth", { 
+        method: "DELETE",
+        credentials: "include",
+      })
     } finally {
       setUser(null)
     }

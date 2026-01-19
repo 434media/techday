@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import { useAdminAuth } from "@/components/admin/auth-provider"
 
 interface Stats {
@@ -18,9 +19,9 @@ export default function AdminOverviewPage() {
     async function fetchStats() {
       try {
         const [regRes, newsRes, pitchRes] = await Promise.all([
-          fetch("/api/admin/stats/registrations"),
-          fetch("/api/admin/stats/newsletter"),
-          fetch("/api/admin/stats/pitches"),
+          fetch("/api/admin/stats/registrations", { credentials: "include" }),
+          fetch("/api/admin/stats/newsletter", { credentials: "include" }),
+          fetch("/api/admin/stats/pitches", { credentials: "include" }),
         ])
 
         const [regData, newsData, pitchData] = await Promise.all([
@@ -143,11 +144,11 @@ function StatCard({
 
 function QuickAction({ href, label }: { href: string; label: string }) {
   return (
-    <a
+    <Link
       href={href}
       className="bg-white border border-neutral-200 p-4 text-sm font-medium text-neutral-600 hover:text-black hover:border-neutral-300 transition-colors"
     >
       {label}
-    </a>
+    </Link>
   )
 }
