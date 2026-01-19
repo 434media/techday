@@ -86,6 +86,7 @@ export interface SpeakerContent {
   company: string
   bio: string
   imageUrl: string
+  track: "ai" | "emerging" | "founders"
   sessionId?: string
   socialLinks?: {
     twitter?: string

@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { SpeakerCard, type Speaker } from "@/components/sections/speaker-card"
 import { Schedule } from "@/components/sections/schedule"
 import { Sponsors } from "@/components/sections/sponsors"
@@ -7,59 +8,24 @@ import { EasterEggArrow } from "@/components/easter-eggs"
 import { motion } from "motion/react"
 import Link from "next/link"
 
-// Sample speakers - will be fetched from Firestore
-const speakers: Speaker[] = [
-  {
-    id: "1",
-    name: "Sarah Chen",
-    role: "Partner",
-    company: "TechStars SA",
-    image: "/professional-woman-tech-executive-portrait.jpg",
-    track: "founders",
-  },
-  {
-    id: "2",
-    name: "Michael Rodriguez",
-    role: "VP of Engineering",
-    company: "Rackspace",
-    image: "/professional-man-tech-executive-portrait.jpg",
-    track: "ai",
-  },
-  {
-    id: "3",
-    name: "Dr. Amanda Foster",
-    role: "Chief Innovation Officer",
-    company: "UT Health SA",
-    image: "/professional-woman-doctor.png",
-    track: "emerging",
-  },
-  {
-    id: "4",
-    name: "Col. James Patterson",
-    role: "Cybersecurity Director",
-    company: "USAA",
-    image: "/professional-man-military-executive-portrait.jpg",
-    track: "emerging",
-  },
-  {
-    id: "5",
-    name: "Alex Kim",
-    role: "Head of AI Research",
-    company: "DataMesh",
-    image: "/professional-asian-man-startup-founder-portrait.jpg",
-    track: "ai",
-  },
-  {
-    id: "6",
-    name: "Jordan Martinez",
-    role: "Co-Founder",
-    company: "CloudNative SA",
-    image: "/professional-person-tech-startup-portrait.jpg",
-    track: "founders",
-  },
-]
-
 export default function TechDayPage() {
+  const [speakers, setSpeakers] = useState<Speaker[]>([])
+  const [isLoadingSpeakers, setIsLoadingSpeakers] = useState(true)
+
+  useEffect(() => {
+    async function fetchSpeakers() {
+      try {
+        const response = await fetch("/api/content/speakers")
+        const data = await response.json()
+        setSpeakers(data.speakers || [])
+      } catch (error) {
+        console.error("Failed to fetch speakers:", error)
+      } finally {
+        setIsLoadingSpeakers(false)
+      }
+    }
+    fetchSpeakers()
+  }, [])
   return (
     <main className="min-h-screen">
       {/* Hero */}
@@ -218,21 +184,46 @@ export default function TechDayPage() {
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {speakers.map((speaker, index) => (
-              <SpeakerCard key={speaker.id} speaker={speaker} index={index} />
-            ))}
-          </div>
+          {/* Loading State */}
+          {isLoadingSpeakers && (
+            <div className="text-center py-12">
+              <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-muted-foreground">Loading speakers...</p>
+            </div>
+          )}
 
-          {/* More speakers coming */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="mt-12 text-center p-8 border-2 border-dashed border-border rounded-lg"
-          >
-            <p className="text-muted-foreground font-mono">More speakers to be announced...</p>
-          </motion.div>
+          {/* No Speakers Message */}
+          {!isLoadingSpeakers && speakers.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-center p-12 border-2 border-dashed border-border rounded-lg"
+            >
+              <p className="text-muted-foreground font-mono">Speakers to be announced...</p>
+            </motion.div>
+          )}
+
+          {/* Speakers Grid */}
+          {!isLoadingSpeakers && speakers.length > 0 && (
+            <>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {speakers.map((speaker, index) => (
+                  <SpeakerCard key={speaker.id} speaker={speaker} index={index} />
+                ))}
+              </div>
+
+              {/* More speakers coming */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className="mt-12 text-center p-8 border-2 border-dashed border-border rounded-lg"
+              >
+                <p className="text-muted-foreground font-mono">More speakers to be announced...</p>
+              </motion.div>
+            </>
+          )}
         </div>
       </section>
 

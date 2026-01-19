@@ -5,15 +5,41 @@ import Link from "next/link"
 import { motion, useMotionValue, useTransform, useSpring } from "motion/react"
 import { useEffect, useState } from "react"
 
-// Sponsor logos - compact display for hero
-const heroSponsors = [
-  { name: "Sponsor 1", logo: "/techcorp-tech-company-logo.jpg" },
-  { name: "Sponsor 2", logo: "/innovatesa-innovation-company-logo.jpg" },
-  { name: "Sponsor 3", logo: "/startuphub-accelerator-logo.jpg" },
-  { name: "Sponsor 4", logo: "/venturex-venture-capital-logo.jpg" },
-]
+interface Sponsor {
+  id: string
+  name: string
+  logoUrl: string
+  website?: string
+}
+
+interface SponsorsData {
+  platinum: Sponsor[]
+  gold: Sponsor[]
+  silver: Sponsor[]
+  bronze: Sponsor[]
+  community: Sponsor[]
+}
 
 export function Hero() {
+  const [topSponsors, setTopSponsors] = useState<Sponsor[]>([])
+  
+  // Fetch top-tier sponsors for hero banner
+  useEffect(() => {
+    async function fetchSponsors() {
+      try {
+        const response = await fetch("/api/content/sponsors")
+        const data = await response.json()
+        const sponsorsData: SponsorsData = data.sponsors || { platinum: [], gold: [], silver: [], bronze: [], community: [] }
+        // Show platinum sponsors in hero (flatten from object structure)
+        const platinumSponsors = sponsorsData.platinum || []
+        setTopSponsors(platinumSponsors)
+      } catch (error) {
+        console.error("Failed to fetch sponsors:", error)
+      }
+    }
+    fetchSponsors()
+  }, [])
+  
   // Track blimp position for text effect
   const blimpProgress = useMotionValue(0)
   const [cycleCount, setCycleCount] = useState(0)
@@ -201,20 +227,27 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
             <p className="text-[#0a0a0a]/50 text-xs font-mono uppercase tracking-widest">Sponsored by</p>
             <div className="flex items-center gap-6 md:gap-8">
-              {heroSponsors.map((sponsor) => (
-                <div
-                  key={sponsor.name}
-                  className="opacity-50 hover:opacity-100 transition-opacity"
-                >
-                  <Image
-                    src={sponsor.logo}
-                    alt={sponsor.name}
-                    width={80}
-                    height={32}
-                    className="h-6 md:h-8 w-auto grayscale hover:grayscale-0 transition-all"
-                  />
-                </div>
-              ))}
+              {topSponsors.length > 0 ? (
+                topSponsors.map((sponsor) => (
+                  <a
+                    key={sponsor.id}
+                    href={sponsor.website || "#"}
+                    target={sponsor.website ? "_blank" : undefined}
+                    rel={sponsor.website ? "noopener noreferrer" : undefined}
+                    className="opacity-50 hover:opacity-100 transition-opacity"
+                  >
+                    <Image
+                      src={sponsor.logoUrl}
+                      alt={sponsor.name}
+                      width={80}
+                      height={32}
+                      className="h-6 md:h-8 w-auto grayscale hover:grayscale-0 transition-all"
+                    />
+                  </a>
+                ))
+              ) : (
+                <span className="text-[#0a0a0a]/30 text-sm">Sponsors coming soon</span>
+              )}
             </div>
             <Link 
               href="/sponsor" 

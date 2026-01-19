@@ -165,7 +165,7 @@ function SponsorSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="aspect-[3/2] bg-black/5 rounded-xl flex items-center justify-center border border-black/10 hover:border-red-600/30 transition-colors"
+              className="aspect-3/2 bg-black/5 rounded-xl flex items-center justify-center border border-black/10 hover:border-red-600/30 transition-colors"
             >
               <span className="text-black/30 font-medium">Logo</span>
             </motion.div>
@@ -229,7 +229,7 @@ export function ConferenceHero() {
             className="object-cover opacity-20"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-white via-white/95 to-white" />
+          <div className="absolute inset-0 bg-linear-to-b from-white via-white/95 to-white" />
         </motion.div>
 
         <motion.div
