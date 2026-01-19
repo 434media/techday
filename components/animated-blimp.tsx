@@ -98,7 +98,7 @@ export function AnimatedBlimp() {
             <motion.img
               src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/TechBlocBlimp.png"
               alt="Tech Bloc Blimp - Click to watch anniversary video"
-              className="w-[300px] md:w-[400px] lg:w-[500px] h-auto drop-shadow-2xl select-none"
+              className="w-75 md:w-100 lg:w-125 h-auto drop-shadow-2xl select-none"
               style={{
                 filter: "drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))",
               }}
@@ -127,7 +127,7 @@ export function AnimatedBlimp() {
       <AnimatePresence>
         {isVideoOpen && (
           <motion.div
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
-import { Space_Grotesk, JetBrains_Mono, Syne } from "next/font/google"
+import { Space_Grotesk, JetBrains_Mono, Syne, Bebas_Neue } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
@@ -19,6 +19,12 @@ const jetbrainsMono = JetBrains_Mono({
 const syne = Syne({
   subsets: ["latin"],
   variable: "--font-syne",
+})
+
+const bebasNeue = Bebas_Neue({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-bebas-neue",
 })
 
 export const metadata: Metadata = {
@@ -46,7 +52,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${syne.variable} font-sans antialiased`}>
+      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${syne.variable} ${bebasNeue.variable} font-sans antialiased`}>
         <Navbar />
         {children}
         <Footer />

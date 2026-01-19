@@ -32,7 +32,7 @@ const timeline = [
   { date: "Feb 1", event: "Applications Open" },
   { date: "Mar 1", event: "Applications Close" },
   { date: "Mar 7", event: "Finalists Announced" },
-  { date: "Apr 14", event: "Pitch Competition @ Tech Day" },
+  { date: "Apr 10", event: "Pitch Competition @ Stable Hall" },
 ]
 
 export default function TechFuelPage() {
@@ -44,11 +44,11 @@ export default function TechFuelPage() {
         <EasterEggArrow type="anniversary" position="top-6 right-4 md:right-8 lg:right-12 z-20" />
         <div className="relative z-10 max-w-7xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">PITCH COMPETITION</p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
+            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">APRIL 10, 2026 • STABLE HALL • SAN ANTONIO</p>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-[1.1]">
               Tech <span className="text-primary">Fuel</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed font-medium">
               San Antonio&apos;s premier startup pitch competition. Showcase your innovation to investors, win prizes,
               and fuel your startup&apos;s growth.
             </p>

@@ -1,114 +1,230 @@
 "use client"
 
-import { motion } from "motion/react"
+import Image from "next/image"
 import Link from "next/link"
-import { EasterEggArrow, MadeInSAEasterEgg } from "@/components/easter-eggs"
-import { EventTicket } from "@/components/ticket-badge"
+import { motion, useMotionValue, useTransform, useSpring } from "motion/react"
+import { useEffect, useState } from "react"
+
+// Sponsor logos - compact display for hero
+const heroSponsors = [
+  { name: "Sponsor 1", logo: "/techcorp-tech-company-logo.jpg" },
+  { name: "Sponsor 2", logo: "/innovatesa-innovation-company-logo.jpg" },
+  { name: "Sponsor 3", logo: "/startuphub-accelerator-logo.jpg" },
+  { name: "Sponsor 4", logo: "/venturex-venture-capital-logo.jpg" },
+]
 
 export function Hero() {
+  // Track blimp position for text effect
+  const blimpProgress = useMotionValue(0)
+  const [cycleCount, setCycleCount] = useState(0)
+  
+  // Create a smooth spring for the color transition
+  const smoothProgress = useSpring(blimpProgress, { stiffness: 100, damping: 30 })
+  
+  // Transform progress to gradient position (moves left to right as blimp passes)
+  const gradientPosition = useTransform(smoothProgress, [0, 1], ["-50%", "150%"])
+  
+  // Update progress based on animation cycle (50s duration)
+  useEffect(() => {
+    const duration = 50000 // 50 seconds in ms
+    const startTime = Date.now()
+    
+    const updateProgress = () => {
+      const elapsed = (Date.now() - startTime) % duration
+      const progress = elapsed / duration
+      blimpProgress.set(progress)
+      
+      // Track cycle for potential future use
+      const newCycle = Math.floor((Date.now() - startTime) / duration)
+      if (newCycle !== cycleCount) {
+        setCycleCount(newCycle)
+      }
+    }
+    
+    const interval = setInterval(updateProgress, 50)
+    return () => clearInterval(interval)
+  }, [blimpProgress, cycleCount])
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
+    <section className="relative h-dvh flex flex-col overflow-hidden bg-white">
+      {/* Background - subtle pattern */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.03]"
         style={{
-          backgroundImage: "url('https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowpixels.png')",
+          backgroundImage: "url('https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg')",
         }}
       />
-      {/* Light overlay with subtle diagonal stripe pattern */}
-      <div className="absolute inset-0 bg-white/85" />
-      <div className="absolute inset-0 diagonal-stripe opacity-50" />
 
-      {/* Easter Egg Arrow - Top Right - Opens Video */}
-      <div className="absolute top-20 right-4 md:right-8 lg:right-12 z-20">
-        <EasterEggArrow type="video" />
-      </div>
-
-      {/* Easter Egg Made in SA - Bottom Left - Links to Anniversary */}
-      <div className="absolute bottom-8 left-4 md:left-8 lg:left-12 z-20">
-        <MadeInSAEasterEgg type="anniversary" />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20 md:py-32">
-        {/* Date Badge */}
+      {/* Floating Blimp */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full mb-8"
+          className="absolute"
+          initial={{ x: "100vw", y: "5%" }}
+          animate={{
+            x: "-100%",
+            y: ["5%", "8%", "3%", "6%", "5%"],
+          }}
+          transition={{
+            x: {
+              duration: 50,
+              repeat: Infinity,
+              ease: "linear",
+            },
+            y: {
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+            },
+          }}
         >
-          <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-          <span className="font-mono text-sm text-primary font-semibold tracking-wide">April 2026 • San Antonio, TX</span>
+          <Image
+            src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/TechBlocBlimp.png"
+            alt="Tech Bloc Blimp"
+            width={300}
+            height={150}
+            className="w-32 md:w-48 lg:w-56 h-auto mt-16 md:mt-20"
+            style={{
+              filter: "drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15))",
+            }}
+            draggable={false}
+          />
         </motion.div>
-
-        {/* Main Headline */}
-        <motion.h1
+      </div>
+      
+      {/* Main Content - Centered */}
+      <div className="relative z-20 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-16 pb-8">
+        
+        {/* Headlines */}
+        <motion.div
+          className="flex flex-col items-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 leading-[0.95]"
+          transition={{ duration: 0.5 }}
         >
-          <span className="text-foreground">TECH DAY</span>
-          <br />
-          <span className="text-primary">2026</span>
-        </motion.h1>
+          {/* Main Headline - Bebas Neue with color sweep effect */}
+          <motion.h1 
+            className="mt-4 md:mt-6 font-headline text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-wide leading-none text-center uppercase"
+            style={{
+              backgroundImage: "linear-gradient(90deg, #0a0a0a 0%, #0a0a0a 40%, #dc2626 50%, #0a0a0a 60%, #0a0a0a 100%)",
+              backgroundSize: "200% 100%",
+              backgroundPositionX: gradientPosition,
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              color: "transparent",
+            }}
+          >
+            Tech Day
+            <br />
+            <span style={{ color: "#dc2626" }}>&</span>
+            <span> Tech Fuel</span>
+          </motion.h1>
+        </motion.div>
 
         {/* Tagline */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="text-xl sm:text-2xl md:text-3xl font-medium text-foreground mb-4 leading-snug"
+          className="mt-3 md:mt-4 text-[#0a0a0a]/70 text-base sm:text-lg md:text-xl font-medium tracking-wide text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <span className="text-primary">&quot;Invented Here&quot;</span>
+          <span className="text-[#dc2626] font-semibold">Hecho en San Antonio</span>
         </motion.p>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="text-lg text-muted-foreground font-mono mb-12 max-w-2xl mx-auto leading-relaxed"
+        {/* Date & Location - Compact */}
+        <motion.div
+          className="mt-6 md:mt-8 flex items-center gap-6 sm:gap-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
         >
-          Celebrating San Antonio&apos;s legacy of tech innovation.
-          <br />
-          <span className="text-primary font-semibold">Hecho en San Antonio</span>
-        </motion.p>
+          <div className="text-center">
+            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Day</p>
+            <p className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight">April 9</p>
+            <p className="text-[#0a0a0a]/60 text-xs sm:text-sm">Tech Port</p>
+          </div>
+          
+          <div className="w-px h-12 bg-[#0a0a0a]/15" />
+          
+          <div className="text-center">
+            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Fuel</p>
+            <p className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight">April 10</p>
+            <p className="text-[#0a0a0a]/60 text-xs sm:text-sm">Stable Hall</p>
+          </div>
+        </motion.div>
 
         {/* CTA Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center gap-3 sm:gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Link
             href="/register"
-            className="px-8 py-4 bg-primary text-primary-foreground font-semibold text-lg rounded-md hover:bg-primary/90 transition-all"
+            className="group inline-flex items-center justify-center gap-2 bg-[#dc2626] text-white px-6 py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#0a0a0a] hover:scale-105 shadow-lg hover:shadow-xl"
           >
             Register Now
+            <svg 
+              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
           </Link>
+          
           <Link
-            href="/techfuel"
-            className="px-8 py-4 bg-transparent border-2 border-secondary text-secondary font-semibold text-lg rounded-md hover:bg-secondary hover:text-white transition-all"
+            href="/sponsor"
+            className="group inline-flex items-center justify-center gap-2 bg-[#0a0a0a] text-white px-6 py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#dc2626] hover:scale-105 shadow-lg hover:shadow-xl"
           >
-            Submit Your Pitch
+            Submit a Pitch
+            <svg 
+              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
           </Link>
-        </motion.div>
-
-        {/* Floating Ticket Preview - Hidden on mobile */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="hidden lg:block mt-16"
-        >
-          <div className="relative">
-            {/* Shadow/glow effect */}
-            <div className="absolute inset-0 blur-3xl bg-primary/10 rounded-full transform scale-150" />
-            <EventTicket className="relative mx-auto transform hover:scale-[1.02] transition-transform duration-300" />
-          </div>
         </motion.div>
       </div>
+
+      {/* Sponsors Bar - Bottom */}
+      <motion.div
+        className="relative z-20 border-t border-[#0a0a0a]/10 bg-white/80 backdrop-blur-sm"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <div className="max-w-5xl mx-auto px-4 py-4 md:py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+            <p className="text-[#0a0a0a]/50 text-xs font-mono uppercase tracking-widest">Sponsored by</p>
+            <div className="flex items-center gap-6 md:gap-8">
+              {heroSponsors.map((sponsor) => (
+                <div
+                  key={sponsor.name}
+                  className="opacity-50 hover:opacity-100 transition-opacity"
+                >
+                  <Image
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    width={80}
+                    height={32}
+                    className="h-6 md:h-8 w-auto grayscale hover:grayscale-0 transition-all"
+                  />
+                </div>
+              ))}
+            </div>
+            <Link 
+              href="/sponsor" 
+              className="text-[#dc2626] text-xs font-semibold hover:underline underline-offset-2"
+            >
+              Become a Sponsor →
+            </Link>
+          </div>
+        </div>
+      </motion.div>
     </section>
   )
 }

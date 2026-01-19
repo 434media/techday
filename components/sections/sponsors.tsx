@@ -61,7 +61,7 @@ export function Sponsors() {
         >
           {/* Tier badge - wristband style */}
           <div className="flex justify-center mb-6">
-            <span className="wristband bg-gradient-to-r from-primary to-primary/80">
+            <span className="wristband bg-linear-to-r from-primary to-primary/80">
               ★ Platinum Sponsors
             </span>
           </div>
@@ -95,7 +95,7 @@ export function Sponsors() {
           className="mb-12"
         >
           <div className="flex justify-center mb-6">
-            <span className="px-4 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full text-white font-semibold text-xs tracking-wider uppercase">
+            <span className="px-4 py-1.5 bg-linear-to-r from-amber-500 to-yellow-400 rounded-full text-white font-semibold text-xs tracking-wider uppercase">
               Gold Sponsors
             </span>
           </div>
@@ -123,7 +123,7 @@ export function Sponsors() {
           className="mb-16"
         >
           <div className="flex justify-center mb-6">
-            <span className="px-4 py-1.5 bg-gradient-to-r from-gray-400 to-gray-300 rounded-full text-white font-semibold text-xs tracking-wider uppercase">
+            <span className="px-4 py-1.5 bg-linear-to-r from-gray-400 to-gray-300 rounded-full text-white font-semibold text-xs tracking-wider uppercase">
               Silver Sponsors
             </span>
           </div>
@@ -151,15 +151,15 @@ export function Sponsors() {
           className="relative bg-white rounded-2xl overflow-hidden shadow-xl border-2 border-primary/20"
         >
           {/* Top band */}
-          <div className="bg-gradient-to-r from-primary to-primary/80 px-6 py-3">
+          <div className="bg-linear-to-r from-primary to-primary/80 px-6 py-3">
             <p className="font-mono text-xs text-white/80 tracking-wider">PARTNERSHIP OPPORTUNITY</p>
           </div>
           
           {/* Perforated edge effect */}
           <div className="absolute top-16 left-0 right-0 flex items-center justify-between">
-            <div className="w-4 h-8 bg-background rounded-r-full -ml-[2px]" />
+            <div className="w-4 h-8 bg-background rounded-r-full -ml-0.5" />
             <div className="flex-1 border-t-2 border-dashed border-border" />
-            <div className="w-4 h-8 bg-background rounded-l-full -mr-[2px]" />
+            <div className="w-4 h-8 bg-background rounded-l-full -mr-0.5" />
           </div>
           
           <div className="p-8 pt-12 text-center">

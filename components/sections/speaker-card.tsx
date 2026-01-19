@@ -8,7 +8,7 @@ export interface Speaker {
   role: string
   company: string
   image: string
-  track: "emerging" | "founders"
+  track: "emerging" | "founders" | "ai"
   bio?: string
   social?: {
     twitter?: string
@@ -39,21 +39,23 @@ export function SpeakerCard({ speaker, index }: SpeakerCardProps) {
       
       {/* Lanyard strings (visible on hover) */}
       <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-32 h-12 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity">
-        <div className="absolute left-2 top-0 w-1 h-full bg-primary/40 rotate-[15deg] origin-bottom" />
-        <div className="absolute right-2 top-0 w-1 h-full bg-primary/40 -rotate-[15deg] origin-bottom" />
+        <div className="absolute left-2 top-0 w-1 h-full bg-primary/40 rotate-15 origin-bottom" />
+        <div className="absolute right-2 top-0 w-1 h-full bg-primary/40 -rotate-15 origin-bottom" />
       </div>
 
       <div className="bg-white border-2 border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
         {/* Track indicator band */}
         <div
           className={`px-4 py-2 flex items-center justify-between ${
-            speaker.track === "emerging"
-              ? "bg-gradient-to-r from-primary to-primary/80"
-              : "bg-gradient-to-r from-foreground to-foreground/80"
+            speaker.track === "ai"
+              ? "bg-linear-to-r from-chart-4 to-primary"
+              : speaker.track === "emerging"
+              ? "bg-linear-to-r from-primary to-primary/80"
+              : "bg-linear-to-r from-foreground to-foreground/80"
           }`}
         >
           <span className="text-[10px] font-mono font-bold tracking-wider text-white/80 uppercase">
-            {speaker.track === "emerging" ? "Emerging Industries" : "Founders & Investors"}
+            {speaker.track === "ai" ? "AI & Machine Learning" : speaker.track === "emerging" ? "Emerging Industries" : "Founders & Investors"}
           </span>
           <span className="text-[10px] font-mono font-bold tracking-wider text-white/80">SPEAKER</span>
         </div>

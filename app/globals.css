@@ -64,6 +64,7 @@
   --font-sans: "Space Grotesk", "Space Grotesk Fallback", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "JetBrains Mono Fallback", monospace;
   --font-display: "Syne", "Syne Fallback", system-ui, sans-serif;
+  --font-headline: "Bebas Neue", "Bebas Neue Fallback", system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

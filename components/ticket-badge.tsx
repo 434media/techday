@@ -83,7 +83,7 @@ export function TicketBadge({
           {/* Event info */}
           <div className="space-y-1 text-sm text-muted-foreground">
             <p className="font-mono font-semibold text-primary">TECH DAY 2026</p>
-            <p>April 14, 2026 • San Antonio, TX</p>
+            <p>April 9, 2026 • Tech Port</p>
           </div>
 
           {/* Barcode */}
@@ -153,7 +153,7 @@ export function EventTicket({ className = "", variant = "horizontal" }: EventTic
             <div className="flex justify-between items-center">
               <div>
                 <p className="font-mono text-[10px] text-muted-foreground tracking-wider">DATE</p>
-                <p className="font-bold text-foreground">APR 14, 2026</p>
+                <p className="font-bold text-foreground">APR 9, 2026</p>
               </div>
               <div className="text-right">
                 <p className="font-mono text-[10px] text-muted-foreground tracking-wider">TIME</p>
@@ -163,7 +163,7 @@ export function EventTicket({ className = "", variant = "horizontal" }: EventTic
 
             <div>
               <p className="font-mono text-[10px] text-muted-foreground tracking-wider">VENUE</p>
-              <p className="font-bold text-foreground">San Antonio Convention Center</p>
+              <p className="font-bold text-foreground">Tech Port</p>
               <p className="text-sm text-muted-foreground">San Antonio, Texas</p>
             </div>
 
@@ -225,7 +225,7 @@ export function EventTicket({ className = "", variant = "horizontal" }: EventTic
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div>
                 <p className="font-mono text-[10px] text-muted-foreground tracking-wider">DATE</p>
-                <p className="font-bold text-foreground">APRIL 14, 2026</p>
+                <p className="font-bold text-foreground">APRIL 9, 2026</p>
               </div>
               <div>
                 <p className="font-mono text-[10px] text-muted-foreground tracking-wider">TIME</p>
@@ -239,7 +239,7 @@ export function EventTicket({ className = "", variant = "horizontal" }: EventTic
 
             <div className="mt-4">
               <p className="font-mono text-[10px] text-muted-foreground tracking-wider">VENUE</p>
-              <p className="font-bold text-foreground">San Antonio Convention Center</p>
+              <p className="font-bold text-foreground">Tech Port</p>
             </div>
           </div>
         </div>
