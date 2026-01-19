@@ -94,48 +94,7 @@ export default function TechDayPage() {
         </div>
       </section>
 
-      {/* Speakers Section */}
-      <section className="py-24 bg-muted">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">MEET THE SPEAKERS</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-[1.1] tracking-tight">
-              Industry Leaders & Innovators
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
-              Learn from the best minds in San Antonio&apos;s tech ecosystem and beyond.
-            </p>
-          </motion.div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {speakers.map((speaker, index) => (
-              <SpeakerCard key={speaker.id} speaker={speaker} index={index} />
-            ))}
-          </div>
-
-          {/* More speakers coming */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="mt-12 text-center p-8 border-2 border-dashed border-border rounded-lg"
-          >
-            <p className="text-muted-foreground font-mono">More speakers to be announced...</p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Schedule Section */}
-      <div id="schedule">
-        <Schedule />
-      </div>
-
-      {/* Tracks Overview */}
+            {/* Tracks Overview */}
       <section className="relative py-24 bg-white">
         {/* Easter Egg Arrow - Top Right */}
         <EasterEggArrow type="anniversary" position="top-6 right-4 md:right-8 lg:right-12 z-20" />
@@ -160,7 +119,7 @@ export default function TechDayPage() {
               className="relative p-8 bg-muted border border-chart-4/30 rounded-lg overflow-hidden shadow-sm"
             >
               <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-chart-4 to-primary" />
-              <h3 className="text-2xl font-bold text-foreground mb-4 leading-[1.2] tracking-tight">AI & Machine Learning</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4 leading-[1.2] tracking-tight">AI</h3>
               <p className="text-muted-foreground mb-6 leading-relaxed font-medium">
                 Dive into the future of artificial intelligence. From LLMs to computer vision, discover how AI is reshaping industries.
               </p>
@@ -240,6 +199,47 @@ export default function TechDayPage() {
           </div>
         </div>
       </section>
+
+      {/* Speakers Section */}
+      <section className="py-24 bg-muted">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">MEET THE SPEAKERS</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-[1.1] tracking-tight">
+              Industry Leaders & Innovators
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
+              Learn from the best minds in San Antonio&apos;s tech ecosystem and beyond.
+            </p>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {speakers.map((speaker, index) => (
+              <SpeakerCard key={speaker.id} speaker={speaker} index={index} />
+            ))}
+          </div>
+
+          {/* More speakers coming */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="mt-12 text-center p-8 border-2 border-dashed border-border rounded-lg"
+          >
+            <p className="text-muted-foreground font-mono">More speakers to be announced...</p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Schedule Section */}
+      <div id="schedule">
+        <Schedule />
+      </div>
 
       <Sponsors />
     </main>

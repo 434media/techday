@@ -121,7 +121,7 @@ export function Schedule() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">NOVEMBER 14, 2026</p>
+          <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">APRIL 10, 2026</p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">Event Schedule</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             A full day of panels, keynotes, networking, and the Tech Fuel pitch competition.
