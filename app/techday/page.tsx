@@ -41,7 +41,7 @@ export default function TechDayPage() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <p className="font-mono text-sm text-primary mb-6 tracking-widest uppercase">
-              April 10, 2026 • Tech Port • San Antonio
+              April 10, 2026 • Tech Port
             </p>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-[0.95] tracking-tight">
               TECH DAY <span className="text-primary">2026</span>
