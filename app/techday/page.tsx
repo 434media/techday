@@ -90,24 +90,24 @@ export default function TechDayPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="relative p-8 md:p-10 bg-white/5 border border-white/10 rounded-xl overflow-hidden"
+              className="relative p-8 md:p-10 bg-white/5 border border-white/10 rounded-xl overflow-hidden group hover:border-emerald-500/30 transition-colors"
             >
-              <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-emerald-500" />
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-5 leading-tight tracking-tight">Emerging Industries</h3>
               <p className="text-white/60 mb-8 leading-relaxed text-base">
                 Explore cutting-edge technologies transforming San Antonio: cybersecurity, healthcare innovation, aerospace, and clean energy.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
-                  <span className="w-2 h-2 bg-primary rounded-full shrink-0" />
+                  <span className="w-2 h-2 bg-emerald-500 rounded-full shrink-0" />
                   Healthcare Innovation
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
-                  <span className="w-2 h-2 bg-primary rounded-full shrink-0" />
+                  <span className="w-2 h-2 bg-emerald-500 rounded-full shrink-0" />
                   Cybersecurity: The New Frontier
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
-                  <span className="w-2 h-2 bg-primary rounded-full shrink-0" />
+                  <span className="w-2 h-2 bg-emerald-500 rounded-full shrink-0" />
                   Space Tech & Aerospace
                 </li>
               </ul>
@@ -119,24 +119,24 @@ export default function TechDayPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="relative p-8 md:p-10 bg-white/5 border border-white/10 rounded-xl overflow-hidden"
+              className="relative p-8 md:p-10 bg-white/5 border border-white/10 rounded-xl overflow-hidden group hover:border-violet-500/30 transition-colors"
             >
-              <div className="absolute top-0 left-0 right-0 h-1 bg-white" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-violet-500" />
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-5 leading-tight tracking-tight">Founders & Investors</h3>
               <p className="text-white/60 mb-8 leading-relaxed text-base">
                 Learn from successful founders and connect with investors. Fundraising strategies, building in public, and scaling your startup.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
-                  <span className="w-2 h-2 bg-white rounded-full shrink-0" />
+                  <span className="w-2 h-2 bg-violet-500 rounded-full shrink-0" />
                   Leveraging Hyperscaler Funding
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
-                  <span className="w-2 h-2 bg-white rounded-full shrink-0" />
+                  <span className="w-2 h-2 bg-violet-500 rounded-full shrink-0" />
                   Building in Public Panel
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
-                  <span className="w-2 h-2 bg-white rounded-full shrink-0" />
+                  <span className="w-2 h-2 bg-violet-500 rounded-full shrink-0" />
                   Investor Office Hours
                 </li>
               </ul>
@@ -146,25 +146,25 @@ export default function TechDayPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0 }}
-              className="relative p-8 md:p-10 bg-white/5 border border-white/10 rounded-xl overflow-hidden"
+              transition={{ delay: 0.3 }}
+              className="relative p-8 md:p-10 bg-white/5 border border-white/10 rounded-xl overflow-hidden group hover:border-blue-500/30 transition-colors"
             >
-              <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-chart-4 to-primary" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500" />
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-5 leading-tight tracking-tight">AI</h3>
               <p className="text-white/60 mb-8 leading-relaxed text-base">
                 Dive into the future of artificial intelligence. From LLMs to computer vision, discover how AI is reshaping industries.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
-                  <span className="w-2 h-2 bg-chart-4 rounded-full shrink-0" />
+                  <span className="w-2 h-2 bg-blue-500 rounded-full shrink-0" />
                   Building with LLMs & Agents
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
-                  <span className="w-2 h-2 bg-chart-4 rounded-full shrink-0" />
+                  <span className="w-2 h-2 bg-blue-500 rounded-full shrink-0" />
                   AI Ethics & Governance
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
-                  <span className="w-2 h-2 bg-chart-4 rounded-full shrink-0" />
+                  <span className="w-2 h-2 bg-blue-500 rounded-full shrink-0" />
                   Enterprise AI Adoption
                 </li>
               </ul>
@@ -214,21 +214,11 @@ export default function TechDayPage() {
           {/* Speakers Grid */}
           {!isLoadingSpeakers && speakers.length > 0 && (
             <>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
                 {speakers.map((speaker, index) => (
                   <SpeakerCard key={speaker.id} speaker={speaker} index={index} />
                 ))}
               </div>
-
-              {/* More speakers coming */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="mt-16 text-center p-10 border-2 border-dashed border-white/20 rounded-xl"
-              >
-                <p className="text-white/60 font-mono">More speakers to be announced...</p>
-              </motion.div>
             </>
           )}
         </div>

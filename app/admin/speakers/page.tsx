@@ -9,8 +9,6 @@ interface Speaker {
   company: string
   bio: string
   imageUrl: string
-  track: "ai" | "emerging" | "founders"
-  sessionId?: string
   socialLinks?: {
     twitter?: string
     linkedin?: string
@@ -25,7 +23,6 @@ const EMPTY_SPEAKER: Speaker = {
   company: "",
   bio: "",
   imageUrl: "",
-  track: "ai",
   socialLinks: {},
 }
 
@@ -314,22 +311,6 @@ function SpeakerModal({
               onChange={(e) => setForm({ ...form, company: e.target.value })}
               className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black rounded-md"
             />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
-              Track *
-            </label>
-            <select
-              required
-              value={form.track}
-              onChange={(e) => setForm({ ...form, track: e.target.value as "ai" | "emerging" | "founders" })}
-              className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black rounded-md"
-            >
-              <option value="ai">AI & Machine Learning</option>
-              <option value="emerging">Emerging Industries</option>
-              <option value="founders">Founders & Investors</option>
-            </select>
           </div>
 
           <div>

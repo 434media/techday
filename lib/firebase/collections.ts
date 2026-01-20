@@ -86,8 +86,6 @@ export interface SpeakerContent {
   company: string
   bio: string
   imageUrl: string
-  track: "ai" | "emerging" | "founders"
-  sessionId?: string
   socialLinks?: {
     twitter?: string
     linkedin?: string
@@ -102,7 +100,7 @@ export interface SessionContent {
   time: string
   duration: number
   room: string
-  speakerId?: string
+  speakerIds?: string[]
   type: "keynote" | "talk" | "workshop" | "panel" | "break" | "networking"
   track?: "emerging" | "founders" | "ai" | ""
 }

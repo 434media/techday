@@ -5,6 +5,14 @@ import { useEffect, useState } from "react"
 type SessionType = "keynote" | "talk" | "workshop" | "panel" | "break" | "networking"
 type TrackType = "emerging" | "founders" | "ai" | ""
 
+interface Speaker {
+  id: string
+  name: string
+  title: string
+  company: string
+  imageUrl: string
+}
+
 interface Session {
   id: string
   title: string
@@ -12,7 +20,7 @@ interface Session {
   time: string
   duration: number
   room: string
-  speakerId?: string
+  speakerIds?: string[]
   type: SessionType
   track?: TrackType
 }
@@ -40,19 +48,34 @@ const EMPTY_SESSION: Session = {
   time: "09:00",
   duration: 30,
   room: "",
+  speakerIds: [],
   type: "talk",
   track: "",
 }
 
 export default function SchedulePage() {
   const [sessions, setSessions] = useState<Session[]>([])
+  const [speakers, setSpeakers] = useState<Speaker[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [editingSession, setEditingSession] = useState<Session | null>(null)
   const [isCreating, setIsCreating] = useState(false)
 
   useEffect(() => {
     fetchSessions()
+    fetchSpeakers()
   }, [])
+
+  async function fetchSpeakers() {
+    try {
+      const response = await fetch("/api/admin/content/speakers", {
+        credentials: "include",
+      })
+      const data = await response.json()
+      setSpeakers(data.speakers || [])
+    } catch (error) {
+      console.error("Failed to fetch speakers:", error)
+    }
+  }
 
   async function fetchSessions() {
     setIsLoading(true)
@@ -160,55 +183,90 @@ export default function SchedulePage() {
         </div>
       ) : (
         <div className="space-y-2">
-          {sessions.map((session) => (
-            <div
-              key={session.id}
-              className="bg-white border border-neutral-200 p-4 flex items-center gap-6"
-            >
-              <div className="w-24 shrink-0">
-                <p className="text-sm font-medium text-black">
-                  {formatTime(session.time)}
-                </p>
-                <p className="text-xs text-neutral-500">
-                  {session.duration} min
-                </p>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-base font-semibold text-black truncate">
-                    {session.title}
-                  </h3>
-                  <TypeBadge type={session.type} />
-                  {session.track && <TrackBadge track={session.track} />}
-                </div>
-                <p className="text-sm text-neutral-600 truncate">
-                  {session.description || "No description"}
-                </p>
-                {session.room && (
-                  <p className="text-xs text-neutral-400 mt-1">
-                    {session.room}
+          {sessions.map((session) => {
+            const sessionSpeakers = speakers.filter((s) => session.speakerIds?.includes(s.id))
+            return (
+              <div
+                key={session.id}
+                className="bg-white border border-neutral-200 p-4 flex items-center gap-6"
+              >
+                <div className="w-24 shrink-0">
+                  <p className="text-sm font-medium text-black">
+                    {formatTime(session.time)}
                   </p>
-                )}
+                  <p className="text-xs text-neutral-500">
+                    {session.duration} min
+                  </p>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-base font-semibold text-black truncate">
+                      {session.title}
+                    </h3>
+                    <TypeBadge type={session.type} />
+                    {session.track && <TrackBadge track={session.track} />}
+                  </div>
+                  <p className="text-sm text-neutral-600 truncate">
+                    {session.description || "No description"}
+                  </p>
+                  {sessionSpeakers.length > 0 && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xs text-neutral-400">Speakers:</span>
+                      <div className="flex -space-x-2">
+                        {sessionSpeakers.slice(0, 3).map((speaker) => (
+                          speaker.imageUrl ? (
+                            <img
+                              key={speaker.id}
+                              src={speaker.imageUrl}
+                              alt={speaker.name}
+                              title={speaker.name}
+                              className="w-6 h-6 rounded-full object-cover border-2 border-white bg-neutral-100"
+                            />
+                          ) : (
+                            <div
+                              key={speaker.id}
+                              title={speaker.name}
+                              className="w-6 h-6 rounded-full bg-neutral-200 border-2 border-white flex items-center justify-center text-[10px] font-medium text-neutral-500"
+                            >
+                              {speaker.name.charAt(0)}
+                            </div>
+                          )
+                        ))}
+                      </div>
+                      {sessionSpeakers.length > 3 && (
+                        <span className="text-xs text-neutral-400">+{sessionSpeakers.length - 3} more</span>
+                      )}
+                      <span className="text-xs text-neutral-500">
+                        {sessionSpeakers.map(s => s.name).join(", ")}
+                      </span>
+                    </div>
+                  )}
+                  {session.room && (
+                    <p className="text-xs text-neutral-400 mt-1">
+                      {session.room}
+                    </p>
+                  )}
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={() => {
+                      setIsCreating(false)
+                      setEditingSession(session)
+                    }}
+                    className="px-3 py-1.5 text-sm font-medium border border-neutral-200 text-neutral-600 hover:text-black hover:border-neutral-300 transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteSession(session.id)}
+                    className="px-3 py-1.5 text-sm font-medium text-neutral-400 hover:text-red-600 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-              <div className="flex gap-2 shrink-0">
-                <button
-                  onClick={() => {
-                    setIsCreating(false)
-                    setEditingSession(session)
-                  }}
-                  className="px-3 py-1.5 text-sm font-medium border border-neutral-200 text-neutral-600 hover:text-black hover:border-neutral-300 transition-colors"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => deleteSession(session.id)}
-                  className="px-3 py-1.5 text-sm font-medium text-neutral-400 hover:text-red-600 transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
@@ -217,6 +275,7 @@ export default function SchedulePage() {
         <SessionModal
           session={editingSession}
           isNew={isCreating}
+          speakers={speakers}
           onSave={saveSession}
           onClose={() => {
             setEditingSession(null)
@@ -271,16 +330,22 @@ function TrackBadge({ track }: { track: TrackType }) {
 function SessionModal({
   session,
   isNew,
+  speakers,
   onSave,
   onClose,
 }: {
   session: Session
   isNew: boolean
+  speakers: Speaker[]
   onSave: (session: Session) => void
   onClose: () => void
 }) {
-  const [form, setForm] = useState(session)
+  const [form, setForm] = useState({
+    ...session,
+    speakerIds: session.speakerIds || [],
+  })
   const [isSaving, setIsSaving] = useState(false)
+  const [speakerSearch, setSpeakerSearch] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -288,6 +353,23 @@ function SessionModal({
     await onSave(form)
     setIsSaving(false)
   }
+
+  const toggleSpeaker = (speakerId: string) => {
+    setForm((prev) => ({
+      ...prev,
+      speakerIds: prev.speakerIds.includes(speakerId)
+        ? prev.speakerIds.filter((id) => id !== speakerId)
+        : [...prev.speakerIds, speakerId],
+    }))
+  }
+
+  const filteredSpeakers = speakers.filter(
+    (s) =>
+      s.name.toLowerCase().includes(speakerSearch.toLowerCase()) ||
+      s.company.toLowerCase().includes(speakerSearch.toLowerCase())
+  )
+
+  const selectedSpeakers = speakers.filter((s) => form.speakerIds.includes(s.id))
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -403,6 +485,98 @@ function SessionModal({
               rows={4}
               className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black resize-none"
             />
+          </div>
+
+          {/* Speaker Selection */}
+          <div>
+            <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
+              Speakers
+            </label>
+            
+            {/* Selected Speakers */}
+            {selectedSpeakers.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {selectedSpeakers.map((speaker) => (
+                  <div
+                    key={speaker.id}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-neutral-100 border border-neutral-200 rounded-full"
+                  >
+                    {speaker.imageUrl && (
+                      <img
+                        src={speaker.imageUrl}
+                        alt={speaker.name}
+                        className="w-5 h-5 rounded-full object-cover"
+                      />
+                    )}
+                    <span className="text-sm text-neutral-700">{speaker.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleSpeaker(speaker.id)}
+                      className="text-neutral-400 hover:text-red-500"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* Speaker Search */}
+            <input
+              type="text"
+              value={speakerSearch}
+              onChange={(e) => setSpeakerSearch(e.target.value)}
+              placeholder="Search speakers..."
+              className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black mb-2"
+            />
+            
+            {/* Speaker List */}
+            <div className="max-h-40 overflow-y-auto border border-neutral-200 rounded-md">
+              {filteredSpeakers.length === 0 ? (
+                <p className="p-3 text-sm text-neutral-500 text-center">
+                  {speakers.length === 0 ? "No speakers available" : "No speakers found"}
+                </p>
+              ) : (
+                filteredSpeakers.map((speaker) => {
+                  const isSelected = form.speakerIds.includes(speaker.id)
+                  return (
+                    <button
+                      key={speaker.id}
+                      type="button"
+                      onClick={() => toggleSpeaker(speaker.id)}
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0 transition-colors ${
+                        isSelected ? "bg-neutral-100" : ""
+                      }`}
+                    >
+                      {speaker.imageUrl ? (
+                        <img
+                          src={speaker.imageUrl}
+                          alt={speaker.name}
+                          className="w-8 h-8 rounded-full object-cover bg-neutral-200"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-medium text-neutral-500">
+                          {speaker.name.charAt(0)}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-black truncate">{speaker.name}</p>
+                        <p className="text-xs text-neutral-500 truncate">
+                          {speaker.title}{speaker.company && `, ${speaker.company}`}
+                        </p>
+                      </div>
+                      {isSelected && (
+                        <svg className="w-5 h-5 text-black shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </button>
+                  )
+                })
+              )}
+            </div>
           </div>
 
           <div className="pt-4 flex gap-3">
