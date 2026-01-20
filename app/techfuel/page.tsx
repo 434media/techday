@@ -55,7 +55,7 @@ export default function TechFuelPage() {
               April 10, 2026 • Stable Hall • San Antonio
             </p>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground mb-8 leading-[0.95] tracking-tight">
-              TECH <span className="text-primary">FUEL</span>
+              TECH FUEL<span className="text-primary">2026</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-normal">
               San Antonio&apos;s premier startup pitch competition. Showcase your innovation to investors, 
