@@ -4,6 +4,7 @@ import { useRef, useState, useEffect, useCallback } from "react"
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react"
 import Link from "next/link"
 import Image from "next/image"
+import { Mic2Icon, RocketIcon } from "lucide-react"
 
 interface InteractiveLanyardProps {
   className?: string
@@ -173,79 +174,66 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
       className={`relative w-full max-w-sm mx-auto ${className}`}
       style={{ perspective: "1000px" }}
     >
-      {/* Lanyard Rope - Red brand color */}
+      {/* Lanyard Strap - Flat fabric style */}
       <div className="absolute left-1/2 -translate-x-1/2 -top-28 w-[85%] h-36 z-20 pointer-events-none">
         <svg viewBox="0 0 200 150" className="w-full h-full" preserveAspectRatio="xMidYMax meet">
           <defs>
-            {/* Red gradient matching brand */}
-            <linearGradient id="lanyardRedGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ef4444" />
-              <stop offset="50%" stopColor="#dc2626" />
-              <stop offset="100%" stopColor="#b91c1c" />
+            {/* Flat fabric gradient - subtle shading */}
+            <linearGradient id="flatStrapGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#dc2626" />
+              <stop offset="50%" stopColor="#ef4444" />
+              <stop offset="100%" stopColor="#dc2626" />
             </linearGradient>
-            {/* Highlight for 3D effect */}
-            <linearGradient id="lanyardHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#fca5a5" />
-              <stop offset="50%" stopColor="#dc2626" />
-              <stop offset="100%" stopColor="#991b1b" />
-            </linearGradient>
-            {/* Shadow for depth */}
-            <filter id="lanyardShadow" x="-50%" y="-50%" width="200%" height="200%">
-              <feDropShadow dx="1" dy="2" stdDeviation="2" floodOpacity="0.4"/>
-            </filter>
-            {/* Inner shadow for strap */}
-            <filter id="strapInnerShadow">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
-              <feOffset in="blur" dx="1" dy="1" result="offsetBlur"/>
-              <feComposite in="SourceGraphic" in2="offsetBlur" operator="over"/>
+            {/* Subtle shadow for depth */}
+            <filter id="flatStrapShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="1" stdDeviation="1" floodOpacity="0.2"/>
             </filter>
           </defs>
           
-          {/* Left strap - curved like real lanyard */}
+          {/* Left strap - flat fabric look */}
           <path 
             d="M100 150 C80 130 50 80 30 0" 
-            stroke="url(#lanyardHighlight)" 
-            strokeWidth="12" 
+            stroke="url(#flatStrapGradient)" 
+            strokeWidth="14" 
             fill="none" 
-            strokeLinecap="round"
-            filter="url(#lanyardShadow)"
+            strokeLinecap="butt"
+            filter="url(#flatStrapShadow)"
           />
-          {/* Left strap highlight */}
+          {/* Left strap edge line for flat fabric effect */}
           <path 
             d="M100 150 C80 130 50 80 30 0" 
-            stroke="#fecaca" 
-            strokeWidth="3" 
+            stroke="#b91c1c" 
+            strokeWidth="1" 
             fill="none" 
-            strokeLinecap="round"
-            opacity="0.4"
-            style={{ transform: "translateX(-2px)" }}
+            strokeLinecap="butt"
+            opacity="0.3"
+            style={{ transform: "translateX(-6px)" }}
           />
           
-          {/* Right strap - curved like real lanyard */}
+          {/* Right strap - flat fabric look */}
           <path 
             d="M100 150 C120 130 150 80 170 0" 
-            stroke="url(#lanyardHighlight)" 
-            strokeWidth="12" 
+            stroke="url(#flatStrapGradient)" 
+            strokeWidth="14" 
             fill="none" 
-            strokeLinecap="round"
-            filter="url(#lanyardShadow)"
+            strokeLinecap="butt"
+            filter="url(#flatStrapShadow)"
           />
-          {/* Right strap highlight */}
+          {/* Right strap edge line for flat fabric effect */}
           <path 
             d="M100 150 C120 130 150 80 170 0" 
-            stroke="#fecaca" 
-            strokeWidth="3" 
+            stroke="#b91c1c" 
+            strokeWidth="1" 
             fill="none" 
-            strokeLinecap="round"
-            opacity="0.4"
-            style={{ transform: "translateX(-2px)" }}
+            strokeLinecap="butt"
+            opacity="0.3"
+            style={{ transform: "translateX(6px)" }}
           />
           
           {/* Metal clip base */}
-          <ellipse cx="100" cy="142" rx="12" ry="8" fill="#374151"/>
+          <rect x="88" y="138" width="24" height="10" rx="2" fill="#374151"/>
           {/* Metal clip shine */}
-          <ellipse cx="98" cy="140" rx="8" ry="5" fill="#6b7280"/>
-          <ellipse cx="96" cy="139" rx="4" ry="2" fill="#9ca3af"/>
+          <rect x="90" y="140" width="20" height="4" rx="1" fill="#6b7280"/>
           {/* Metal clip hook */}
           <path d="M94 148 L94 158 Q94 162 100 162 Q106 162 106 158 L106 148" stroke="#4b5563" strokeWidth="4" fill="none" strokeLinecap="round"/>
           <path d="M96 148 L96 156 Q96 159 100 159 Q104 159 104 156 L104 148" stroke="#6b7280" strokeWidth="2" fill="none" strokeLinecap="round"/>
@@ -330,14 +318,13 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
               {/* CTA Buttons */}
               <div className="w-full space-y-2.5 pointer-events-auto">
                 <Link 
-                  href="/register"
+                
+                  href="/techfuel"
                   className="flex items-center justify-center gap-2 w-full h-12 bg-white text-foreground font-bold text-sm rounded-2xl hover:bg-white/90 transition-colors shadow-lg"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/>
-                  </svg>
-                  Register for Tech Day
+                  <Mic2Icon className="w-4 h-4" />
+                  Submit Your Pitch
                 </Link>
 
                 <div className="flex items-center gap-3 w-full px-2">
@@ -347,16 +334,12 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
                 </div>
 
                 <Link 
-                  href="/techfuel"
+                  href="/anniversary"
                   className="flex items-center justify-center gap-2 w-full h-12 bg-transparent border border-white/30 text-white font-semibold text-sm rounded-2xl hover:bg-white/10 transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
-                    <path d="M12 2v6.5M12 2c-1.5 0-4.5 1.5-5 3.5 2.5 0 3.5 1 3.5 2.5H12M12 2c1.5 0 4.5 1.5 5 3.5-2.5 0-3.5 1-3.5 2.5H12" />
-                    <path d="M8.5 8.5c-.828 0-1.5.895-1.5 2s.672 2 1.5 2h7c.828 0 1.5-.895 1.5-2s-.672-2-1.5-2" />
-                    <path d="M9 12.5v6.5a3 3 0 003 3v0a3 3 0 003-3v-6.5" />
-                  </svg>
-                  Submit Your Pitch
+                 <RocketIcon className="w-4 h-4" />
+                 10 Years of Tech Bloc
                 </Link>
               </div>
 
@@ -423,7 +406,7 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
                 />
                 <p className="text-white/50 font-mono text-xs tracking-[0.2em] uppercase mb-2">San Antonio, TX</p>
                 <h2 className="text-white text-3xl font-bold tracking-tight mb-2">Tech Day 2026</h2>
-                <p className="text-primary font-semibold text-lg tracking-tight">&quot;Invented Here&quot;</p>
+                <p className="text-primary font-semibold text-lg tracking-tight">&quot;Hecho en San Antonio&quot;</p>
               </div>
             </div>
           </div>

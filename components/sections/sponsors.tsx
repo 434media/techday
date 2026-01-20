@@ -4,7 +4,7 @@ import { motion } from "motion/react"
 import { useInView } from "motion/react"
 import { useRef, useEffect, useState } from "react"
 import Link from "next/link"
-import { EasterEggArrow } from "@/components/easter-eggs"
+import { PixelArrow } from "@/components/pixel-arrow"
 
 interface Sponsor {
   id: string
@@ -30,7 +30,11 @@ const DEFAULT_SPONSORS: SponsorsData = {
   community: [],
 }
 
-export function Sponsors() {
+interface SponsorsProps {
+  variant?: "light" | "dark"
+}
+
+export function Sponsors({ variant = "light" }: SponsorsProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [sponsors, setSponsors] = useState<SponsorsData>(DEFAULT_SPONSORS)
@@ -53,12 +57,14 @@ export function Sponsors() {
 
   const hasSponsors = sponsors.platinum.length > 0 || sponsors.gold.length > 0 || sponsors.silver.length > 0 || sponsors.bronze.length > 0 || sponsors.community.length > 0
 
+  const isDark = variant === "dark"
+
   return (
-    <section ref={ref} id="sponsors" className="relative py-24 bg-white">
-      {/* Easter Egg Arrow - Top Right - Opens Video */}
-      <div className="absolute top-6 right-4 md:right-8 lg:right-12 z-20">
-        <EasterEggArrow type="video" />
-      </div>
+    <section ref={ref} id="sponsors" className={`relative py-24 md:py-32 ${isDark ? "bg-foreground" : "bg-white"}`}>
+      {/* Pixel Arrow - Top Right */}
+      <PixelArrow position="top-right" size="xl" variant={variant} type="video" />
+      {/* Pixel Arrow - Bottom Left */}
+      <PixelArrow position="bottom-left" size="lg" variant={variant} type="anniversary" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -66,11 +72,13 @@ export function Sponsors() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">OUR PARTNERS</p>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">Sponsors</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="font-mono text-sm text-primary mb-4 tracking-widest uppercase">Our Partners</p>
+          <h2 className={`text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-[0.95] tracking-tight ${isDark ? "text-white" : "text-foreground"}`}>
+            Sponsors
+          </h2>
+          <p className={`text-lg md:text-xl max-w-2xl mx-auto leading-relaxed ${isDark ? "text-white/60" : "text-muted-foreground"}`}>
             Tech Day is made possible by the generous support of our sponsors who believe in San Antonio&apos;s tech
             future.
           </p>
@@ -80,14 +88,14 @@ export function Sponsors() {
         {isLoading && (
           <div className="text-center py-12">
             <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-muted-foreground">Loading sponsors...</p>
+            <p className={isDark ? "text-white/60" : "text-muted-foreground"}>Loading sponsors...</p>
           </div>
         )}
 
         {/* No Sponsors Message */}
         {!isLoading && !hasSponsors && (
           <div className="text-center py-12 mb-12">
-            <p className="text-muted-foreground">Sponsor announcements coming soon...</p>
+            <p className={isDark ? "text-white/60" : "text-muted-foreground"}>Sponsor announcements coming soon...</p>
           </div>
         )}
 
@@ -296,27 +304,29 @@ export function Sponsors() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="relative bg-white rounded-2xl overflow-hidden shadow-xl border-2 border-primary/20"
+          className={`relative rounded-2xl overflow-hidden shadow-xl ${isDark ? "bg-white/5 border-2 border-white/10" : "bg-white border-2 border-primary/20"}`}
         >
-          <div className="bg-linear-to-r from-primary to-primary/80 px-6 py-3">
-            <p className="font-mono text-xs text-white/80 tracking-wider">PARTNERSHIP OPPORTUNITY</p>
+          <div className="bg-linear-to-r from-primary to-primary/80 px-6 py-4">
+            <p className="font-mono text-xs text-white/80 tracking-widest uppercase">Partnership Opportunity</p>
           </div>
           
           <div className="absolute top-16 left-0 right-0 flex items-center justify-between">
-            <div className="w-4 h-8 bg-background rounded-r-full -ml-0.5" />
-            <div className="flex-1 border-t-2 border-dashed border-border" />
-            <div className="w-4 h-8 bg-background rounded-l-full -mr-0.5" />
+            <div className={`w-4 h-8 rounded-r-full -ml-0.5 ${isDark ? "bg-foreground" : "bg-background"}`} />
+            <div className={`flex-1 border-t-2 border-dashed ${isDark ? "border-white/10" : "border-border"}`} />
+            <div className={`w-4 h-8 rounded-l-full -mr-0.5 ${isDark ? "bg-foreground" : "bg-background"}`} />
           </div>
           
-          <div className="p-8 pt-12 text-center">
-            <h3 className="text-2xl font-bold text-foreground mb-3 leading-snug">Become a Sponsor</h3>
-            <p className="text-muted-foreground mb-6 max-w-lg mx-auto leading-relaxed">
+          <div className="p-8 md:p-10 pt-14 text-center">
+            <h3 className={`text-2xl md:text-3xl font-bold mb-4 leading-tight tracking-tight ${isDark ? "text-white" : "text-foreground"}`}>
+              Become a Sponsor
+            </h3>
+            <p className={`mb-8 max-w-lg mx-auto leading-relaxed text-base md:text-lg ${isDark ? "text-white/60" : "text-muted-foreground"}`}>
               Join San Antonio&apos;s top companies in supporting the local tech ecosystem. Multiple sponsorship tiers
               available with exclusive benefits.
             </p>
             <Link
               href="mailto:sponsors@techday.sa"
-              className="inline-flex px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl"
+              className="inline-flex px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl text-lg"
             >
               Get Sponsorship Info
             </Link>

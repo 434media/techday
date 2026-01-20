@@ -26,9 +26,9 @@ const categories = [
 ]
 
 const events = [
-  { id: "techday", label: "Tech Day Conference", date: "Nov 14", price: "Free" },
-  { id: "techfuel", label: "Tech Fuel Pitch Competition", date: "Nov 14", price: "Included" },
-  { id: "networking", label: "Evening Networking Reception", date: "Nov 14", price: "Included" },
+  { id: "techday", label: "Tech Day Conference", date: "April 9", price: "Free" },
+  { id: "techfuel", label: "Tech Fuel Pitch Competition", date: "April 10", price: "Included" },
+  { id: "networking", label: "Evening Networking Reception", date: "April 9", price: "Included" },
 ]
 
 export function RegistrationForm() {
@@ -133,7 +133,7 @@ export function RegistrationForm() {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Date</span>
-              <span className="text-foreground">November 14, 2026</span>
+              <span className="text-foreground">April 9–10, 2026</span>
             </div>
           </div>
           <div className="mt-4 pt-4 border-t border-dashed border-border">

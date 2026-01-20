@@ -128,7 +128,7 @@ export function Hero() {
         >
           {/* Main Headline - Bebas Neue with color sweep effect */}
           <motion.h1 
-            className="mt-4 md:mt-6 font-headline text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-wide leading-none text-center uppercase"
+            className="mt-4 md:mt-6 font-bold text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-none text-center uppercase"
             style={{
               backgroundImage: "linear-gradient(90deg, #0a0a0a 0%, #0a0a0a 40%, #dc2626 50%, #0a0a0a 60%, #0a0a0a 100%)",
               backgroundSize: "200% 100%",

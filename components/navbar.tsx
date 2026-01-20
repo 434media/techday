@@ -31,7 +31,7 @@ export function Navbar() {
               className="h-10 w-auto"
             />
             <div className="flex flex-col">
-              <span className="font-mono text-xs text-primary tracking-wider font-medium">2026</span>
+              <span className="text-xs text-primary tracking-wider font-medium">San Antonio</span>
               <span className="font-bold text-foreground group-hover:text-primary transition-colors leading-tight">TECH DAY</span>
             </div>
           </Link>

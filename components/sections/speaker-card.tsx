@@ -7,6 +7,7 @@ export interface Speaker {
   name: string
   title: string
   company: string
+  companyUrl?: string
   imageUrl: string
   track: "emerging" | "founders" | "ai"
   bio?: string
@@ -31,64 +32,46 @@ export function SpeakerCard({ speaker, index }: SpeakerCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group relative"
-    >      
-      <div className="bg-white border-2 border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
-        {/* Track indicator band */}
-        <div
-          className={`px-4 py-2 flex items-center justify-between ${
-            speaker.track === "ai"
-              ? "bg-linear-to-r from-chart-4 to-primary"
-              : speaker.track === "emerging"
-              ? "bg-linear-to-r from-primary to-primary/80"
-              : "bg-linear-to-r from-foreground to-foreground/80"
-          }`}
-        >
-          <span className="text-[10px] font-mono font-bold tracking-wider text-white/80 uppercase">
-            {speaker.track === "ai" ? "AI & Machine Learning" : speaker.track === "emerging" ? "Emerging Industries" : "Founders & Investors"}
-          </span>
-          <span className="text-[10px] font-mono font-bold tracking-wider text-white/80">SPEAKER</span>
-        </div>
+      className="p-1 lg:flex lg:flex-col lg:gap-4 group h-full"
+    >
+      {/* Track indicator band */}
+      {/* <div
+        className={`px-3 py-1.5 flex items-center justify-between ${
+          speaker.track === "ai"
+            ? "bg-linear-to-r from-chart-4 to-primary"
+            : speaker.track === "emerging"
+            ? "bg-linear-to-r from-primary to-primary/80"
+            : "bg-linear-to-r from-foreground to-foreground/80"
+        }`}
+      >
+        <span className="text-[10px] font-mono font-bold tracking-wider text-white/90 uppercase">
+          {speaker.track === "ai" ? "AI" : speaker.track === "emerging" ? "Emerging Industries" : "Founders & Investors"}
+        </span>
+      </div> */}
 
-        {/* Image */}
-        <div className="p-6 pb-4 flex justify-center">
-          <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-md">
-            <img
-              src={speaker.imageUrl || "/placeholder.svg"}
-              alt={speaker.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="px-5 pb-5 text-center">
-          <h3 className="text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors leading-snug">
-            {speaker.name}
-          </h3>
-          <p className="text-sm text-muted-foreground mb-1">{speaker.title}</p>
-          <p className="text-sm text-primary font-mono font-semibold mb-3">{speaker.company}</p>
-          
-          {/* Bio */}
-          {speaker.bio && (
-            <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed mb-3">
-              {speaker.bio}
-            </p>
-          )}
-
-          {/* Social Links - appear on hover */}
-          {hasSocialLinks && (
-            <div className="flex justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      {/* Image container */}
+      <div className="relative bg-background overflow-hidden">
+        <img
+          src={speaker.imageUrl || "/placeholder.svg"}
+          alt={speaker.name}
+          className="w-full object-cover aspect-4/5 grayscale"
+        />
+        
+        {/* Social links overlay - appears on hover */}
+        {hasSocialLinks && (
+          <div className="absolute bottom-0 left-0 lg:p-2 lg:opacity-0 lg:group-hover:opacity-100 lg:transition-opacity lg:duration-300">
+            <div className="absolute -left-4 -bottom-4 top-0 right-0 opacity-50 blur-lg bg-muted" />
+            <nav className="relative flex gap-1">
               {speaker.socialLinks?.twitter && (
                 <a
                   href={speaker.socialLinks.twitter.startsWith("http") ? speaker.socialLinks.twitter : `https://twitter.com/${speaker.socialLinks.twitter.replace("@", "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-muted hover:bg-primary hover:text-white transition-colors"
+                  className="inline-flex items-center justify-center p-2.5 rounded-md bg-transparent text-foreground hover:bg-muted transition-colors"
                   aria-label={`${speaker.name}'s Twitter`}
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M0.5 0.5H5.75L9.48421 5.71053L14 0.5H16L10.3895 6.97368L16.5 15.5H11.25L7.51579 10.2895L3 15.5H1L6.61053 9.02632L0.5 0.5ZM12.0204 14L3.42043 2H4.97957L13.5796 14H12.0204Z" />
                   </svg>
                 </a>
               )}
@@ -97,11 +80,11 @@ export function SpeakerCard({ speaker, index }: SpeakerCardProps) {
                   href={speaker.socialLinks.linkedin.startsWith("http") ? speaker.socialLinks.linkedin : `https://linkedin.com/in/${speaker.socialLinks.linkedin}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-muted hover:bg-primary hover:text-white transition-colors"
+                  className="inline-flex items-center justify-center p-2.5 rounded-md bg-transparent text-foreground hover:bg-muted transition-colors"
                   aria-label={`${speaker.name}'s LinkedIn`}
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M2 0C0.895431 0 0 0.895431 0 2V14C0 15.1046 0.895431 16 2 16H14C15.1046 16 16 15.1046 16 14V2C16 0.895431 15.1046 0 14 0H2ZM5 6.75V13H3V6.75H5ZM5 4.50008C5 5.05554 4.61409 5.5 3.99408 5.5H3.98249C3.38582 5.5 3 5.05554 3 4.50008C3 3.93213 3.39765 3.5 4.00584 3.5C4.61409 3.5 4.98845 3.93213 5 4.50008ZM8.5 13H6.5C6.5 13 6.53178 7.43224 6.50007 6.75H8.5V7.78371C8.5 7.78371 9 6.75 10.5 6.75C12 6.75 13 7.59782 13 9.83107V13H11V10.1103C11 10.1103 11 8.46616 9.7361 8.46616C8.4722 8.46616 8.5 9.93972 8.5 9.93972V13Z" />
                   </svg>
                 </a>
               )}
@@ -110,7 +93,7 @@ export function SpeakerCard({ speaker, index }: SpeakerCardProps) {
                   href={speaker.socialLinks.website.startsWith("http") ? speaker.socialLinks.website : `https://${speaker.socialLinks.website}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-muted hover:bg-primary hover:text-white transition-colors"
+                  className="inline-flex items-center justify-center p-2.5 rounded-md bg-transparent text-foreground hover:bg-muted transition-colors"
                   aria-label={`${speaker.name}'s Website`}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,10 +101,37 @@ export function SpeakerCard({ speaker, index }: SpeakerCardProps) {
                   </svg>
                 </a>
               )}
-            </div>
-          )}
-        </div>
+            </nav>
+          </div>
+        )}
       </div>
+
+      {/* Content header */}
+      <header className="max-lg:p-1 lg:flex lg:flex-col lg:gap-1">
+        <p className="font-mono text-white text-base lg:text-lg uppercase font-semibold leading-normal">
+          {speaker.name}
+        </p>
+        <p className="font-mono text-white/70 text-sm lg:text-base uppercase leading-normal">
+          {speaker.title}
+          {speaker.company && (
+            <>
+              ,{" "}
+              {speaker.companyUrl ? (
+                <a
+                  href={speaker.companyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono uppercase no-underline hover:opacity-70 transition-opacity"
+                >
+                  {speaker.company}
+                </a>
+              ) : (
+                <span>{speaker.company}</span>
+              )}
+            </>
+          )}
+        </p>
+      </header>
     </motion.div>
   )
 }

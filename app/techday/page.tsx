@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { SpeakerCard, type Speaker } from "@/components/sections/speaker-card"
 import { Schedule } from "@/components/sections/schedule"
 import { Sponsors } from "@/components/sections/sponsors"
-import { EasterEggArrow } from "@/components/easter-eggs"
+import { PixelArrow } from "@/components/pixel-arrow"
 import { motion } from "motion/react"
 import Link from "next/link"
 
@@ -26,32 +26,42 @@ export default function TechDayPage() {
     }
     fetchSpeakers()
   }, [])
+
   return (
-    <main className="min-h-screen">
-      {/* Hero */}
-      <section className="relative pt-32 pb-20 px-4 bg-white">
-        {/* Easter Egg Arrow - Top Right */}
-        <EasterEggArrow type="video" position="top-6 right-4 md:right-8 lg:right-12 z-20" />
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">APRIL 9, 2026 • TECH PORT • SAN ANTONIO</p>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-[1.1]">
-              Tech Day <span className="text-primary">2026</span>
+    <main className="min-h-screen bg-foreground">
+      {/* Hero - Dark Theme with dvh */}
+      <section className="relative min-h-dvh flex items-center justify-center px-4 bg-foreground overflow-hidden">
+        {/* Pixel Arrow - Top Right */}
+        <PixelArrow position="top-right" size="xl" variant="dark" type="video" />
+        {/* Pixel Arrow - Bottom Left */}
+        <PixelArrow position="bottom-left" size="lg" variant="dark" type="anniversary" />
+        
+        <div className="max-w-5xl mx-auto text-center relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <p className="font-mono text-sm text-primary mb-6 tracking-widest uppercase">
+              April 9, 2026 • Tech Port • San Antonio
+            </p>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-[0.95] tracking-tight">
+              TECH DAY <span className="text-primary">2026</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed font-medium">
-              A full day celebrating San Antonio&apos;s tech community with three tracks of inspiring sessions, networking
-              opportunities, and the Tech Fuel pitch competition finals.
+            <p className="text-lg sm:text-xl md:text-2xl text-white/70 max-w-3xl mx-auto mb-12 leading-relaxed font-normal">
+              A full day celebrating San Antonio&apos;s tech community with three tracks of inspiring sessions, and
+              networking opportunities.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/register"
-                className="px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all"
+                className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
               >
                 Register Now
               </Link>
               <a
                 href="#schedule"
-                className="px-8 py-4 bg-transparent border-2 border-foreground text-foreground font-semibold rounded-md hover:bg-foreground hover:text-white transition-all"
+                className="px-10 py-5 bg-transparent border-2 border-white/30 text-white font-semibold rounded-md hover:bg-white hover:text-foreground transition-all text-lg"
               >
                 View Schedule
               </a>
@@ -60,46 +70,46 @@ export default function TechDayPage() {
         </div>
       </section>
 
-            {/* Tracks Overview */}
-      <section className="relative py-24 bg-white">
-        {/* Easter Egg Arrow - Top Right */}
-        <EasterEggArrow type="anniversary" position="top-6 right-4 md:right-8 lg:right-12 z-20" />
+      {/* Tracks Overview - Dark Theme */}
+      <section className="relative py-24 md:py-32 bg-foreground">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">THREE TRACKS</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-[1.1]">Choose Your Path</h2>
+            <p className="font-mono text-sm text-primary mb-4 tracking-widest uppercase">Three Tracks</p>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-[0.95] tracking-tight">
+              Choose Your Path
+            </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {/* AI Track */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0 }}
-              className="relative p-8 bg-muted border border-chart-4/30 rounded-lg overflow-hidden shadow-sm"
+              className="relative p-8 md:p-10 bg-white/5 border border-white/10 rounded-xl overflow-hidden"
             >
               <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-chart-4 to-primary" />
-              <h3 className="text-2xl font-bold text-foreground mb-4 leading-[1.2] tracking-tight">AI</h3>
-              <p className="text-muted-foreground mb-6 leading-relaxed font-medium">
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-5 leading-tight tracking-tight">AI</h3>
+              <p className="text-white/60 mb-8 leading-relaxed text-base">
                 Dive into the future of artificial intelligence. From LLMs to computer vision, discover how AI is reshaping industries.
               </p>
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-center gap-2 text-foreground font-semibold">
-                  <span className="w-1.5 h-1.5 bg-chart-4 rounded-full" />
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
+                  <span className="w-2 h-2 bg-chart-4 rounded-full shrink-0" />
                   Building with LLMs & Agents
                 </li>
-                <li className="flex items-center gap-2 text-foreground font-semibold">
-                  <span className="w-1.5 h-1.5 bg-chart-4 rounded-full" />
+                <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
+                  <span className="w-2 h-2 bg-chart-4 rounded-full shrink-0" />
                   AI Ethics & Governance
                 </li>
-                <li className="flex items-center gap-2 text-foreground font-semibold">
-                  <span className="w-1.5 h-1.5 bg-chart-4 rounded-full" />
+                <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
+                  <span className="w-2 h-2 bg-chart-4 rounded-full shrink-0" />
                   Enterprise AI Adoption
                 </li>
               </ul>
@@ -111,24 +121,24 @@ export default function TechDayPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="relative p-8 bg-muted border border-primary/30 rounded-lg overflow-hidden shadow-sm"
+              className="relative p-8 md:p-10 bg-white/5 border border-white/10 rounded-xl overflow-hidden"
             >
               <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
-              <h3 className="text-2xl font-bold text-foreground mb-4 leading-[1.2] tracking-tight">Emerging Industries</h3>
-              <p className="text-muted-foreground mb-6 leading-relaxed font-medium">
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-5 leading-tight tracking-tight">Emerging Industries</h3>
+              <p className="text-white/60 mb-8 leading-relaxed text-base">
                 Explore cutting-edge technologies transforming San Antonio: cybersecurity, healthcare innovation, aerospace, and clean energy.
               </p>
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-center gap-2 text-foreground font-semibold">
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full" />
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
+                  <span className="w-2 h-2 bg-primary rounded-full shrink-0" />
                   Healthcare Innovation
                 </li>
-                <li className="flex items-center gap-2 text-foreground font-semibold">
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full" />
+                <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
+                  <span className="w-2 h-2 bg-primary rounded-full shrink-0" />
                   Cybersecurity: The New Frontier
                 </li>
-                <li className="flex items-center gap-2 text-foreground font-semibold">
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full" />
+                <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
+                  <span className="w-2 h-2 bg-primary rounded-full shrink-0" />
                   Space Tech & Aerospace
                 </li>
               </ul>
@@ -140,24 +150,24 @@ export default function TechDayPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="relative p-8 bg-muted border border-foreground/20 rounded-lg overflow-hidden shadow-sm"
+              className="relative p-8 md:p-10 bg-white/5 border border-white/10 rounded-xl overflow-hidden"
             >
-              <div className="absolute top-0 left-0 right-0 h-1 bg-foreground" />
-              <h3 className="text-2xl font-bold text-foreground mb-4 leading-[1.2] tracking-tight">Founders & Investors</h3>
-              <p className="text-muted-foreground mb-6 leading-relaxed font-medium">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-white" />
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-5 leading-tight tracking-tight">Founders & Investors</h3>
+              <p className="text-white/60 mb-8 leading-relaxed text-base">
                 Learn from successful founders and connect with investors. Fundraising strategies, building in public, and scaling your startup.
               </p>
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-center gap-2 text-foreground font-semibold">
-                  <span className="w-1.5 h-1.5 bg-foreground rounded-full" />
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
+                  <span className="w-2 h-2 bg-white rounded-full shrink-0" />
                   Leveraging Hyperscaler Funding
                 </li>
-                <li className="flex items-center gap-2 text-foreground font-semibold">
-                  <span className="w-1.5 h-1.5 bg-foreground rounded-full" />
+                <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
+                  <span className="w-2 h-2 bg-white rounded-full shrink-0" />
                   Building in Public Panel
                 </li>
-                <li className="flex items-center gap-2 text-foreground font-semibold">
-                  <span className="w-1.5 h-1.5 bg-foreground rounded-full" />
+                <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
+                  <span className="w-2 h-2 bg-white rounded-full shrink-0" />
                   Investor Office Hours
                 </li>
               </ul>
@@ -166,20 +176,20 @@ export default function TechDayPage() {
         </div>
       </section>
 
-      {/* Speakers Section */}
-      <section className="py-24 bg-muted">
+      {/* Speakers Section - Dark Theme */}
+      <section className="py-24 md:py-32 bg-foreground/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <p className="font-mono text-sm text-primary mb-4 tracking-wider font-semibold">MEET THE SPEAKERS</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-[1.1] tracking-tight">
+            <p className="font-mono text-sm text-primary mb-4 tracking-widest uppercase">Meet the Speakers</p>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-[0.95] tracking-tight">
               Industry Leaders & Innovators
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
+            <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed">
               Learn from the best minds in San Antonio&apos;s tech ecosystem and beyond.
             </p>
           </motion.div>
@@ -188,7 +198,7 @@ export default function TechDayPage() {
           {isLoadingSpeakers && (
             <div className="text-center py-12">
               <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-              <p className="text-muted-foreground">Loading speakers...</p>
+              <p className="text-white/60">Loading speakers...</p>
             </div>
           )}
 
@@ -198,16 +208,16 @@ export default function TechDayPage() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="text-center p-12 border-2 border-dashed border-border rounded-lg"
+              className="text-center p-12 border-2 border-dashed border-white/20 rounded-xl"
             >
-              <p className="text-muted-foreground font-mono">Speakers to be announced...</p>
+              <p className="text-white/60 font-mono">Speakers to be announced...</p>
             </motion.div>
           )}
 
           {/* Speakers Grid */}
           {!isLoadingSpeakers && speakers.length > 0 && (
             <>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {speakers.map((speaker, index) => (
                   <SpeakerCard key={speaker.id} speaker={speaker} index={index} />
                 ))}
@@ -218,9 +228,9 @@ export default function TechDayPage() {
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                className="mt-12 text-center p-8 border-2 border-dashed border-border rounded-lg"
+                className="mt-16 text-center p-10 border-2 border-dashed border-white/20 rounded-xl"
               >
-                <p className="text-muted-foreground font-mono">More speakers to be announced...</p>
+                <p className="text-white/60 font-mono">More speakers to be announced...</p>
               </motion.div>
             </>
           )}
@@ -228,11 +238,12 @@ export default function TechDayPage() {
       </section>
 
       {/* Schedule Section */}
-      <div id="schedule">
-        <Schedule />
+      <div id="schedule" className="bg-foreground">
+        <Schedule variant="dark" />
       </div>
 
-      <Sponsors />
+      {/* Sponsors */}
+      <Sponsors variant="dark" />
     </main>
   )
 }

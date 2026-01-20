@@ -206,7 +206,7 @@ export function AdminSidebar() {
       )}
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 bg-white border-r border-neutral-200 flex-col h-[calc(100vh-4rem)] fixed left-0 top-16 z-40">
+      <aside className="hidden lg:flex w-64 bg-white border-r border-neutral-200 flex-col sticky left-0 top-16 h-[calc(100vh-4rem)] z-40">
         {/* Logo */}
         <div className="p-6 border-b border-neutral-200">
           <Link href="/admin" className="block">
