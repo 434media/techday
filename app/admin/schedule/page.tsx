@@ -140,9 +140,9 @@ export default function SchedulePage() {
   }
 
   return (
-    <div className="p-8 lg:p-12">
+    <div className="p-4 sm:p-6 lg:p-8 overflow-x-hidden min-w-0">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-black mb-1">
             Schedule
@@ -188,81 +188,154 @@ export default function SchedulePage() {
             return (
               <div
                 key={session.id}
-                className="bg-white border border-neutral-200 p-4 flex items-center gap-6"
+                className="bg-white border border-neutral-200 p-4 hover:border-neutral-300 transition-colors"
               >
-                <div className="w-24 shrink-0">
-                  <p className="text-sm font-medium text-black">
-                    {formatTime(session.time)}
-                  </p>
-                  <p className="text-xs text-neutral-500">
-                    {session.duration} min
-                  </p>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-base font-semibold text-black truncate">
-                      {session.title}
-                    </h3>
-                    <TypeBadge type={session.type} />
-                    {session.track && <TrackBadge track={session.track} />}
-                  </div>
-                  <p className="text-sm text-neutral-600 truncate">
-                    {session.description || "No description"}
-                  </p>
-                  {sessionSpeakers.length > 0 && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-xs text-neutral-400">Speakers:</span>
-                      <div className="flex -space-x-2">
-                        {sessionSpeakers.slice(0, 3).map((speaker) => (
-                          speaker.imageUrl ? (
-                            <img
-                              key={speaker.id}
-                              src={speaker.imageUrl}
-                              alt={speaker.name}
-                              title={speaker.name}
-                              className="w-6 h-6 rounded-full object-cover border-2 border-white bg-neutral-100"
-                            />
-                          ) : (
-                            <div
-                              key={speaker.id}
-                              title={speaker.name}
-                              className="w-6 h-6 rounded-full bg-neutral-200 border-2 border-white flex items-center justify-center text-[10px] font-medium text-neutral-500"
-                            >
-                              {speaker.name.charAt(0)}
-                            </div>
-                          )
-                        ))}
+                {/* Mobile/Tablet Layout */}
+                <div className="flex flex-col gap-3 lg:hidden">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className="text-xs font-medium text-neutral-500">
+                          {formatTime(session.time)} · {session.duration} min
+                        </span>
+                        <TypeBadge type={session.type} />
+                        {session.track && <TrackBadge track={session.track} />}
                       </div>
-                      {sessionSpeakers.length > 3 && (
-                        <span className="text-xs text-neutral-400">+{sessionSpeakers.length - 3} more</span>
-                      )}
-                      <span className="text-xs text-neutral-500">
-                        {sessionSpeakers.map(s => s.name).join(", ")}
-                      </span>
+                      <h3 className="text-sm font-semibold text-black line-clamp-2">
+                        {session.title}
+                      </h3>
                     </div>
-                  )}
-                  {session.room && (
-                    <p className="text-xs text-neutral-400 mt-1">
-                      {session.room}
+                    <div className="flex gap-1 shrink-0">
+                      <button
+                        onClick={() => {
+                          setIsCreating(false)
+                          setEditingSession(session)
+                        }}
+                        className="p-2 text-neutral-500 hover:text-black hover:bg-neutral-100 transition-colors rounded"
+                        title="Edit"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => deleteSession(session.id)}
+                        className="p-2 text-neutral-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded"
+                        title="Delete"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  {session.description && (
+                    <p className="text-xs text-neutral-600 line-clamp-2">
+                      {session.description}
                     </p>
                   )}
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500">
+                    {session.room && (
+                      <span className="flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {session.room}
+                      </span>
+                    )}
+                    {sessionSpeakers.length > 0 && (
+                      <span className="flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        {sessionSpeakers.map(s => s.name).join(", ")}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex gap-2 shrink-0">
-                  <button
-                    onClick={() => {
-                      setIsCreating(false)
-                      setEditingSession(session)
-                    }}
-                    className="px-3 py-1.5 text-sm font-medium border border-neutral-200 text-neutral-600 hover:text-black hover:border-neutral-300 transition-colors"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteSession(session.id)}
-                    className="px-3 py-1.5 text-sm font-medium text-neutral-400 hover:text-red-600 transition-colors"
-                  >
-                    Delete
-                  </button>
+
+                {/* Desktop Layout */}
+                <div className="hidden lg:flex items-center gap-4">
+                  <div className="w-20 shrink-0">
+                    <p className="text-sm font-medium text-black">
+                      {formatTime(session.time)}
+                    </p>
+                    <p className="text-xs text-neutral-500">
+                      {session.duration} min
+                    </p>
+                  </div>
+                  <div className="flex-1 min-w-0 max-w-2xl">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-sm font-semibold text-black truncate max-w-xs">
+                        {session.title}
+                      </h3>
+                      <TypeBadge type={session.type} />
+                      {session.track && <TrackBadge track={session.track} />}
+                    </div>
+                    <p className="text-xs text-neutral-600 line-clamp-1 max-w-md">
+                      {session.description || "No description"}
+                    </p>
+                    <div className="flex items-center gap-4 mt-1.5">
+                      {session.room && (
+                        <span className="text-xs text-neutral-400 flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          {session.room}
+                        </span>
+                      )}
+                      {sessionSpeakers.length > 0 && (
+                        <div className="flex items-center gap-2">
+                          <div className="flex -space-x-1.5">
+                            {sessionSpeakers.slice(0, 3).map((speaker) => (
+                              speaker.imageUrl ? (
+                                <img
+                                  key={speaker.id}
+                                  src={speaker.imageUrl}
+                                  alt={speaker.name}
+                                  title={speaker.name}
+                                  className="w-5 h-5 rounded-full object-cover border border-white bg-neutral-100"
+                                />
+                              ) : (
+                                <div
+                                  key={speaker.id}
+                                  title={speaker.name}
+                                  className="w-5 h-5 rounded-full bg-neutral-200 border border-white flex items-center justify-center text-[9px] font-medium text-neutral-500"
+                                >
+                                  {speaker.name.charAt(0)}
+                                </div>
+                              )
+                            ))}
+                          </div>
+                          <span className="text-xs text-neutral-500 truncate max-w-37.5">
+                            {sessionSpeakers.map(s => s.name).join(", ")}
+                          </span>
+                          {sessionSpeakers.length > 3 && (
+                            <span className="text-xs text-neutral-400">+{sessionSpeakers.length - 3}</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-1 shrink-0 ml-auto">
+                    <button
+                      onClick={() => {
+                        setIsCreating(false)
+                        setEditingSession(session)
+                      }}
+                      className="px-3 py-1.5 text-xs font-medium border border-neutral-200 text-neutral-600 hover:text-black hover:border-neutral-300 hover:bg-neutral-50 transition-colors"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteSession(session.id)}
+                      className="px-3 py-1.5 text-xs font-medium text-neutral-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             )
