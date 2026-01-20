@@ -104,6 +104,7 @@ export interface SessionContent {
   room: string
   speakerId?: string
   type: "keynote" | "talk" | "workshop" | "panel" | "break" | "networking"
+  track?: "emerging" | "founders" | "ai" | ""
 }
 
 export interface SponsorContent {

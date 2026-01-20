@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 
 type SessionType = "keynote" | "talk" | "workshop" | "panel" | "break" | "networking"
+type TrackType = "emerging" | "founders" | "ai" | ""
 
 interface Session {
   id: string
@@ -13,6 +14,7 @@ interface Session {
   room: string
   speakerId?: string
   type: SessionType
+  track?: TrackType
 }
 
 const SESSION_TYPES: { value: SessionType; label: string }[] = [
@@ -24,6 +26,13 @@ const SESSION_TYPES: { value: SessionType; label: string }[] = [
   { value: "networking", label: "Networking" },
 ]
 
+const TRACKS: { value: TrackType; label: string }[] = [
+  { value: "", label: "No Track" },
+  { value: "emerging", label: "Emerging Industries" },
+  { value: "founders", label: "Founders & Investors" },
+  { value: "ai", label: "AI" },
+]
+
 const EMPTY_SESSION: Session = {
   id: "",
   title: "",
@@ -32,6 +41,7 @@ const EMPTY_SESSION: Session = {
   duration: 30,
   room: "",
   type: "talk",
+  track: "",
 }
 
 export default function SchedulePage() {
@@ -169,6 +179,7 @@ export default function SchedulePage() {
                     {session.title}
                   </h3>
                   <TypeBadge type={session.type} />
+                  {session.track && <TrackBadge track={session.track} />}
                 </div>
                 <p className="text-sm text-neutral-600 truncate">
                   {session.description || "No description"}
@@ -232,6 +243,27 @@ function TypeBadge({ type }: { type: SessionType }) {
       className={`inline-block px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${styles[type]}`}
     >
       {type}
+    </span>
+  )
+}
+
+function TrackBadge({ track }: { track: TrackType }) {
+  const styles: Record<Exclude<TrackType, "">, { bg: string; label: string }> = {
+    emerging: { bg: "bg-emerald-100 text-emerald-700", label: "Emerging Industries" },
+    founders: { bg: "bg-violet-100 text-violet-700", label: "Founders & Investors" },
+    ai: { bg: "bg-blue-100 text-blue-700", label: "AI" },
+  }
+
+  if (!track) return null
+
+  const style = styles[track]
+  if (!style) return null
+
+  return (
+    <span
+      className={`inline-block px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${style.bg}`}
+    >
+      {style.label}
     </span>
   )
 }
@@ -332,16 +364,33 @@ function SessionModal({
             </div>
             <div>
               <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
-                Room
+                Track
               </label>
-              <input
-                type="text"
-                value={form.room}
-                onChange={(e) => setForm({ ...form, room: e.target.value })}
-                placeholder="e.g. Main Stage"
+              <select
+                value={form.track || ""}
+                onChange={(e) => setForm({ ...form, track: e.target.value as TrackType })}
                 className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black"
-              />
+              >
+                {TRACKS.map((track) => (
+                  <option key={track.value} value={track.value}>
+                    {track.label}
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
+              Room
+            </label>
+            <input
+              type="text"
+              value={form.room}
+              onChange={(e) => setForm({ ...form, room: e.target.value })}
+              placeholder="e.g. Main Stage"
+              className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black"
+            />
           </div>
 
           <div>

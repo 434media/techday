@@ -12,9 +12,10 @@ interface Session {
   room: string
   speakerId?: string
   type: "keynote" | "talk" | "workshop" | "panel" | "break" | "networking"
+  track?: "emerging" | "founders" | "ai" | ""
 }
 
-type TrackFilter = "all" | "keynote" | "talk" | "workshop" | "panel"
+type TrackFilter = "all" | "emerging" | "founders" | "ai"
 
 interface ScheduleProps {
   variant?: "light" | "dark"
@@ -43,14 +44,13 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
   }, [])
 
   const filteredSessions =
-    filter === "all" ? sessions : sessions.filter((s) => s.type === filter || s.type === "break" || s.type === "networking")
+    filter === "all" ? sessions : sessions.filter((s) => s.track === filter || s.type === "break" || s.type === "networking" || s.type === "keynote")
 
   const filters: { value: TrackFilter; label: string }[] = [
     { value: "all", label: "All Sessions" },
-    { value: "keynote", label: "Keynotes" },
-    { value: "talk", label: "Talks" },
-    { value: "workshop", label: "Workshops" },
-    { value: "panel", label: "Panels" },
+    { value: "emerging", label: "Emerging Industries" },
+    { value: "founders", label: "Founders & Investors" },
+    { value: "ai", label: "AI" },
   ]
 
   const formatTime = (time: string) => {
