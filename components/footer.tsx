@@ -16,9 +16,9 @@ export function Footer() {
                 height={48}
                 className="h-12 w-auto"
               />
-              <div>
-                <p className="text-xs text-primary font-semibold tracking-wide">San Antonio</p>
-                <p className="font-bold text-xl leading-none tracking-tight">TECH DAY</p>
+              <div className="flex flex-col">
+                <span className="text-xs text-primary tracking-wider font-medium">San Antonio</span>
+                <span className="font-bold text-foreground group-hover:text-primary transition-colors leading-tight">TECH DAY</span>
               </div>
             </div>
             <p className="text-muted-foreground leading-relaxed">

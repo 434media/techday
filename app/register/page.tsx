@@ -23,12 +23,11 @@ export default function RegisterPage() {
               transition={{ duration: 0.6 }}
               className="text-center lg:text-left order-last lg:order-first"
             >
-              <p className="font-mono text-xs text-primary mb-3 tracking-widest font-semibold uppercase">Free Registration</p>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-[1.1] tracking-tight">
-                Secure Your <span className="text-primary">Spot</span> at Tech Day
+                Secure Your <span className="text-primary">Spot</span> at Tech Day &amp; Tech Fuel
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                Join San Antonio&apos;s premier tech conference. Two days of innovation, networking, and startup showcase.
+                Join us in San Antonio on April 9–10, 2026 for two days of innovation, networking, and inspiration. Register now to attend <span className="text-primary">Tech Day</span> and witness the thrilling <span className="text-primary">Tech Fuel</span> startup pitch competition finals.
               </p>
               <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start text-sm">
                 <div className="inline-flex items-center gap-2 text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
