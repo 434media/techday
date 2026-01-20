@@ -133,6 +133,41 @@ export async function PUT(request: Request) {
   }
 }
 
+export async function PATCH(request: Request) {
+  const session = await verifyAdminSession()
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  if (!(await sessionHasPermission("speakers", session))) {
+    return NextResponse.json({ error: "Permission denied" }, { status: 403 })
+  }
+
+  if (!isFirebaseConfigured()) {
+    return NextResponse.json({ error: "Firebase not configured" }, { status: 503 })
+  }
+
+  try {
+    const { speakers }: { speakers: SpeakerContent[] } = await request.json()
+
+    if (!speakers || !Array.isArray(speakers)) {
+      return NextResponse.json({ error: "Speakers array is required" }, { status: 400 })
+    }
+
+    // Save reordered speakers
+    await adminDb.collection(COLLECTIONS.CONTENT).doc("speakers").set({
+      speakers,
+      updatedAt: new Date(),
+      updatedBy: session.email,
+    })
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error("Speaker reorder error:", error)
+    return NextResponse.json({ error: "Failed to reorder speakers" }, { status: 500 })
+  }
+}
+
 export async function DELETE(request: Request) {
   const session = await verifyAdminSession()
   if (!session) {

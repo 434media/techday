@@ -31,6 +31,9 @@ export default function SpeakersPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [editingSpeaker, setEditingSpeaker] = useState<Speaker | null>(null)
   const [isCreating, setIsCreating] = useState(false)
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
+  const [isSavingOrder, setIsSavingOrder] = useState(false)
 
   useEffect(() => {
     fetchSpeakers()
@@ -90,6 +93,68 @@ export default function SpeakersPage() {
     }
   }
 
+  async function saveOrder(newSpeakers: Speaker[]) {
+    setIsSavingOrder(true)
+    try {
+      const response = await fetch("/api/admin/content/speakers", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ speakers: newSpeakers }),
+        credentials: "include",
+      })
+
+      if (!response.ok) {
+        console.error("Failed to save order")
+        fetchSpeakers() // Revert on error
+      }
+    } catch (error) {
+      console.error("Failed to save order:", error)
+      fetchSpeakers() // Revert on error
+    } finally {
+      setIsSavingOrder(false)
+    }
+  }
+
+  function handleDragStart(e: React.DragEvent, index: number) {
+    setDraggedIndex(index)
+    e.dataTransfer.effectAllowed = "move"
+    e.dataTransfer.setData("text/plain", index.toString())
+  }
+
+  function handleDragOver(e: React.DragEvent, index: number) {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "move"
+    setDragOverIndex(index)
+  }
+
+  function handleDragLeave() {
+    setDragOverIndex(null)
+  }
+
+  function handleDrop(e: React.DragEvent, dropIndex: number) {
+    e.preventDefault()
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null)
+      setDragOverIndex(null)
+      return
+    }
+
+    const newSpeakers = [...speakers]
+    const [draggedSpeaker] = newSpeakers.splice(draggedIndex, 1)
+    newSpeakers.splice(dropIndex, 0, draggedSpeaker)
+
+    setSpeakers(newSpeakers)
+    saveOrder(newSpeakers)
+
+    setDraggedIndex(null)
+    setDragOverIndex(null)
+  }
+
+  function handleDragEnd() {
+    setDraggedIndex(null)
+    setDragOverIndex(null)
+  }
+
   return (
     <div className="p-8 lg:p-12">
       {/* Header */}
@@ -97,9 +162,12 @@ export default function SpeakersPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-black mb-1">
             Speakers
+            {isSavingOrder && (
+              <span className="ml-3 text-sm font-normal text-neutral-400">Saving order...</span>
+            )}
           </h1>
           <p className="text-sm text-neutral-500">
-            Manage conference speakers
+            Manage conference speakers • Drag cards to reorder
           </p>
         </div>
         <button
@@ -134,23 +202,42 @@ export default function SpeakersPage() {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {speakers.map((speaker) => (
+          {speakers.map((speaker, index) => (
             <div
               key={speaker.id}
-              className="bg-white border border-neutral-200 p-6"
+              draggable
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+              className={`bg-white border p-6 cursor-grab active:cursor-grabbing transition-all ${
+                draggedIndex === index
+                  ? "opacity-50 border-neutral-300 scale-[0.98]"
+                  : dragOverIndex === index
+                    ? "border-black border-2 bg-neutral-50"
+                    : "border-neutral-200 hover:border-neutral-300"
+              }`}
             >
               <div className="flex items-start gap-4 mb-4">
-                {speaker.imageUrl ? (
-                  <img
-                    src={speaker.imageUrl}
-                    alt={speaker.name}
-                    className="w-16 h-16 object-cover bg-neutral-100"
-                  />
-                ) : (
-                  <div className="w-16 h-16 bg-neutral-100 flex items-center justify-center text-neutral-400 text-lg font-medium">
-                    {speaker.name.charAt(0)}
+                <div className="flex items-center gap-3">
+                  <div className="text-neutral-300 hover:text-neutral-500 transition-colors">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM8 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM8 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM14 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM14 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
+                    </svg>
                   </div>
-                )}
+                  {speaker.imageUrl ? (
+                    <img
+                      src={speaker.imageUrl}
+                      alt={speaker.name}
+                      className="w-16 h-16 object-cover bg-neutral-100"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 bg-neutral-100 flex items-center justify-center text-neutral-400 text-lg font-medium">
+                      {speaker.name.charAt(0)}
+                    </div>
+                  )}
+                </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-semibold text-black truncate">
                     {speaker.name}
