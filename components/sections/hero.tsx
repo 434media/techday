@@ -163,17 +163,17 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.15 }}
         >
           <div className="text-center">
-            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Day</p>
+            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Fuel</p>
             <p className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight">April 9</p>
-            <p className="text-[#0a0a0a]/60 text-xs sm:text-sm">Tech Port</p>
+            <p className="text-[#0a0a0a]/60 text-xs sm:text-sm">Stable Hall</p>
           </div>
           
           <div className="w-px h-12 bg-[#0a0a0a]/15" />
           
           <div className="text-center">
-            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Fuel</p>
+            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Day</p>
             <p className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight">April 10</p>
-            <p className="text-[#0a0a0a]/60 text-xs sm:text-sm">Stable Hall</p>
+            <p className="text-[#0a0a0a]/60 text-xs sm:text-sm">Tech Port</p>
           </div>
         </motion.div>
 

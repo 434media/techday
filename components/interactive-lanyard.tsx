@@ -346,14 +346,14 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
               <div className="mt-6 pt-4 border-t border-white/10">
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div>
-                    <p className="text-white/40 font-mono tracking-wider uppercase mb-1">Tech Day</p>
+                    <p className="text-white/40 font-mono tracking-wider uppercase mb-1">Tech Fuel</p>
                     <p className="text-white font-semibold leading-relaxed">April 9th</p>
-                    <p className="text-white/60 leading-relaxed">Tech Port</p>
+                    <p className="text-white/60 leading-relaxed">Stable Hall</p>
                   </div>
                   <div>
-                    <p className="text-white/40 font-mono tracking-wider uppercase mb-1">Tech Fuel</p>
+                    <p className="text-white/40 font-mono tracking-wider uppercase mb-1">Tech Day</p>
                     <p className="text-white font-semibold leading-relaxed">April 10th</p>
-                    <p className="text-white/60 leading-relaxed">Stable Hall</p>
+                    <p className="text-white/60 leading-relaxed">Tech Port</p>
                   </div>
                 </div>
               </div>

@@ -32,7 +32,7 @@ const timeline = [
   { date: "Feb 1", event: "Applications Open" },
   { date: "Mar 1", event: "Applications Close" },
   { date: "Mar 7", event: "Finalists Announced" },
-  { date: "Apr 10", event: "Pitch Competition @ Stable Hall" },
+  { date: "Apr 9", event: "Pitch Competition @ Stable Hall" },
 ]
 
 export default function TechFuelPage() {
@@ -50,7 +50,7 @@ export default function TechFuelPage() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <p className="font-mono text-sm text-primary mb-6 tracking-widest uppercase">
-              April 10, 2026 • Stable Hall • San Antonio
+              April 9, 2026 • Stable Hall • San Antonio
             </p>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground mb-8 leading-[0.95] tracking-tight">
               TECH FUEL <span className="text-primary">2026</span>
