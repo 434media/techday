@@ -139,7 +139,7 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <p className="font-mono text-sm text-primary mb-4 tracking-widest uppercase">April 9, 2026</p>
+          <p className="font-mono text-sm text-primary mb-4 tracking-widest uppercase">April 10, 2026</p>
           <h2 className={`text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-[0.95] tracking-tight ${isDark ? "text-white" : "text-foreground"}`}>
             Event Schedule
           </h2>

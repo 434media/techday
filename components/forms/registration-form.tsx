@@ -28,7 +28,7 @@ const categories = [
 const events = [
   { id: "techfuel", label: "Tech Fuel Pitch Competition", date: "April 9", price: "Free" },
   { id: "techday", label: "Tech Day Conference", date: "April 10", price: "Free" },
-  { id: "networking", label: "Evening Networking Reception", date: "April 10", price: "Included" },
+  { id: "2day", label: "2-Day Registration", date: "April 9-10", price: "Free" },
 ]
 
 export function RegistrationForm() {
@@ -40,7 +40,7 @@ export function RegistrationForm() {
     company: "",
     title: "",
     events: ["techday"],
-    dietaryRestrictions: "",
+    dietaryRestrictions: "none",
     agreeToTerms: false,
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -292,17 +292,19 @@ export function RegistrationForm() {
         <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Additional Information</h3>
         <div>
           <label htmlFor="dietaryRestrictions" className="block text-sm font-medium text-foreground mb-2">
-            Dietary Restrictions (optional)
+            Dietary Restrictions
           </label>
-          <input
-            type="text"
+          <select
             id="dietaryRestrictions"
             name="dietaryRestrictions"
             value={formData.dietaryRestrictions}
             onChange={handleChange}
-            className="w-full px-4 py-3 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            placeholder="Vegetarian, vegan, gluten-free, etc."
-          />
+            className="w-full px-4 py-3 bg-background border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="none">None</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan</option>
+          </select>
         </div>
       </div>
 
