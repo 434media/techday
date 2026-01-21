@@ -194,7 +194,7 @@ export function Hero() {
           </Link>
           
           <Link
-            href="/sponsor"
+            href="/techfuel#submit"
             className="group inline-flex items-center justify-center gap-2 bg-[#0a0a0a] text-white px-6 py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#dc2626] hover:scale-105 shadow-lg hover:shadow-xl"
           >
             Submit a Pitch
