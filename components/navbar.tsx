@@ -1,141 +1,123 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
+import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "motion/react"
-import { X, Volume2, VolumeX } from "lucide-react"
-import { AnimatedButton } from "@/components/ui/animated-button"
+
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/techday", label: "Tech Day" },
+  { href: "/techfuel", label: "Tech Fuel" },
+  { href: "/register", label: "Register" },
+]
 
 export function Navbar() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [isMuted, setIsMuted] = useState(true)
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const toggleAudio = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted
-      setIsMuted(!isMuted)
-    }
-  }
   return (
-    <>
-      <nav className="fixed left-0 right-0 top-0 z-50 bg-transparent backdrop-blur-xs py-4">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-center px-4 md:px-8 lg:px-12">
-          <motion.button
-            onClick={() => setIsDropdownOpen(true)}
-            className="flex items-center transition-opacity cursor-pointer"
-            style={{
-              filter: "drop-shadow(0 0 20px rgba(220, 38, 38, 0.6))",
-            }}
-            whileHover={{
-              scale: 1.05,
-              filter: "drop-shadow(0 0 30px rgba(220, 38, 38, 0.9))",
-            }}
-            whileTap={{ scale: 0.95 }}
-            aria-label="View 10 Years of Tech Bloc"
-          >
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/10Years_Red.svg"
-              alt="Tech Bloc 10 Years"
-              width={200}
-              height={60}
-              className="h-auto w-28 md:w-32 lg:w-36"
-              priority
+              alt="Tech Day 10 Years"
+              width={48}
+              height={48}
+              className="h-10 w-auto"
             />
-          </motion.button>
-        </div>
-      </nav>
+            <div className="flex flex-col">
+              <span className="text-xs text-primary tracking-wider font-medium">San Antonio</span>
+              <span className="font-bold text-foreground group-hover:text-primary transition-colors leading-tight">TECH DAY</span>
+            </div>
+          </Link>
 
-      <AnimatePresence>
-        {isDropdownOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsDropdownOpen(false)}
-              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: -20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: -20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed left-1/2 -translate-x-1/2 top-24 z-50 w-[85vw] md:w-[70vw] max-w-4xl"
-              style={{
-                transformOrigin: "top center",
-              }}
-            >
-              <div className="rounded-lg shadow-2xl overflow-hidden bg-black">
-                {/* Close Button */}
-                <button
-                  onClick={() => setIsDropdownOpen(false)}
-                  className="absolute right-4 top-4 z-10 rounded-full bg-black/50 p-1 text-white transition-colors hover:bg-black/70"
-                  aria-label="Close"
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="relative px-4 py-2 text-sm font-medium transition-colors"
+              >
+                <span
+                  className={pathname === item.href ? "text-primary font-semibold" : "text-foreground/70 hover:text-foreground"}
                 >
-                  <X className="h-5 w-5" />
-                </button>
-
-                {/* Video Section - 2/5 of height */}
-                <div className="relative w-full aspect-[4/5] md:aspect-video">
-                  <video
-                    ref={videoRef}
-                    className="h-full w-full object-cover"
-                    autoPlay
-                    loop
-                    muted={isMuted}
-                    playsInline
-                    title="San Antonio Tech Bloc 10th Anniversary Celebration Video"
-                    aria-label="Anniversary celebration video showcasing 10 years of San Antonio Tech Bloc"
-                    poster="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/tb-poster.webp"
-                  >
-                    <source
-                      src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc-anniversary.mov"
-                      type="video/mp4"
-                    />
-                    <p>
-                      Your browser does not support the video tag. Please visit our social media channels to watch the
-                      10th anniversary celebration video.
-                    </p>
-                  </video>
-
-                  {/* Dark Overlay for Better Contrast */}
-                  <div className="absolute inset-0 bg-black/10" />
-
+                  {item.label}
+                </span>
+                {pathname === item.href && (
                   <motion.div
-                    className="absolute bottom-4 right-4 z-20"
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-                  >
-                    <AnimatedButton
-                      onClick={toggleAudio}
-                      className="h-8 w-8 md:h-10 md:w-10 rounded-full shadow-lg backdrop-blur-sm !p-0"
-                      ariaLabel={isMuted ? "Unmute video" : "Mute video"}
-                    >
-                      <motion.div
-                        key={isMuted ? "muted" : "unmuted"}
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        exit={{ scale: 0, rotate: 180 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        {isMuted ? (
-                          <VolumeX className="h-5 w-5 md:h-6 md:w-6" />
-                        ) : (
-                          <Volume2 className="h-5 w-5 md:h-6 md:w-6" />
-                        )}
-                      </motion.div>
-                    </AnimatedButton>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
-          </>
+                    layoutId="nav-indicator"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </Link>
+            ))}
+            <Link
+              href="/register"
+              className="ml-4 px-5 py-2 bg-primary text-primary-foreground font-semibold text-sm rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Get Tickets
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-foreground"
+            aria-label="Toggle menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {mobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-b border-border"
+          >
+            <div className="px-4 py-4 space-y-2">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`block px-4 py-3 rounded-md text-base font-medium transition-colors ${
+                    pathname === item.href
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "text-foreground/70 hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <Link
+                href="/register"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 bg-primary text-primary-foreground font-semibold text-center rounded-md mt-4"
+              >
+                Get Tickets
+              </Link>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </nav>
   )
 }
