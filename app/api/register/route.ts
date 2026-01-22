@@ -7,13 +7,19 @@ import crypto from "crypto"
 
 export async function POST(request: Request) {
   try {
-    // Check for bot activity
-    const verification = await checkBotId()
-    if (verification.isBot) {
-      return NextResponse.json(
-        { error: "Bot detected. Access denied." },
-        { status: 403 }
-      )
+    // Check for bot activity (only block if definitely a bot, allow on errors)
+    try {
+      const verification = await checkBotId()
+      if (verification.isBot) {
+        console.warn("Bot detected on registration attempt")
+        return NextResponse.json(
+          { error: "Bot detected. Access denied." },
+          { status: 403 }
+        )
+      }
+    } catch (botError) {
+      // Log but don't block if bot detection fails
+      console.warn("Bot detection failed, allowing request:", botError)
     }
 
     // Check if Firebase is configured
