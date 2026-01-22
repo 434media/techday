@@ -8,9 +8,12 @@ import crypto from "crypto"
 export async function POST(request: Request) {
   try {
     // Verify the request is not from a bot using BotID
-    const verification = await checkBotId()
-    if (verification.isBot) {
-      return NextResponse.json({ error: "Access denied" }, { status: 403 })
+    // Can be disabled via DISABLE_BOT_PROTECTION=true env var for debugging
+    if (process.env.DISABLE_BOT_PROTECTION !== "true") {
+      const verification = await checkBotId()
+      if (verification.isBot) {
+        return NextResponse.json({ error: "Access denied" }, { status: 403 })
+      }
     }
 
     // Check if Firebase is configured
