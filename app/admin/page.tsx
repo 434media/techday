@@ -117,7 +117,7 @@ export default function AdminOverviewPage() {
             <div className="flex justify-between">
               <dt className="text-sm text-neutral-500">Permissions</dt>
               <dd className="text-sm font-medium text-black">
-                {user?.role === "superadmin" ? "All" : user?.permissions?.length || 0}
+                {user?.permissions?.length || 0} (Full Access)
               </dd>
             </div>
           </dl>

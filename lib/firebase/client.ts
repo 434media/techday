@@ -60,6 +60,10 @@ function getGoogleProvider(): GoogleAuthProvider {
   // Request additional scopes if needed
   _googleProvider.addScope("email")
   _googleProvider.addScope("profile")
+  // Restrict to 434media.com domain only
+  _googleProvider.setCustomParameters({
+    hd: "434media.com" // Hosted domain - only allows @434media.com accounts
+  })
   return _googleProvider
 }
 

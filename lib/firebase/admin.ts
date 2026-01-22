@@ -71,33 +71,41 @@ function getAdminApp(): App {
 }
 
 // Getter for Admin Firestore - using "techday" database
-const adminDb = new Proxy({} as Firestore, {
-  get(_, prop) {
-    if (!_adminDb) {
-      _adminDb = getFirestore(getAdminApp(), "techday")
-    }
-    const value = (_adminDb as Record<string | symbol, unknown>)[prop]
-    // Bind methods to preserve `this` context
-    if (typeof value === "function") {
-      return value.bind(_adminDb)
-    }
-    return value
-  },
-})
+function getAdminDb(): Firestore {
+  if (!_adminDb) {
+    _adminDb = getFirestore(getAdminApp(), "techday")
+  }
+  return _adminDb
+}
 
 // Getter for Admin Auth
-const adminAuth = new Proxy({} as Auth, {
-  get(_, prop) {
-    if (!_adminAuth) {
-      _adminAuth = getAuth(getAdminApp())
-    }
-    const value = (_adminAuth as Record<string | symbol, unknown>)[prop]
-    // Bind methods to preserve `this` context
-    if (typeof value === "function") {
-      return value.bind(_adminAuth)
-    }
-    return value
-  },
-})
+function getAdminAuth(): Auth {
+  if (!_adminAuth) {
+    _adminAuth = getAuth(getAdminApp())
+  }
+  return _adminAuth
+}
+
+// Export as getters that return the actual instances
+// This avoids Proxy issues with Firebase's async internals
+const adminDb = {
+  collection: (...args: Parameters<Firestore["collection"]>) => getAdminDb().collection(...args),
+  doc: (...args: Parameters<Firestore["doc"]>) => getAdminDb().doc(...args),
+  batch: () => getAdminDb().batch(),
+  runTransaction: <T>(fn: Parameters<Firestore["runTransaction"]>[0]) => getAdminDb().runTransaction<T>(fn),
+}
+
+const adminAuth = {
+  verifyIdToken: (...args: Parameters<Auth["verifyIdToken"]>) => getAdminAuth().verifyIdToken(...args),
+  verifySessionCookie: (...args: Parameters<Auth["verifySessionCookie"]>) => getAdminAuth().verifySessionCookie(...args),
+  createSessionCookie: (...args: Parameters<Auth["createSessionCookie"]>) => getAdminAuth().createSessionCookie(...args),
+  revokeRefreshTokens: (...args: Parameters<Auth["revokeRefreshTokens"]>) => getAdminAuth().revokeRefreshTokens(...args),
+  getUser: (...args: Parameters<Auth["getUser"]>) => getAdminAuth().getUser(...args),
+  getUserByEmail: (...args: Parameters<Auth["getUserByEmail"]>) => getAdminAuth().getUserByEmail(...args),
+  createUser: (...args: Parameters<Auth["createUser"]>) => getAdminAuth().createUser(...args),
+  updateUser: (...args: Parameters<Auth["updateUser"]>) => getAdminAuth().updateUser(...args),
+  deleteUser: (...args: Parameters<Auth["deleteUser"]>) => getAdminAuth().deleteUser(...args),
+  setCustomUserClaims: (...args: Parameters<Auth["setCustomUserClaims"]>) => getAdminAuth().setCustomUserClaims(...args),
+}
 
 export { adminDb, adminAuth, isFirebaseConfigured }

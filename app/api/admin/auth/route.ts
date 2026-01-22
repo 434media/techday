@@ -1,46 +1,32 @@
 import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
-import { adminAuth, adminDb } from "@/lib/firebase/admin"
-import { COLLECTIONS, ROLE_PERMISSIONS, type AdminDocument, type AdminPermission } from "@/lib/firebase/collections"
+import { adminAuth } from "@/lib/firebase/admin"
+import type { AdminPermission } from "@/lib/firebase/collections"
 
 export const dynamic = "force-dynamic"
 
-// Firebase Token-based authentication
-// Verifies Firebase ID tokens and checks against Firestore admins collection
+// Firebase Authentication-based admin access
+// Uses Firebase Auth as the source of truth - no Firestore admins collection
+// Google Sign-in: Only @434.media workspace accounts (enforced by client + server)
+// Email/Password: Only users created in Firebase Authentication
 
 const SESSION_COOKIE_NAME = "admin_session"
 const SESSION_DURATION = 60 * 60 * 24 * 7 // 7 days in seconds
 
-// Get admin from Firestore by email
-async function getAdminByEmail(email: string): Promise<AdminDocument | null> {
-  try {
-    const normalizedEmail = email.toLowerCase().trim()
-    const docRef = adminDb.collection(COLLECTIONS.ADMINS).doc(normalizedEmail)
-    const doc = await docRef.get()
-    
-    if (!doc.exists) return null
-    
-    return doc.data() as AdminDocument
-  } catch (error) {
-    console.error("Error fetching admin:", error)
-    return null
-  }
-}
+// Allowed email domain for Google Sign-in
+const ALLOWED_DOMAIN = "434media.com"
 
-// Update admin's last login and UID
-async function updateAdminLogin(email: string, uid: string): Promise<void> {
-  try {
-    const normalizedEmail = email.toLowerCase().trim()
-    const docRef = adminDb.collection(COLLECTIONS.ADMINS).doc(normalizedEmail)
-    await docRef.update({
-      uid,
-      lastLoginAt: new Date(),
-      updatedAt: new Date(),
-    })
-  } catch (error) {
-    console.error("Error updating admin login:", error)
-  }
-}
+// Default permissions for authenticated admins
+// All Firebase Auth users get full admin access
+const DEFAULT_PERMISSIONS: AdminPermission[] = [
+  "registrations",
+  "newsletter", 
+  "pitches",
+  "speakers",
+  "schedule",
+  "sponsors",
+  "users"
+]
 
 // POST - Verify Firebase ID token and create session
 export async function POST(request: Request) {
@@ -76,17 +62,22 @@ export async function POST(request: Request) {
       )
     }
 
-    // Check if this email is an approved admin
-    const admin = await getAdminByEmail(email)
-    if (!admin) {
-      return NextResponse.json(
-        { error: "Not authorized as admin" },
-        { status: 403 }
-      )
+    // Check sign-in provider
+    const signInProvider = decodedToken.firebase?.sign_in_provider
+
+    // For Google sign-in, verify the domain is @434.media
+    if (signInProvider === "google.com") {
+      const emailDomain = email.split("@")[1]
+      if (emailDomain !== ALLOWED_DOMAIN) {
+        return NextResponse.json(
+          { error: `Only @${ALLOWED_DOMAIN} accounts are allowed for Google sign-in` },
+          { status: 403 }
+        )
+      }
     }
 
-    // Update last login and UID
-    await updateAdminLogin(email, decodedToken.uid)
+    // For email/password sign-in, the user must exist in Firebase Auth
+    // (already verified by verifyIdToken - if they authenticated, they exist)
 
     // Create a session cookie for subsequent requests
     const expiresIn = SESSION_DURATION * 1000 // Convert to milliseconds
@@ -102,14 +93,17 @@ export async function POST(request: Request) {
       path: "/",
     })
 
-    // Return public admin info
+    // Get display name from token
+    const displayName = decodedToken.name || email.split("@")[0]
+
+    // Return admin info - all authenticated Firebase users are admins
     return NextResponse.json({
       success: true,
       user: {
-        email: admin.email,
-        name: admin.name,
-        role: admin.role,
-        permissions: admin.permissions || ROLE_PERMISSIONS[admin.role],
+        email,
+        name: displayName,
+        role: "admin" as const,
+        permissions: DEFAULT_PERMISSIONS,
       },
     })
   } catch (error) {
@@ -144,19 +138,24 @@ export async function GET() {
       return NextResponse.json({ authenticated: false })
     }
 
-    // Get admin from Firestore
-    const admin = await getAdminByEmail(email)
-    if (!admin) {
-      return NextResponse.json({ authenticated: false })
+    // For Google sign-in sessions, re-verify domain
+    const signInProvider = decodedClaims.firebase?.sign_in_provider
+    if (signInProvider === "google.com") {
+      const emailDomain = email.split("@")[1]
+      if (emailDomain !== ALLOWED_DOMAIN) {
+        return NextResponse.json({ authenticated: false })
+      }
     }
+
+    const displayName = decodedClaims.name || email.split("@")[0]
 
     return NextResponse.json({
       authenticated: true,
       user: {
-        email: admin.email,
-        name: admin.name,
-        role: admin.role,
-        permissions: admin.permissions || ROLE_PERMISSIONS[admin.role],
+        email,
+        name: displayName,
+        role: "admin" as const,
+        permissions: DEFAULT_PERMISSIONS,
       },
     })
   } catch (error) {

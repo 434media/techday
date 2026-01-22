@@ -8,13 +8,13 @@ import {
   onAuthChange,
   type User as FirebaseUser
 } from "@/lib/firebase/client"
-import type { AdminDocument, AdminPermission } from "@/lib/firebase/collections"
+import type { AdminPermission } from "@/lib/firebase/collections"
 
 // Public admin info sent to client
 export interface AdminUser {
   email: string
   name: string
-  role: AdminDocument["role"]
+  role: "admin"
   permissions: AdminPermission[]
   photoURL?: string
 }
@@ -158,7 +158,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   const hasPermission = (permission: AdminPermission): boolean => {
     if (!user) return false
-    if (user.role === "superadmin") return true
+    // All authenticated Firebase users have full admin access
     return user.permissions.includes(permission)
   }
 
