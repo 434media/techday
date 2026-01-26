@@ -84,21 +84,168 @@ function getEmailTemplate(content: string, footerText: string = "") {
 `
 }
 
+// Helper to determine event type from events array
+function getEventType(events: string[]): "techfuel" | "techday" | "both" {
+  const hasTechFuel = events.includes("techfuel")
+  const hasTechDay = events.includes("techday")
+  const has2Day = events.includes("2day")
+  
+  if (has2Day || (hasTechFuel && hasTechDay)) {
+    return "both"
+  } else if (hasTechFuel) {
+    return "techfuel"
+  } else {
+    return "techday"
+  }
+}
+
+// Get email header based on event type
+function getEmailHeader(eventType: "techfuel" | "techday" | "both"): string {
+  switch (eventType) {
+    case "techfuel":
+      return "TECH FUEL <span style=\"color: #c73030;\">2026</span>"
+    case "techday":
+      return "TECH DAY <span style=\"color: #c73030;\">2026</span>"
+    case "both":
+      return "TECH FUEL • TECH DAY <span style=\"color: #c73030;\">2026</span>"
+  }
+}
+
+// Get email dates based on event type
+function getEmailDates(eventType: "techfuel" | "techday" | "both"): string {
+  switch (eventType) {
+    case "techfuel":
+      return "April 9, 2026 • Stable Hall"
+    case "techday":
+      return "April 10, 2026 • Tech Port"
+    case "both":
+      return "April 9-10, 2026 • Stable Hall • Tech Port"
+  }
+}
+
+// Get dynamic email template with event-specific branding
+function getEventEmailTemplate(content: string, eventType: "techfuel" | "techday" | "both", footerText: string = "") {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${eventType === "techfuel" ? "Tech Fuel" : eventType === "techday" ? "Tech Day" : "Tech Fuel & Tech Day"} 2026</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #fafafa; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #fafafa;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          
+          <!-- Header with Down Arrow -->
+          <tr>
+            <td style="background-color: #0a0a0a; padding: 40px 40px 30px; text-align: center; position: relative;">
+              <!-- Down Arrow Decoration -->
+              <div style="position: absolute; top: 20px; right: 20px; opacity: 0.15;">
+                ${DOWN_ARROW_SVG}
+              </div>
+              <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
+                ${getEmailHeader(eventType)}
+              </h1>
+              <p style="margin: 10px 0 0; color: rgba(255,255,255,0.7); font-size: 14px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+                ${getEmailDates(eventType)}
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px;">
+              ${content}
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #0a0a0a; padding: 30px 40px; text-align: center;">
+              ${footerText ? `<p style="margin: 0 0 15px; color: rgba(255,255,255,0.7); font-size: 13px;">${footerText}</p>` : ""}
+              <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 12px;">
+                © 2026 Tech Bloc & 434 MEDIA • San Antonio, TX
+              </p>
+              <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
+                <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">techday.devsa.community</a>
+              </p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`
+}
+
+// Get event-specific registration message
+function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firstName: string): { greeting: string; description: string; dateInfo: string; locationInfo: string; scheduleLink: string } {
+  switch (eventType) {
+    case "techfuel":
+      return {
+        greeting: `You're In, ${firstName}! 🎉`,
+        description: "Your registration for <strong>Tech Fuel 2026</strong> is confirmed. Get ready to witness the most exciting startup pitch competition in San Antonio!",
+        dateInfo: "<strong>April 9, 2026</strong>",
+        locationInfo: "<strong>Stable Hall</strong>, San Antonio",
+        scheduleLink: "https://techday.devsa.community/techfuel"
+      }
+    case "techday":
+      return {
+        greeting: `You're In, ${firstName}! 🎉`,
+        description: "Your registration for <strong>Tech Day 2026</strong> is confirmed. We can't wait to see you at Tech Port on April 10th!",
+        dateInfo: "<strong>April 10, 2026</strong>",
+        locationInfo: "<strong>Tech Port</strong>, San Antonio",
+        scheduleLink: "https://techday.devsa.community/techday"
+      }
+    case "both":
+      return {
+        greeting: `You're In, ${firstName}! 🎉`,
+        description: "Your registration for <strong>Tech Fuel & Tech Day 2026</strong> is confirmed. Join us for two incredible days of innovation, pitches, and networking!",
+        dateInfo: "<strong>April 9-10, 2026</strong>",
+        locationInfo: "<strong>Stable Hall</strong> (April 9) & <strong>Tech Port</strong> (April 10), San Antonio",
+        scheduleLink: "https://techday.devsa.community/techday"
+      }
+  }
+}
+
+// Get event display name for ticket
+function getEventDisplayName(eventType: "techfuel" | "techday" | "both"): string {
+  switch (eventType) {
+    case "techfuel":
+      return "TECH FUEL 2026"
+    case "techday":
+      return "TECH DAY 2026"
+    case "both":
+      return "TECH FUEL & TECH DAY 2026"
+  }
+}
+
 // Registration confirmation email
 export async function sendRegistrationConfirmation(
   email: string,
   firstName: string,
   lastName: string,
   ticketId: string,
-  category: string
+  category: string,
+  events: string[] = ["techday"]
 ) {
+  const eventType = getEventType(events)
+  const message = getRegistrationMessage(eventType, firstName)
+  const eventDisplayName = getEventDisplayName(eventType)
+  
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      You're In, ${firstName}! 🎉
+      ${message.greeting}
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      Your registration for <strong>Tech Day 2026</strong> is confirmed. We can't wait to see you at Tech Port on April 10th!
+      ${message.description}
     </p>
     
     <!-- Ticket Card -->
@@ -111,6 +258,9 @@ export async function sendRegistrationConfirmation(
           </div>
           
           <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+            ${eventDisplayName}
+          </p>
+          <p style="margin: 0 0 5px; color: rgba(255,255,255,0.5); font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
             Your Ticket ID
           </p>
           <p style="margin: 0 0 20px; color: #ffffff; font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px;">
@@ -138,10 +288,10 @@ export async function sendRegistrationConfirmation(
     </h3>
     
     <ul style="margin: 0; padding: 0 0 0 20px; color: #525252; font-size: 15px; line-height: 1.8;">
-      <li>Save the date: <strong>April 10, 2026</strong></li>
-      <li>Location: <strong>Tech Port</strong>, San Antonio</li>
+      <li>Save the date: ${message.dateInfo}</li>
+      <li>Location: ${message.locationInfo}</li>
       <li>Bring this email or your ticket ID for check-in</li>
-      <li>Check the schedule at <a href="https://techday.devsa.community/techday" style="color: #c73030; text-decoration: none;">techday.devsa.community</a></li>
+      <li>Check the schedule at <a href="${message.scheduleLink}" style="color: #c73030; text-decoration: none;">techday.devsa.community</a></li>
     </ul>
     
     <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
@@ -149,13 +299,17 @@ export async function sendRegistrationConfirmation(
     </p>
   `
 
+  // Dynamic subject line based on event type
+  const subjectEventName = eventType === "techfuel" ? "Tech Fuel" : eventType === "techday" ? "Tech Day" : "Tech Fuel & Tech Day"
+  const subject = `You're registered for ${subjectEventName} 2026! 🎟️ ${ticketId}`
+
   try {
     const result = await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
       replyTo: REPLY_TO,
-      subject: `You're registered for Tech Day 2026! 🎟️ ${ticketId}`,
-      html: getEmailTemplate(content, "Keep this email - you'll need your ticket ID for check-in"),
+      subject,
+      html: getEventEmailTemplate(content, eventType, "Keep this email - you'll need your ticket ID for check-in"),
     })
 
     console.log(`Registration confirmation sent to ${email}:`, result)

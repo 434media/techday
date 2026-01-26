@@ -52,7 +52,16 @@ export default function TechDayPage() {
               April 10, 2026 • Tech Port
             </Editable>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-[0.95] tracking-tight">
-              TECH DAY <span className="text-primary">2026</span>
+              <Editable 
+                id="techday.hero.title" 
+                as="span" 
+                className="text-white"
+                page="techday"
+                section="hero"
+              >
+                TECH DAY
+              </Editable>{" "}
+              <span className="text-primary">2026</span>
             </h1>
             <Editable 
               id="techday.hero.description" 
@@ -141,15 +150,39 @@ export default function TechDayPage() {
               <ul className="space-y-4">
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
                   <span className="w-2 h-2 bg-emerald-500 rounded-full shrink-0" />
-                  Cyber & Tech
+                  <Editable 
+                    id="techday.track.emerging.bullet1" 
+                    as="span" 
+                    className="text-white/80 text-sm font-medium"
+                    page="techday"
+                    section="tracks"
+                  >
+                    Cyber &amp; Tech
+                  </Editable>
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
                   <span className="w-2 h-2 bg-emerald-500 rounded-full shrink-0" />
-                  Bio & Life Science
+                  <Editable 
+                    id="techday.track.emerging.bullet2" 
+                    as="span" 
+                    className="text-white/80 text-sm font-medium"
+                    page="techday"
+                    section="tracks"
+                  >
+                    Bio &amp; Life Science
+                  </Editable>
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
                   <span className="w-2 h-2 bg-emerald-500 rounded-full shrink-0" />
-                  Aerospace & Advanced Manufacturing
+                  <Editable 
+                    id="techday.track.emerging.bullet3" 
+                    as="span" 
+                    className="text-white/80 text-sm font-medium"
+                    page="techday"
+                    section="tracks"
+                  >
+                    Aerospace &amp; Advanced Manufacturing
+                  </Editable>
                 </li>
               </ul>
             </motion.div>
@@ -184,15 +217,39 @@ export default function TechDayPage() {
               <ul className="space-y-4">
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
                   <span className="w-2 h-2 bg-violet-500 rounded-full shrink-0" />
-                  Leveraging Hyperscaler Funding
+                  <Editable 
+                    id="techday.track.founders.bullet1" 
+                    as="span" 
+                    className="text-white/80 text-sm font-medium"
+                    page="techday"
+                    section="tracks"
+                  >
+                    Leveraging Hyperscaler Funding
+                  </Editable>
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
                   <span className="w-2 h-2 bg-violet-500 rounded-full shrink-0" />
-                  Building in Public Panel
+                  <Editable 
+                    id="techday.track.founders.bullet2" 
+                    as="span" 
+                    className="text-white/80 text-sm font-medium"
+                    page="techday"
+                    section="tracks"
+                  >
+                    Building in Public Panel
+                  </Editable>
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
                   <span className="w-2 h-2 bg-violet-500 rounded-full shrink-0" />
-                  Investor Office Hours
+                  <Editable 
+                    id="techday.track.founders.bullet3" 
+                    as="span" 
+                    className="text-white/80 text-sm font-medium"
+                    page="techday"
+                    section="tracks"
+                  >
+                    Investor Office Hours
+                  </Editable>
                 </li>
               </ul>
             </motion.div>
@@ -226,15 +283,39 @@ export default function TechDayPage() {
               <ul className="space-y-4">
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
                   <span className="w-2 h-2 bg-blue-500 rounded-full shrink-0" />
-                  Building with LLMs & Agents
+                  <Editable 
+                    id="techday.track.ai.bullet1" 
+                    as="span" 
+                    className="text-white/80 text-sm font-medium"
+                    page="techday"
+                    section="tracks"
+                  >
+                    Building with LLMs &amp; Agents
+                  </Editable>
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
                   <span className="w-2 h-2 bg-blue-500 rounded-full shrink-0" />
-                  AI Ethics & Governance
+                  <Editable 
+                    id="techday.track.ai.bullet2" 
+                    as="span" 
+                    className="text-white/80 text-sm font-medium"
+                    page="techday"
+                    section="tracks"
+                  >
+                    AI Ethics &amp; Governance
+                  </Editable>
                 </li>
                 <li className="flex items-center gap-3 text-white/80 text-sm font-medium">
                   <span className="w-2 h-2 bg-blue-500 rounded-full shrink-0" />
-                  Enterprise AI Adoption
+                  <Editable 
+                    id="techday.track.ai.bullet3" 
+                    as="span" 
+                    className="text-white/80 text-sm font-medium"
+                    page="techday"
+                    section="tracks"
+                  >
+                    Enterprise AI Adoption
+                  </Editable>
                 </li>
               </ul>
             </motion.div>

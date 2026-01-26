@@ -2,6 +2,7 @@
 
 import { RegistrationForm } from "@/components/forms/registration-form"
 import { InteractiveLanyard } from "@/components/interactive-lanyard"
+import { Editable } from "@/components/editable"
 import { motion } from "motion/react"
 import Image from "next/image"
 
@@ -23,12 +24,24 @@ export default function RegisterPage() {
               transition={{ duration: 0.6 }}
               className="text-center lg:text-left order-last lg:order-first"
             >
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-[1.1] tracking-tight">
-                Secure Your <span className="text-primary">Spot</span> at Tech Day &amp; Tech Fuel
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                Join us in San Antonio on April 9–10, 2026 for two days of innovation, networking, and inspiration. Register now to attend <span className="text-primary">Tech Day</span> and witness the thrilling <span className="text-primary">Tech Fuel</span> startup pitch competition finals.
-              </p>
+              <Editable 
+                id="register.hero.title" 
+                as="h1" 
+                className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-[1.1] tracking-tight"
+                page="register"
+                section="hero"
+              >
+                Secure Your Spot at Tech Day &amp; Tech Fuel
+              </Editable>
+              <Editable 
+                id="register.hero.description" 
+                as="p" 
+                className="text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal"
+                page="register"
+                section="hero"
+              >
+                Join us in San Antonio on April 9–10, 2026 for two days of innovation, networking, and inspiration. Register now to attend Tech Day and witness the thrilling Tech Fuel startup pitch competition finals.
+              </Editable>
               <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start text-sm">
                 <div className="inline-flex items-center gap-2 text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
                   <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,47 +116,85 @@ export default function RegisterPage() {
             viewport={{ once: true }}
             className="text-center mb-10"
           >
-            <p className="font-mono text-xs text-primary tracking-widest font-semibold uppercase mb-2">Got Questions?</p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Frequently Asked Questions</h2>
+            <Editable 
+              id="register.faq.label" 
+              as="p" 
+              className="font-mono text-xs text-primary tracking-widest font-semibold uppercase mb-2"
+              page="register"
+              section="faq"
+            >
+              Got Questions?
+            </Editable>
+            <Editable 
+              id="register.faq.title" 
+              as="h2" 
+              className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight"
+              page="register"
+              section="faq"
+            >
+              Frequently Asked Questions
+            </Editable>
           </motion.div>
 
           <div className="space-y-4">
             {[
               {
+                id: "faq-1",
                 q: "Is Tech Day really free?",
                 a: "Yes! Thanks to our generous sponsors, Tech Day 2026 is completely free to attend. Registration is required to manage capacity.",
               },
               {
+                id: "faq-2",
                 q: "When and where are the events?",
                 a: "Tech Day is on April 9, 2026 at Tech Port in San Antonio. Tech Fuel, our startup pitch competition finals, is on April 10, 2026 at Stable Hall. Full address and parking details will be sent in your confirmation email.",
               },
               {
+                id: "faq-3",
                 q: "Can I attend both Tech Day and Tech Fuel?",
                 a: "Absolutely! Your registration covers both days. Tech Day features our conference tracks on April 9th, and Tech Fuel showcases the startup pitch competition finals on April 10th.",
               },
               {
+                id: "faq-4",
                 q: "Can I attend both tracks at Tech Day?",
                 a: "Yes! The Emerging Industries and Founders & Investors tracks run in parallel, and you're free to move between sessions. The schedule is designed to minimize conflicts for popular sessions.",
               },
               {
+                id: "faq-5",
                 q: "What should I bring?",
                 a: "Just bring yourself and your business cards! Your digital e-ticket will be sent to your email—you can show it on your phone at check-in.",
               },
               {
+                id: "faq-6",
                 q: "How can my company sponsor Tech Day?",
                 a: "We have sponsorship packages available at multiple levels. Contact sponsors@techday.sa or visit our sponsorship page for more information.",
               },
             ].map((faq, index) => (
               <motion.div
-                key={index}
+                key={faq.id}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
                 className="p-5 bg-muted/50 border border-border rounded-xl hover:border-primary/30 transition-colors"
               >
-                <h3 className="font-semibold text-foreground mb-2 text-base">{faq.q}</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">{faq.a}</p>
+                <Editable 
+                  id={`register.faq.${faq.id}.question`} 
+                  as="h3" 
+                  className="font-semibold text-foreground mb-2 text-base"
+                  page="register"
+                  section="faq"
+                >
+                  {faq.q}
+                </Editable>
+                <Editable 
+                  id={`register.faq.${faq.id}.answer`} 
+                  as="p" 
+                  className="text-muted-foreground leading-relaxed text-sm"
+                  page="register"
+                  section="faq"
+                >
+                  {faq.a}
+                </Editable>
               </motion.div>
             ))}
           </div>

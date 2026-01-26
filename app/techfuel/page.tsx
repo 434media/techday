@@ -286,7 +286,16 @@ export default function TechFuelPage() {
               April 9, 2026 • Stable Hall
             </Editable>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground mb-4 leading-[0.95] tracking-tight">
-              TECH FUEL <span className="text-primary">2026</span>
+              <Editable 
+                id="techfuel.hero.title" 
+                as="span" 
+                className="text-foreground"
+                page="techfuel"
+                section="hero"
+              >
+                TECH FUEL
+              </Editable>{" "}
+              <span className="text-primary">2026</span>
             </h1>
             <Editable 
               id="techfuel.hero.prize" 
@@ -362,7 +371,15 @@ export default function TechFuelPage() {
                     <span className="w-2.5 h-2.5 bg-primary rounded-full" />
                   </span>
                   <span className="text-foreground leading-relaxed text-base">
-                    <strong className="font-semibold">Non-Dilutive Capital:</strong> Keep your equity while receiving cash prizes
+                    <Editable 
+                      id="techfuel.about.bullet1" 
+                      as="span" 
+                      className="text-foreground leading-relaxed text-base"
+                      page="techfuel"
+                      section="about"
+                    >
+                      Non-Dilutive Capital: Keep your equity while receiving cash prizes
+                    </Editable>
                   </span>
                 </li>
                 <li className="flex items-start gap-4">
@@ -370,7 +387,15 @@ export default function TechFuelPage() {
                     <span className="w-2.5 h-2.5 bg-primary rounded-full" />
                   </span>
                   <span className="text-foreground leading-relaxed text-base">
-                    <strong className="font-semibold">Expert Judges:</strong> VCs, successful founders, and industry leaders
+                    <Editable 
+                      id="techfuel.about.bullet2" 
+                      as="span" 
+                      className="text-foreground leading-relaxed text-base"
+                      page="techfuel"
+                      section="about"
+                    >
+                      Expert Judges: VCs, successful founders, and industry leaders
+                    </Editable>
                   </span>
                 </li>
                 <li className="flex items-start gap-4">
@@ -378,7 +403,15 @@ export default function TechFuelPage() {
                     <span className="w-2.5 h-2.5 bg-primary rounded-full" />
                   </span>
                   <span className="text-foreground leading-relaxed text-base">
-                    <strong className="font-semibold">Bexar County Backed:</strong> Sponsored by Bexar County to drive local innovation
+                    <Editable 
+                      id="techfuel.about.bullet3" 
+                      as="span" 
+                      className="text-foreground leading-relaxed text-base"
+                      page="techfuel"
+                      section="about"
+                    >
+                      Bexar County Backed: Sponsored by Bexar County to drive local innovation
+                    </Editable>
                   </span>
                 </li>
               </ul>
@@ -391,18 +424,42 @@ export default function TechFuelPage() {
               viewport={{ once: true }}
               className="bg-white p-8 md:p-10 rounded-xl border border-border"
             >
-              <h3 className="text-xl md:text-2xl font-bold text-foreground mb-8 tracking-tight">Timeline</h3>
+              <Editable 
+                id="techfuel.timeline.title" 
+                as="h3" 
+                className="text-xl md:text-2xl font-bold text-foreground mb-8 tracking-tight"
+                page="techfuel"
+                section="about"
+              >
+                Timeline
+              </Editable>
               <div className="space-y-8">
                 {timeline.map((item, index) => (
                   <div key={item.date} className="flex items-center gap-5">
                     <div className="w-20 shrink-0">
-                      <span className="font-mono text-sm text-primary font-semibold">{item.date}</span>
+                      <Editable 
+                        id={`techfuel.timeline.item.${index}.date`} 
+                        as="span" 
+                        className="font-mono text-sm text-primary font-semibold"
+                        page="techfuel"
+                        section="about"
+                      >
+                        {item.date}
+                      </Editable>
                     </div>
                     <div className="relative flex items-center">
                       <div className={`w-4 h-4 rounded-full border-2 ${index === timeline.length - 1 ? "bg-primary border-primary" : "bg-white border-primary/40"}`} />
                       {index < timeline.length - 1 && <div className="absolute top-4 left-1.75 w-0.5 h-12 bg-primary/20" />}
                     </div>
-                    <span className="text-foreground font-medium text-base">{item.event}</span>
+                    <Editable 
+                      id={`techfuel.timeline.item.${index}.event`} 
+                      as="span" 
+                      className="text-foreground font-medium text-base"
+                      page="techfuel"
+                      section="about"
+                    >
+                      {item.event}
+                    </Editable>
                   </div>
                 ))}
               </div>
@@ -745,18 +802,21 @@ export default function TechFuelPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {[
               {
+                id: "company-1",
                 name: "NeuralPath AI",
                 raised: "$2.5M",
                 description: "AI-powered healthcare diagnostics",
                 year: "2025",
               },
               {
+                id: "company-2",
                 name: "SecureStack",
                 raised: "$1.8M",
                 description: "Cybersecurity for SMBs",
                 year: "2025",
               },
               {
+                id: "company-3",
                 name: "GreenGrid",
                 raised: "$3.2M",
                 description: "Smart energy management",
@@ -764,7 +824,7 @@ export default function TechFuelPage() {
               },
             ].map((company, index) => (
               <motion.div
-                key={company.name}
+                key={company.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -773,14 +833,46 @@ export default function TechFuelPage() {
               >
                 <div className="flex items-start justify-between mb-5">
                   <div>
-                    <h3 className="text-lg md:text-xl font-bold text-foreground tracking-tight">{company.name}</h3>
-                    <p className="text-muted-foreground text-sm md:text-base">{company.description}</p>
+                    <Editable
+                      id={`techfuel.featured.${company.id}.name`}
+                      as="h3"
+                      className="text-lg md:text-xl font-bold text-foreground tracking-tight"
+                      page="techfuel"
+                      section="featured"
+                    >
+                      {company.name}
+                    </Editable>
+                    <Editable
+                      id={`techfuel.featured.${company.id}.description`}
+                      as="p"
+                      className="text-muted-foreground text-sm md:text-base"
+                      page="techfuel"
+                      section="featured"
+                    >
+                      {company.description}
+                    </Editable>
                   </div>
-                  <span className="text-xs font-mono text-muted-foreground font-medium bg-white px-2 py-1 rounded">{company.year}</span>
+                  <Editable
+                    id={`techfuel.featured.${company.id}.year`}
+                    as="span"
+                    className="text-xs font-mono text-muted-foreground font-medium bg-white px-2 py-1 rounded"
+                    page="techfuel"
+                    section="featured"
+                  >
+                    {company.year}
+                  </Editable>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-muted-foreground">Raised:</span>
-                  <span className="font-mono text-primary font-bold text-lg">{company.raised}</span>
+                  <Editable
+                    id={`techfuel.featured.${company.id}.raised`}
+                    as="span"
+                    className="font-mono text-primary font-bold text-lg"
+                    page="techfuel"
+                    section="featured"
+                  >
+                    {company.raised}
+                  </Editable>
                 </div>
               </motion.div>
             ))}

@@ -86,13 +86,14 @@ export async function POST(request: Request) {
 
     console.log(`New registration created: ${docRef.id} - ${ticketId}`)
 
-    // Send confirmation email
+    // Send confirmation email with events for dynamic content
     const emailResult = await sendRegistrationConfirmation(
       registration.email,
       registration.firstName,
       registration.lastName,
       ticketId,
-      registration.category
+      registration.category,
+      registration.events
     )
 
     if (!emailResult.success) {
