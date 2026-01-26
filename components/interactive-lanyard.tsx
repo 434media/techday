@@ -38,9 +38,16 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
     return normalized > 90 && normalized < 270
   })
   
+  // Track if we've moved enough to consider it a drag vs a click
+  const hasDragged = useRef(false)
+  const dragStartPos = useRef({ x: 0, y: 0 })
+  const DRAG_THRESHOLD = 5 // pixels
+
   // Handle mouse/touch start
   const handleDragStart = useCallback((clientX: number, clientY: number) => {
     setIsDragging(true)
+    hasDragged.current = false
+    dragStartPos.current = { x: clientX, y: clientY }
     lastPosition.current = { x: clientX, y: clientY }
     velocityX.current = 0
     velocityY.current = 0
@@ -55,6 +62,13 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
   // Handle mouse/touch move
   const handleDragMove = useCallback((clientX: number, clientY: number) => {
     if (!isDragging) return
+    
+    // Check if we've moved enough to consider this a drag
+    const distX = Math.abs(clientX - dragStartPos.current.x)
+    const distY = Math.abs(clientY - dragStartPos.current.y)
+    if (distX > DRAG_THRESHOLD || distY > DRAG_THRESHOLD) {
+      hasDragged.current = true
+    }
     
     const deltaX = clientX - lastPosition.current.x
     const deltaY = clientY - lastPosition.current.y
@@ -101,8 +115,13 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
     applyMomentum()
   }, [rotateX, rotateY, rotateZ])
   
-  // Mouse events
+  // Mouse events - only handle drag on the card body, not on interactive elements
   const handleMouseDown = (e: React.MouseEvent) => {
+    // Don't interfere with clicks on links/buttons
+    const target = e.target as HTMLElement
+    if (target.closest('a, button')) {
+      return
+    }
     e.preventDefault()
     handleDragStart(e.clientX, e.clientY)
   }
@@ -121,8 +140,13 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
     }
   }
   
-  // Touch events
+  // Touch events - only handle drag on the card body, not on interactive elements
   const handleTouchStart = (e: React.TouchEvent) => {
+    // Don't interfere with taps on links/buttons
+    const target = e.target as HTMLElement
+    if (target.closest('a, button')) {
+      return
+    }
     const touch = e.touches[0]
     handleDragStart(touch.clientX, touch.clientY)
   }
@@ -315,12 +339,10 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
               </p>
 
               {/* CTA Buttons */}
-              <div className="w-full space-y-2.5 pointer-events-auto">
+              <div className="w-full space-y-2.5 pointer-events-auto relative z-50">
                 <Link 
-                
                   href="/techfuel"
-                  className="flex items-center justify-center gap-2 w-full h-12 bg-white text-foreground font-bold text-sm rounded-2xl hover:bg-white/90 transition-colors shadow-lg"
-                  onClick={(e) => e.stopPropagation()}
+                  className="relative z-50 flex items-center justify-center gap-2 w-full h-12 bg-white text-foreground font-bold text-sm rounded-2xl hover:bg-white/90 active:bg-white/80 transition-colors shadow-lg cursor-pointer"
                 >
                   <Mic2Icon className="w-4 h-4" />
                   Submit Your Pitch
@@ -334,8 +356,7 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
 
                 <Link 
                   href="/anniversary"
-                  className="flex items-center justify-center gap-2 w-full h-12 bg-transparent border border-white/30 text-white font-semibold text-sm rounded-2xl hover:bg-white/10 transition-colors"
-                  onClick={(e) => e.stopPropagation()}
+                  className="relative z-50 flex items-center justify-center gap-2 w-full h-12 bg-transparent border border-white/30 text-white font-semibold text-sm rounded-2xl hover:bg-white/10 active:bg-white/20 transition-colors cursor-pointer"
                 >
                  <RocketIcon className="w-4 h-4" />
                  10 Years of Tech Bloc
