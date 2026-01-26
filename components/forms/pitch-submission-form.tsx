@@ -275,7 +275,7 @@ export function PitchSubmissionForm() {
         <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Your Pitch</h3>
         <div>
           <label htmlFor="pitch" className="block text-sm font-medium text-foreground mb-2">
-            Elevator Pitch (50 words max) *
+            Elevator Pitch (50 words min) *
           </label>
           <textarea
             id="pitch"

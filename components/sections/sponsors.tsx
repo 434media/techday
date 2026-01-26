@@ -364,7 +364,7 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
               Join San Antonio's top companies in supporting the local tech ecosystem. Multiple sponsorship tiers available with exclusive benefits.
             </Editable>
             <Link
-              href="mailto:sponsors@techday.sa"
+              href="/sponsor"
               className="inline-flex px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl text-lg"
             >
               Get Sponsorship Info
