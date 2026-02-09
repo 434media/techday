@@ -12,6 +12,7 @@ const protectedRoutes = [
   { path: "/api/register", method: "POST" },
   { path: "/api/pitch", method: "POST" },
   { path: "/api/newsletter", method: "POST" },
+  { path: "/api/sponsor-contact", method: "POST" },
 ]
 
 const spaceGrotesk = Space_Grotesk({
