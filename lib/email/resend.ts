@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Email configuration
 const FROM_EMAIL = "San Antonio Tech Day <noreply@send.devsa.community>"
-const REPLY_TO = "jesse@devsanantonio.com"
+const REPLY_TO = "build@434media.com"
 
 // Down arrow SVG for email styling (base64 encoded for email compatibility)
 const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.15;">
@@ -70,7 +70,7 @@ function getEmailTemplate(content: string, footerText: string = "") {
                 © 2026 Tech Bloc & 434 MEDIA • San Antonio, TX
               </p>
               <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-                <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">techday.devsa.community</a>
+                <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
               </p>
             </td>
           </tr>
@@ -170,7 +170,7 @@ function getEventEmailTemplate(content: string, eventType: "techfuel" | "techday
                 © 2026 Tech Bloc & 434 MEDIA • San Antonio, TX
               </p>
               <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-                <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">techday.devsa.community</a>
+                <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
               </p>
             </td>
           </tr>
@@ -193,7 +193,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
         description: "Your registration for <strong>Tech Fuel 2026</strong> is confirmed. Get ready to witness the most exciting startup pitch competition in San Antonio!",
         dateInfo: "<strong>April 20, 2026</strong>",
         locationInfo: "<strong>UTSA SP1</strong>, San Antonio",
-        scheduleLink: "https://techday.devsa.community/techfuel"
+        scheduleLink: "https://sanantoniotechday.com/techfuel"
       }
     case "techday":
       return {
@@ -201,7 +201,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
         description: "Your registration for <strong>Tech Day 2026</strong> is confirmed. We can't wait to see you at Tech Port on April 21st!",
         dateInfo: "<strong>April 21, 2026</strong>",
         locationInfo: "<strong>Tech Port</strong>, San Antonio",
-        scheduleLink: "https://techday.devsa.community/techday"
+        scheduleLink: "https://sanantoniotechday.com/techday"
       }
     case "both":
       return {
@@ -209,7 +209,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
         description: "Your registration for <strong>Tech Fuel & Tech Day 2026</strong> is confirmed. Join us for two incredible days of innovation, pitches, and networking!",
         dateInfo: "<strong>April 20-21, 2026</strong>",
         locationInfo: "<strong>UTSA SP1</strong> (April 20) & <strong>Tech Port</strong> (April 21), San Antonio",
-        scheduleLink: "https://techday.devsa.community/techday"
+        scheduleLink: "https://sanantoniotechday.com/"
       }
   }
 }
@@ -291,7 +291,7 @@ export async function sendRegistrationConfirmation(
       <li>Save the date: ${message.dateInfo}</li>
       <li>Location: ${message.locationInfo}</li>
       <li>Bring this email or your ticket ID for check-in</li>
-      <li>Check the schedule at <a href="${message.scheduleLink}" style="color: #c73030; text-decoration: none;">techday.devsa.community</a></li>
+      <li>Check the schedule at <a href="${message.scheduleLink}" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a></li>
     </ul>
     
     <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
@@ -561,7 +561,7 @@ export async function sendSponsorInquiryConfirmation(
     </table>
     
     <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-      In the meantime, check out <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">techday.devsa.community</a> to learn more about what we're building in San Antonio.
+      In the meantime, check out <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a> to learn more about what we're building in San Antonio.
     </p>
   `
 
