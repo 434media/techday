@@ -14,6 +14,12 @@ interface Sponsor {
   website: string
 }
 
+interface StaticSponsor {
+  name: string
+  website: string
+  logo: React.ReactNode
+}
+
 interface SponsorsData {
   sponsors: Sponsor[]
   community: Sponsor[]
@@ -27,9 +33,10 @@ const DEFAULT_SPONSORS: SponsorsData = {
 interface SponsorsProps {
   variant?: "light" | "dark"
   event?: "techday" | "techfuel"
+  staticSponsors?: StaticSponsor[]
 }
 
-export function Sponsors({ variant = "light", event = "techday" }: SponsorsProps) {
+export function Sponsors({ variant = "light", event = "techday", staticSponsors = [] }: SponsorsProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [sponsors, setSponsors] = useState<SponsorsData>(DEFAULT_SPONSORS)
@@ -50,7 +57,7 @@ export function Sponsors({ variant = "light", event = "techday" }: SponsorsProps
     fetchSponsors()
   }, [event])
 
-  const hasSponsors = sponsors.sponsors.length > 0 || sponsors.community.length > 0
+  const hasSponsors = sponsors.sponsors.length > 0 || sponsors.community.length > 0 || staticSponsors.length > 0
 
   const isDark = variant === "dark"
 
@@ -113,6 +120,36 @@ export function Sponsors({ variant = "light", event = "techday" }: SponsorsProps
           <div className="text-center py-12 mb-12">
             <p className={isDark ? "text-white/60" : "text-muted-foreground"}>Sponsor announcements coming soon...</p>
           </div>
+        )}
+
+        {/* Static Sponsors (inline SVGs) */}
+        {staticSponsors.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mb-16"
+          >
+            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+              {staticSponsors.map((sponsor) => (
+                <a
+                  key={sponsor.name}
+                  href={sponsor.website || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`relative p-6 md:p-8 border rounded-xl transition-all shadow-sm hover:shadow-lg group ${
+                    isDark
+                      ? "bg-white/5 border-white/10 hover:border-white/30"
+                      : "bg-white border-border hover:border-primary/40"
+                  }`}
+                >
+                  <div className="h-12 md:h-16 w-auto flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+                    {sponsor.logo}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </motion.div>
         )}
 
         {/* Sponsors */}
