@@ -6,6 +6,7 @@ import { PixelArrow } from "@/components/pixel-arrow"
 import { Editable } from "@/components/editable"
 import { motion, AnimatePresence } from "motion/react"
 import Link from "next/link"
+import { PitchSubmissionForm } from "@/components/forms/pitch-submission-form"
 
 const qualifications = [
   {
@@ -82,10 +83,79 @@ const processSteps = [
 ]
 
 const impactStats = [
-  { value: "6", label: "Years" },
-  { value: "$550K+", label: "Invested" },
-  { value: "28", label: "Startups Funded" },
+  { value: "8", label: "Years" },
+  { value: "$700K+", label: "Invested" },
+  { value: "349+", label: "Applicants" },
   { value: "$100K", label: "Prize Pool" },
+]
+
+const pastWinners = [
+  {
+    year: "2024",
+    applicants: 54,
+    finalists: [
+      { place: "1st", name: "Axicle", status: "alive" as const },
+      { place: "2nd", name: "Balam", status: "alive" as const },
+      { place: "3rd", name: "Wild Forge", status: "alive" as const },
+      { place: "4th", name: "Just-in-Traps", status: "dead" as const },
+      { place: "5th", name: "BobiHealth", status: "alive" as const },
+    ],
+  },
+  {
+    year: "2023",
+    applicants: 59,
+    finalists: [
+      { place: "1st", name: "M Aerospace RTC", status: "dead" as const },
+      { place: "2nd", name: "Kaleido", status: "dead" as const },
+      { place: "3rd", name: "MedCognition", status: "alive" as const },
+      { place: "4th", name: "Texas Contrast Coverage", status: "dead" as const },
+      { place: "5th", name: "Hover City", status: "alive" as const },
+    ],
+  },
+  {
+    year: "2022",
+    applicants: 82,
+    finalists: [
+      { place: "1st", name: "Sensytec", status: "alive" as const },
+      { place: "2nd", name: "Developmate", status: "alive" as const },
+      { place: "3rd", name: "Kiro Auction", status: "dead" as const },
+      { place: "4th", name: "Grackle", status: "dead" as const },
+      { place: "5th", name: "Social Mining AI", status: "dead" as const },
+    ],
+  },
+  {
+    year: "2021",
+    applicants: 55,
+    finalists: [
+      { place: "1st", name: "Betty's Co", status: "alive" as const },
+      { place: "2nd", name: "Alt-Bionics", status: "alive" as const },
+      { place: "3rd", name: "EmGenisys", status: "alive" as const },
+      { place: "4th", name: "IncentiFind", status: "alive" as const },
+      { place: "5th", name: "Astroport", status: "alive" as const },
+    ],
+  },
+  {
+    year: "2020",
+    applicants: 42,
+    finalists: [
+      { place: "1st", name: "Grain4Grain", status: "dead" as const },
+      { place: "2nd", name: "Allosense", status: "alive" as const },
+      { place: "3rd", name: "Fast Visa", status: "alive" as const },
+      { place: "4th", name: "Mineral Analytics", status: "exited" as const },
+      { place: "5th", name: "Ava Propulsion", status: "dead" as const },
+    ],
+  },
+  {
+    year: "2019",
+    applicants: 57,
+    finalists: [
+      { place: "1st", name: "Rectify", status: "alive" as const },
+      { place: "2nd", name: "Checkups", status: "dead" as const },
+      { place: "3rd", name: "Train the Mind", status: "dead" as const },
+      { place: "4th", name: "Sendspark", status: "exited" as const },
+      { place: "5th", name: "Tuuk", status: "dead" as const },
+    ],
+  },
 ]
 
 const timeline = [
@@ -101,6 +171,7 @@ const timeline = [
 function PitchCountdown({ targetDate }: { targetDate: string }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   const [isOpen, setIsOpen] = useState(false)
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
     const target = new Date(targetDate).getTime()
@@ -130,25 +201,57 @@ function PitchCountdown({ targetDate }: { targetDate: string }) {
 
   if (isOpen) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="text-center p-8 sm:p-12 bg-white border border-primary/30 rounded-2xl shadow-lg"
-      >
-        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/20 flex items-center justify-center">
-          <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-        </div>
-        <h3 className="text-2xl font-bold text-foreground mb-3">Applications Are Open!</h3>
-        <p className="text-muted-foreground mb-6">Submit your pitch now. Applications close March 1, 2026.</p>
-        <Link
-          href="/techfuel#submit"
-          className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
-        >
-          Apply Now
-        </Link>
-      </motion.div>
+      <div className="space-y-8">
+        <AnimatePresence mode="wait">
+          {!showForm ? (
+            <motion.div
+              key="cta"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="text-center p-8 sm:p-12 bg-white border border-primary/30 rounded-2xl shadow-lg"
+            >
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/20 flex items-center justify-center">
+                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-3">Applications Are Open!</h3>
+              <p className="text-muted-foreground mb-6">Submit your pitch now. Applications close March 22, 2026.</p>
+              <button
+                onClick={() => setShowForm(true)}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
+              >
+                Apply Now
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="form"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="bg-white border border-border rounded-2xl p-6 sm:p-10 shadow-lg">
+                <div className="flex items-center justify-between mb-8">
+                  <h3 className="text-2xl font-bold text-foreground">Pitch Application</h3>
+                  <button
+                    onClick={() => setShowForm(false)}
+                    className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-lg hover:bg-muted"
+                    aria-label="Close form"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <PitchSubmissionForm />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     )
   }
 
@@ -379,6 +482,114 @@ function ScreeningAccordion() {
           </AnimatePresence>
         </motion.div>
       ))}
+    </div>
+  )
+}
+
+function PastWinnersAccordion() {
+  const [openYear, setOpenYear] = useState<string | null>("2024")
+
+  return (
+    <div className="space-y-3">
+      {pastWinners.map((yearData, yearIndex) => {
+        const isOpen = openYear === yearData.year
+        return (
+          <motion.div
+            key={yearData.year}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: yearIndex * 0.05 }}
+          >
+            <button
+              onClick={() => setOpenYear(isOpen ? null : yearData.year)}
+              className="w-full group"
+            >
+              <div className={`flex items-center justify-between px-6 py-5 border rounded-xl transition-all duration-200 ${
+                isOpen
+                  ? "border-primary bg-primary/5 rounded-b-none"
+                  : "border-border bg-white hover:border-primary/50"
+              }`}>
+                <div className="flex items-center gap-4">
+                  <span className={`font-mono text-2xl font-bold transition-colors ${
+                    isOpen ? "text-primary" : "text-foreground"
+                  }`}>
+                    {yearData.year}
+                  </span>
+                  <span className="text-sm text-muted-foreground hidden sm:inline">Tech Fuel</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="font-mono text-sm text-muted-foreground">
+                    {yearData.applicants} applicants
+                  </span>
+                  <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className={`w-7 h-7 flex items-center justify-center rounded-full transition-colors ${
+                      isOpen
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary"
+                    }`}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="stroke-current">
+                      <path d="M3.5 5.25L7 8.75L10.5 5.25" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </motion.div>
+                </div>
+              </div>
+            </button>
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="border border-t-0 border-primary rounded-b-xl bg-muted divide-y divide-border">
+                    {yearData.finalists.map((finalist) => (
+                      <div
+                        key={finalist.name}
+                        className="flex items-center justify-between px-6 py-3.5 hover:bg-white/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-4">
+                          <span className={`font-mono text-sm font-semibold w-8 ${
+                            finalist.place === "1st" ? "text-primary" : "text-muted-foreground"
+                          }`}>
+                            {finalist.place}
+                          </span>
+                          <span className={`font-semibold text-foreground ${
+                            finalist.place === "1st" ? "text-base" : "text-sm"
+                          }`}>
+                            {finalist.name}
+                          </span>
+                        </div>
+                        <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
+                          finalist.status === "alive"
+                            ? "bg-emerald-100 text-emerald-700"
+                            : finalist.status === "exited"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-gray-100 text-gray-500"
+                        }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${
+                            finalist.status === "alive"
+                              ? "bg-emerald-500"
+                              : finalist.status === "exited"
+                                ? "bg-blue-500"
+                                : "bg-gray-400"
+                          }`} />
+                          {finalist.status === "alive" ? "Active" : finalist.status === "exited" ? "Exited" : "Inactive"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )
+      })}
     </div>
   )
 }
@@ -793,7 +1004,7 @@ export default function TechFuelPage() {
                 page="techfuel"
                 section="impact"
               >
-                In its 6 years of existence, through strategic investments totaling over $550K, Tech Fuel has propelled the growth and success of 28 diverse startups across the state. This financial backing not only signifies a commitment from Bexar County to innovation but also underscores Tech Bloc&apos;s role in fostering economic development and job creation.
+                Since its founding in 2015, Tech Fuel has grown into San Antonio&apos;s largest cash prize pitch competition. Now entering its 8th competition and 11th year, Tech Fuel has invested over $700K in non-dilutive cash prizes, reviewed 349+ startup applications, and championed innovation across Bexar County — underscoring Tech Bloc&apos;s commitment to economic development and job creation.
               </Editable>
             </motion.div>
 
@@ -854,7 +1065,7 @@ export default function TechFuelPage() {
               page="techfuel"
               section="submit"
             >
-              Coming Soon
+              Ready to Compete?
             </Editable>
             <Editable
               id="techfuel.submit.title"
@@ -887,14 +1098,14 @@ export default function TechFuelPage() {
         </div>
       </section>
 
-      {/* Previous Winners / Featured Companies - Light Theme */}
+      {/* Past Winners - Real Data */}
       <section className="relative py-24 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="text-center mb-16"
           >
             <Editable
               id="techfuel.featured.label"
@@ -903,7 +1114,7 @@ export default function TechFuelPage() {
               page="techfuel"
               section="featured"
             >
-              Success Stories
+              Past Winners
             </Editable>
             <Editable
               id="techfuel.featured.title"
@@ -912,7 +1123,7 @@ export default function TechFuelPage() {
               page="techfuel"
               section="featured"
             >
-              Featured Companies
+              Tech Fuel Alumni
             </Editable>
             <Editable
               id="techfuel.featured.description"
@@ -921,88 +1132,11 @@ export default function TechFuelPage() {
               page="techfuel"
               section="featured"
             >
-              Past Tech Fuel participants who&apos;ve gone on to raise funding, scale their teams, and make an impact.
+              6 years of finalists — from first pitch to exit. Here&apos;s every startup that competed on the Tech Fuel stage.
             </Editable>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {[
-              {
-                id: "company-1",
-                name: "NeuralPath AI",
-                raised: "$2.5M",
-                description: "AI-powered healthcare diagnostics",
-                year: "2025",
-              },
-              {
-                id: "company-2",
-                name: "SecureStack",
-                raised: "$1.8M",
-                description: "Cybersecurity for SMBs",
-                year: "2025",
-              },
-              {
-                id: "company-3",
-                name: "GreenGrid",
-                raised: "$3.2M",
-                description: "Smart energy management",
-                year: "2024",
-              },
-            ].map((company, index) => (
-              <motion.div
-                key={company.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="p-6 md:p-8 bg-muted border border-border rounded-xl"
-              >
-                <div className="flex items-start justify-between mb-5">
-                  <div>
-                    <Editable
-                      id={`techfuel.featured.${company.id}.name`}
-                      as="h3"
-                      className="text-lg md:text-xl font-bold text-foreground tracking-tight"
-                      page="techfuel"
-                      section="featured"
-                    >
-                      {company.name}
-                    </Editable>
-                    <Editable
-                      id={`techfuel.featured.${company.id}.description`}
-                      as="p"
-                      className="text-muted-foreground text-sm md:text-base"
-                      page="techfuel"
-                      section="featured"
-                    >
-                      {company.description}
-                    </Editable>
-                  </div>
-                  <Editable
-                    id={`techfuel.featured.${company.id}.year`}
-                    as="span"
-                    className="text-xs font-mono text-muted-foreground font-medium bg-white px-2 py-1 rounded"
-                    page="techfuel"
-                    section="featured"
-                  >
-                    {company.year}
-                  </Editable>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground">Raised:</span>
-                  <Editable
-                    id={`techfuel.featured.${company.id}.raised`}
-                    as="span"
-                    className="font-mono text-primary font-bold text-lg"
-                    page="techfuel"
-                    section="featured"
-                  >
-                    {company.raised}
-                  </Editable>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <PastWinnersAccordion />
         </div>
       </section>
 
