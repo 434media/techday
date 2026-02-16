@@ -127,18 +127,23 @@ export interface SponsorContent {
   name: string
   logoUrl: string
   website: string
-  tier: "platinum" | "gold" | "silver" | "bronze" | "community"
 }
+
+export type SponsorEvent = "techday" | "techfuel"
+export type SponsorCategory = "sponsors" | "community"
 
 export interface ContentDocument {
   speakers?: SpeakerContent[]
   sessions?: SessionContent[]
   sponsors?: {
-    platinum: SponsorContent[]
-    gold: SponsorContent[]
-    silver: SponsorContent[]
-    bronze: SponsorContent[]
-    community: SponsorContent[]
+    techday: {
+      sponsors: SponsorContent[]
+      community: SponsorContent[]
+    }
+    techfuel: {
+      sponsors: SponsorContent[]
+      community: SponsorContent[]
+    }
   }
   updatedAt: Date
   updatedBy: string

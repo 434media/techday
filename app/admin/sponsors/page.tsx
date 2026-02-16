@@ -2,22 +2,34 @@
 
 import { useEffect, useState } from "react"
 
-type SponsorTier = "platinum" | "gold" | "silver" | "bronze" | "community"
+type SponsorEvent = "techday" | "techfuel"
+type SponsorCategory = "sponsors" | "community"
 
 interface Sponsor {
   id: string
   name: string
   logoUrl: string
   website: string
-  tier: SponsorTier
 }
 
-const TIERS: { value: SponsorTier; label: string }[] = [
-  { value: "platinum", label: "Platinum" },
-  { value: "gold", label: "Gold" },
-  { value: "silver", label: "Silver" },
-  { value: "bronze", label: "Bronze" },
-  { value: "community", label: "Community" },
+interface EventSponsors {
+  sponsors: Sponsor[]
+  community: Sponsor[]
+}
+
+interface AllSponsors {
+  techday: EventSponsors
+  techfuel: EventSponsors
+}
+
+const EVENTS: { value: SponsorEvent; label: string }[] = [
+  { value: "techday", label: "Tech Day" },
+  { value: "techfuel", label: "Tech Fuel" },
+]
+
+const CATEGORIES: { value: SponsorCategory; label: string }[] = [
+  { value: "sponsors", label: "Sponsors" },
+  { value: "community", label: "Community Partners" },
 ]
 
 const EMPTY_SPONSOR: Sponsor = {
@@ -25,22 +37,19 @@ const EMPTY_SPONSOR: Sponsor = {
   name: "",
   logoUrl: "",
   website: "",
-  tier: "silver",
 }
 
 export default function SponsorsPage() {
-  const [sponsors, setSponsors] = useState<Record<SponsorTier, Sponsor[]>>({
-    platinum: [],
-    gold: [],
-    silver: [],
-    bronze: [],
-    community: [],
+  const [sponsors, setSponsors] = useState<AllSponsors>({
+    techday: { sponsors: [], community: [] },
+    techfuel: { sponsors: [], community: [] },
   })
+  const [activeEvent, setActiveEvent] = useState<SponsorEvent>("techday")
   const [isLoading, setIsLoading] = useState(true)
-  const [editingSponsor, setEditingSponsor] = useState<Sponsor | null>(null)
+  const [editingSponsor, setEditingSponsor] = useState<{ sponsor: Sponsor; event: SponsorEvent; category: SponsorCategory } | null>(null)
   const [isCreating, setIsCreating] = useState(false)
-  const [draggedItem, setDraggedItem] = useState<{ tier: SponsorTier; index: number } | null>(null)
-  const [dragOverItem, setDragOverItem] = useState<{ tier: SponsorTier; index: number } | null>(null)
+  const [draggedItem, setDraggedItem] = useState<{ category: SponsorCategory; index: number } | null>(null)
+  const [dragOverItem, setDragOverItem] = useState<{ category: SponsorCategory; index: number } | null>(null)
   const [isSavingOrder, setIsSavingOrder] = useState(false)
   const [isDeletingAll, setIsDeletingAll] = useState(false)
 
@@ -56,11 +65,8 @@ export default function SponsorsPage() {
       })
       const data = await response.json()
       setSponsors(data.sponsors || {
-        platinum: [],
-        gold: [],
-        silver: [],
-        bronze: [],
-        community: [],
+        techday: { sponsors: [], community: [] },
+        techfuel: { sponsors: [], community: [] },
       })
     } catch (error) {
       console.error("Failed to fetch sponsors:", error)
@@ -69,7 +75,7 @@ export default function SponsorsPage() {
     }
   }
 
-  async function saveSponsor(sponsor: Sponsor, oldTier?: SponsorTier) {
+  async function saveSponsor(sponsor: Sponsor, event: SponsorEvent, category: SponsorCategory, oldEvent?: SponsorEvent, oldCategory?: SponsorCategory) {
     const isNew = !sponsor.id || isCreating
     const method = isNew ? "POST" : "PUT"
 
@@ -78,9 +84,11 @@ export default function SponsorsPage() {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sponsor: { ...sponsor, tier: undefined },
-          tier: sponsor.tier,
-          oldTier: oldTier,
+          sponsor,
+          event,
+          category,
+          oldEvent,
+          oldCategory,
         }),
         credentials: "include",
       })
@@ -95,11 +103,11 @@ export default function SponsorsPage() {
     }
   }
 
-  async function deleteSponsor(id: string, tier: SponsorTier) {
+  async function deleteSponsor(id: string, event: SponsorEvent, category: SponsorCategory) {
     if (!confirm("Are you sure you want to delete this sponsor?")) return
 
     try {
-      const response = await fetch(`/api/admin/content/sponsors?id=${id}&tier=${tier}`, {
+      const response = await fetch(`/api/admin/content/sponsors?id=${id}&event=${event}&category=${category}`, {
         method: "DELETE",
         credentials: "include",
       })
@@ -133,13 +141,13 @@ export default function SponsorsPage() {
     }
   }
 
-  async function saveOrder(tier: SponsorTier, newSponsors: Sponsor[]) {
+  async function saveOrder(event: SponsorEvent, category: SponsorCategory, newSponsors: Sponsor[]) {
     setIsSavingOrder(true)
     try {
       const response = await fetch("/api/admin/content/sponsors", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier, sponsors: newSponsors }),
+        body: JSON.stringify({ event, category, sponsors: newSponsors }),
         credentials: "include",
       })
 
@@ -155,37 +163,41 @@ export default function SponsorsPage() {
     }
   }
 
-  function handleDragStart(e: React.DragEvent, tier: SponsorTier, index: number) {
-    setDraggedItem({ tier, index })
+  function handleDragStart(e: React.DragEvent, category: SponsorCategory, index: number) {
+    setDraggedItem({ category, index })
     e.dataTransfer.effectAllowed = "move"
-    e.dataTransfer.setData("text/plain", `${tier}:${index}`)
+    e.dataTransfer.setData("text/plain", `${category}:${index}`)
   }
 
-  function handleDragOver(e: React.DragEvent, tier: SponsorTier, index: number) {
+  function handleDragOver(e: React.DragEvent, category: SponsorCategory, index: number) {
     e.preventDefault()
-    if (draggedItem?.tier !== tier) return
+    if (draggedItem?.category !== category) return
     e.dataTransfer.dropEffect = "move"
-    setDragOverItem({ tier, index })
+    setDragOverItem({ category, index })
   }
 
   function handleDragLeave() {
     setDragOverItem(null)
   }
 
-  function handleDrop(e: React.DragEvent, tier: SponsorTier, dropIndex: number) {
+  function handleDrop(e: React.DragEvent, category: SponsorCategory, dropIndex: number) {
     e.preventDefault()
-    if (!draggedItem || draggedItem.tier !== tier || draggedItem.index === dropIndex) {
+    if (!draggedItem || draggedItem.category !== category || draggedItem.index === dropIndex) {
       setDraggedItem(null)
       setDragOverItem(null)
       return
     }
 
-    const newTierSponsors = [...sponsors[tier]]
-    const [draggedSponsor] = newTierSponsors.splice(draggedItem.index, 1)
-    newTierSponsors.splice(dropIndex, 0, draggedSponsor)
+    const eventSponsors = sponsors[activeEvent]
+    const newCategorySponsors = [...eventSponsors[category]]
+    const [draggedSponsor] = newCategorySponsors.splice(draggedItem.index, 1)
+    newCategorySponsors.splice(dropIndex, 0, draggedSponsor)
 
-    setSponsors({ ...sponsors, [tier]: newTierSponsors })
-    saveOrder(tier, newTierSponsors)
+    setSponsors({
+      ...sponsors,
+      [activeEvent]: { ...eventSponsors, [category]: newCategorySponsors },
+    })
+    saveOrder(activeEvent, category, newCategorySponsors)
 
     setDraggedItem(null)
     setDragOverItem(null)
@@ -196,7 +208,9 @@ export default function SponsorsPage() {
     setDragOverItem(null)
   }
 
-  const totalSponsors = Object.values(sponsors).flat().length
+  const eventSponsors = sponsors[activeEvent]
+  const totalSponsors = eventSponsors.sponsors.length + eventSponsors.community.length
+  const globalTotal = sponsors.techday.sponsors.length + sponsors.techday.community.length + sponsors.techfuel.sponsors.length + sponsors.techfuel.community.length
 
   return (
     <div className="p-8 lg:p-12">
@@ -210,11 +224,11 @@ export default function SponsorsPage() {
             )}
           </h1>
           <p className="text-sm text-neutral-500">
-            {totalSponsors} sponsors • Drag cards to reorder within tiers
+            {totalSponsors} sponsors for {activeEvent === "techday" ? "Tech Day" : "Tech Fuel"} • Drag cards to reorder
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {totalSponsors > 0 && (
+          {globalTotal > 0 && (
             <button
               onClick={deleteAllSponsors}
               disabled={isDeletingAll}
@@ -229,13 +243,33 @@ export default function SponsorsPage() {
           <button
             onClick={() => {
               setIsCreating(true)
-              setEditingSponsor({ ...EMPTY_SPONSOR })
+              setEditingSponsor({ sponsor: { ...EMPTY_SPONSOR }, event: activeEvent, category: "sponsors" })
             }}
             className="px-4 py-2 text-sm font-medium bg-black text-white hover:bg-neutral-800 transition-colors"
           >
             Add Sponsor
           </button>
         </div>
+      </div>
+
+      {/* Event Tabs */}
+      <div className="flex gap-1 mb-8 bg-neutral-100 p-1 rounded-lg w-fit">
+        {EVENTS.map((evt) => (
+          <button
+            key={evt.value}
+            onClick={() => setActiveEvent(evt.value)}
+            className={`px-5 py-2 text-sm font-medium rounded-md transition-all ${
+              activeEvent === evt.value
+                ? "bg-white text-black shadow-sm"
+                : "text-neutral-500 hover:text-black"
+            }`}
+          >
+            {evt.label}
+            <span className="ml-2 text-xs text-neutral-400">
+              ({(sponsors[evt.value]?.sponsors?.length || 0) + (sponsors[evt.value]?.community?.length || 0)})
+            </span>
+          </button>
+        ))}
       </div>
 
       {/* Content */}
@@ -246,11 +280,11 @@ export default function SponsorsPage() {
         </div>
       ) : totalSponsors === 0 ? (
         <div className="bg-white border border-neutral-200 p-12 text-center">
-          <p className="text-sm text-neutral-500 mb-4">No sponsors added yet</p>
+          <p className="text-sm text-neutral-500 mb-4">No sponsors added for {activeEvent === "techday" ? "Tech Day" : "Tech Fuel"} yet</p>
           <button
             onClick={() => {
               setIsCreating(true)
-              setEditingSponsor({ ...EMPTY_SPONSOR })
+              setEditingSponsor({ sponsor: { ...EMPTY_SPONSOR }, event: activeEvent, category: "sponsors" })
             }}
             className="text-sm font-medium text-black underline hover:no-underline"
           >
@@ -259,29 +293,29 @@ export default function SponsorsPage() {
         </div>
       ) : (
         <div className="space-y-8">
-          {TIERS.map((tier) => {
-            const tierSponsors = sponsors[tier.value] || []
-            if (tierSponsors.length === 0) return null
+          {CATEGORIES.map((cat) => {
+            const catSponsors = eventSponsors[cat.value] || []
+            if (catSponsors.length === 0) return null
 
             return (
-              <div key={tier.value}>
+              <div key={cat.value}>
                 <h2 className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-4">
-                  {tier.label} ({tierSponsors.length})
+                  {cat.label} ({catSponsors.length})
                 </h2>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {tierSponsors.map((sponsor, index) => (
+                  {catSponsors.map((sponsor, index) => (
                     <div
                       key={sponsor.id}
                       draggable
-                      onDragStart={(e) => handleDragStart(e, tier.value, index)}
-                      onDragOver={(e) => handleDragOver(e, tier.value, index)}
+                      onDragStart={(e) => handleDragStart(e, cat.value, index)}
+                      onDragOver={(e) => handleDragOver(e, cat.value, index)}
                       onDragLeave={handleDragLeave}
-                      onDrop={(e) => handleDrop(e, tier.value, index)}
+                      onDrop={(e) => handleDrop(e, cat.value, index)}
                       onDragEnd={handleDragEnd}
                       className={`bg-white border p-4 cursor-grab active:cursor-grabbing transition-all ${
-                        draggedItem?.tier === tier.value && draggedItem?.index === index
+                        draggedItem?.category === cat.value && draggedItem?.index === index
                           ? "opacity-50 border-neutral-300 scale-[0.98]"
-                          : dragOverItem?.tier === tier.value && dragOverItem?.index === index
+                          : dragOverItem?.category === cat.value && dragOverItem?.index === index
                             ? "border-black border-2 bg-neutral-50"
                             : "border-neutral-200 hover:border-neutral-300"
                       }`}
@@ -323,14 +357,14 @@ export default function SponsorsPage() {
                         <button
                           onClick={() => {
                             setIsCreating(false)
-                            setEditingSponsor({ ...sponsor, tier: tier.value })
+                            setEditingSponsor({ sponsor: { ...sponsor }, event: activeEvent, category: cat.value })
                           }}
                           className="flex-1 py-1.5 text-xs font-medium border border-neutral-200 text-neutral-600 hover:text-black hover:border-neutral-300 transition-colors"
                         >
                           Edit
                         </button>
                         <button
-                          onClick={() => deleteSponsor(sponsor.id, tier.value)}
+                          onClick={() => deleteSponsor(sponsor.id, activeEvent, cat.value)}
                           className="px-3 py-1.5 text-xs font-medium text-neutral-400 hover:text-red-600 transition-colors"
                         >
                           Delete
@@ -348,7 +382,9 @@ export default function SponsorsPage() {
       {/* Edit Modal */}
       {editingSponsor && (
         <SponsorModal
-          sponsor={editingSponsor}
+          sponsor={editingSponsor.sponsor}
+          event={editingSponsor.event}
+          category={editingSponsor.category}
           isNew={isCreating}
           onSave={saveSponsor}
           onClose={() => {
@@ -363,26 +399,37 @@ export default function SponsorsPage() {
 
 function SponsorModal({
   sponsor,
+  event: initialEvent,
+  category: initialCategory,
   isNew,
   onSave,
   onClose,
 }: {
   sponsor: Sponsor
+  event: SponsorEvent
+  category: SponsorCategory
   isNew: boolean
-  onSave: (sponsor: Sponsor, oldTier?: SponsorTier) => void
+  onSave: (sponsor: Sponsor, event: SponsorEvent, category: SponsorCategory, oldEvent?: SponsorEvent, oldCategory?: SponsorCategory) => void
   onClose: () => void
 }) {
   const [form, setForm] = useState(sponsor)
+  const [event, setEvent] = useState(initialEvent)
+  const [category, setCategory] = useState(initialCategory)
   const [isSaving, setIsSaving] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState("")
   const [logoInputType, setLogoInputType] = useState<"url" | "file">("url")
-  const originalTier = sponsor.tier
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSaving(true)
-    await onSave(form, isNew ? undefined : originalTier)
+    await onSave(
+      form,
+      event,
+      category,
+      isNew ? undefined : initialEvent,
+      isNew ? undefined : initialCategory,
+    )
     setIsSaving(false)
   }
 
@@ -448,17 +495,35 @@ function SponsorModal({
 
           <div>
             <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
-              Tier *
+              Event *
             </label>
             <select
               required
-              value={form.tier}
-              onChange={(e) => setForm({ ...form, tier: e.target.value as SponsorTier })}
+              value={event}
+              onChange={(e) => setEvent(e.target.value as SponsorEvent)}
               className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black rounded-md"
             >
-              {TIERS.map((tier) => (
-                <option key={tier.value} value={tier.value}>
-                  {tier.label}
+              {EVENTS.map((evt) => (
+                <option key={evt.value} value={evt.value}>
+                  {evt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
+              Category *
+            </label>
+            <select
+              required
+              value={category}
+              onChange={(e) => setCategory(e.target.value as SponsorCategory)}
+              className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black rounded-md"
+            >
+              {CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
                 </option>
               ))}
             </select>

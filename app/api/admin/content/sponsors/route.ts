@@ -5,39 +5,46 @@ import { verifyAdminSession, sessionHasPermission } from "@/lib/admin/session"
 
 export const dynamic = "force-dynamic"
 
-type SponsorTier = "platinum" | "gold" | "silver" | "bronze" | "community"
+type SponsorEvent = "techday" | "techfuel"
+type SponsorCategory = "sponsors" | "community"
 
-interface SponsorsData {
-  sponsors: Record<SponsorTier, SponsorContent[]>
-  updatedAt?: string
-  updatedBy?: string
+interface EventSponsors {
+  sponsors: SponsorContent[]
+  community: SponsorContent[]
 }
 
-const DEFAULT_SPONSORS: Record<SponsorTier, SponsorContent[]> = {
-  platinum: [],
-  gold: [],
-  silver: [],
-  bronze: [],
+interface AllSponsors {
+  techday: EventSponsors
+  techfuel: EventSponsors
+}
+
+const DEFAULT_EVENT: EventSponsors = {
+  sponsors: [],
   community: [],
 }
 
+const DEFAULT_SPONSORS: AllSponsors = {
+  techday: { sponsors: [], community: [] },
+  techfuel: { sponsors: [], community: [] },
+}
+
 // Helper to create a fresh copy of sponsors data
-function cloneSponsors(sponsors?: Record<SponsorTier, SponsorContent[]>): Record<SponsorTier, SponsorContent[]> {
+function cloneSponsors(sponsors?: AllSponsors): AllSponsors {
   if (!sponsors) {
     return {
-      platinum: [],
-      gold: [],
-      silver: [],
-      bronze: [],
-      community: [],
+      techday: { sponsors: [], community: [] },
+      techfuel: { sponsors: [], community: [] },
     }
   }
   return {
-    platinum: [...(sponsors.platinum || [])],
-    gold: [...(sponsors.gold || [])],
-    silver: [...(sponsors.silver || [])],
-    bronze: [...(sponsors.bronze || [])],
-    community: [...(sponsors.community || [])],
+    techday: {
+      sponsors: [...(sponsors.techday?.sponsors || [])],
+      community: [...(sponsors.techday?.community || [])],
+    },
+    techfuel: {
+      sponsors: [...(sponsors.techfuel?.sponsors || [])],
+      community: [...(sponsors.techfuel?.community || [])],
+    },
   }
 }
 
@@ -89,28 +96,26 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { sponsor, tier }: { sponsor: SponsorContent; tier: SponsorTier } = await request.json()
+    const { sponsor, event, category }: { sponsor: SponsorContent; event: SponsorEvent; category: SponsorCategory } = await request.json()
 
-    if (!sponsor.name || !tier) {
-      return NextResponse.json({ error: "Name and tier are required" }, { status: 400 })
+    if (!sponsor.name || !event || !category) {
+      return NextResponse.json({ error: "Name, event, and category are required" }, { status: 400 })
     }
 
-    const validTiers: SponsorTier[] = ["platinum", "gold", "silver", "bronze", "community"]
-    if (!validTiers.includes(tier)) {
-      return NextResponse.json({ error: "Invalid tier" }, { status: 400 })
+    const validEvents: SponsorEvent[] = ["techday", "techfuel"]
+    const validCategories: SponsorCategory[] = ["sponsors", "community"]
+    if (!validEvents.includes(event) || !validCategories.includes(category)) {
+      return NextResponse.json({ error: "Invalid event or category" }, { status: 400 })
     }
 
     if (!sponsor.id) {
       sponsor.id = `sponsor-${Date.now()}`
     }
 
-    // Ensure the sponsor has the correct tier property
-    sponsor.tier = tier
-
     const doc = await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").get()
     const currentSponsors = cloneSponsors(doc.exists ? doc.data()?.sponsors : undefined)
 
-    currentSponsors[tier].push(sponsor)
+    currentSponsors[event][category].push(sponsor)
 
     await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").set({
       sponsors: currentSponsors,
@@ -122,11 +127,9 @@ export async function POST(request: Request) {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)
     console.error("Sponsor create error:", errorMessage)
-    console.error("Full error:", error)
     return NextResponse.json({ 
       error: "Failed to create sponsor", 
       details: errorMessage,
-      isFirebaseConfigured: isFirebaseConfigured(),
     }, { status: 500 })
   }
 }
@@ -146,26 +149,30 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const { sponsor, tier, oldTier }: { sponsor: SponsorContent; tier: SponsorTier; oldTier?: SponsorTier } = await request.json()
+    const { sponsor, event, category, oldEvent, oldCategory }: { 
+      sponsor: SponsorContent
+      event: SponsorEvent
+      category: SponsorCategory
+      oldEvent?: SponsorEvent
+      oldCategory?: SponsorCategory
+    } = await request.json()
 
     if (!sponsor.id) {
       return NextResponse.json({ error: "Sponsor ID is required" }, { status: 400 })
     }
 
-    // Ensure the sponsor has the correct tier property
-    sponsor.tier = tier
-
     const doc = await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").get()
     const currentSponsors = cloneSponsors(doc.exists ? doc.data()?.sponsors : undefined)
 
-    // Remove from old tier if tier changed
-    const tierToRemoveFrom = oldTier || tier
-    currentSponsors[tierToRemoveFrom] = currentSponsors[tierToRemoveFrom].filter(
+    // Remove from old location
+    const removeEvent = oldEvent || event
+    const removeCategory = oldCategory || category
+    currentSponsors[removeEvent][removeCategory] = currentSponsors[removeEvent][removeCategory].filter(
       (s: SponsorContent) => s.id !== sponsor.id
     )
 
-    // Add to new tier
-    currentSponsors[tier].push(sponsor)
+    // Add to new location
+    currentSponsors[event][category].push(sponsor)
 
     await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").set({
       sponsors: currentSponsors,
@@ -195,22 +202,20 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    const { tier, sponsors: reorderedSponsors }: { tier: SponsorTier; sponsors: SponsorContent[] } = await request.json()
+    const { event, category, sponsors: reorderedSponsors }: { 
+      event: SponsorEvent
+      category: SponsorCategory
+      sponsors: SponsorContent[] 
+    } = await request.json()
 
-    if (!tier || !reorderedSponsors || !Array.isArray(reorderedSponsors)) {
-      return NextResponse.json({ error: "Tier and sponsors array are required" }, { status: 400 })
-    }
-
-    const validTiers: SponsorTier[] = ["platinum", "gold", "silver", "bronze", "community"]
-    if (!validTiers.includes(tier)) {
-      return NextResponse.json({ error: "Invalid tier" }, { status: 400 })
+    if (!event || !category || !reorderedSponsors || !Array.isArray(reorderedSponsors)) {
+      return NextResponse.json({ error: "Event, category, and sponsors array are required" }, { status: 400 })
     }
 
     const doc = await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").get()
     const currentSponsors = cloneSponsors(doc.exists ? doc.data()?.sponsors : undefined)
 
-    // Update the specific tier with reordered sponsors
-    currentSponsors[tier] = reorderedSponsors
+    currentSponsors[event][category] = reorderedSponsors
 
     await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").set({
       sponsors: currentSponsors,
@@ -242,7 +247,8 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get("id")
-    const tier = searchParams.get("tier") as SponsorTier
+    const event = searchParams.get("event") as SponsorEvent
+    const category = searchParams.get("category") as SponsorCategory
 
     if (!id) {
       return NextResponse.json({ error: "Sponsor ID is required" }, { status: 400 })
@@ -251,24 +257,27 @@ export async function DELETE(request: Request) {
     // Bulk delete all sponsors
     if (id === "all") {
       await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").set({
-        sponsors: { platinum: [], gold: [], silver: [], bronze: [], community: [] },
+        sponsors: { 
+          techday: { sponsors: [], community: [] }, 
+          techfuel: { sponsors: [], community: [] } 
+        },
         updatedAt: new Date(),
         updatedBy: session.email,
       })
       return NextResponse.json({ success: true, message: "All sponsors deleted" })
     }
 
-    if (!tier) {
-      return NextResponse.json({ error: "Tier is required for individual delete" }, { status: 400 })
+    if (!event || !category) {
+      return NextResponse.json({ error: "Event and category are required for individual delete" }, { status: 400 })
     }
 
     const doc = await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").get()
     const currentSponsors = cloneSponsors(doc.exists ? doc.data()?.sponsors : undefined)
 
-    const originalLength = currentSponsors[tier].length
-    currentSponsors[tier] = currentSponsors[tier].filter((s: SponsorContent) => s.id !== id)
+    const originalLength = currentSponsors[event][category].length
+    currentSponsors[event][category] = currentSponsors[event][category].filter((s: SponsorContent) => s.id !== id)
 
-    if (currentSponsors[tier].length === originalLength) {
+    if (currentSponsors[event][category].length === originalLength) {
       return NextResponse.json({ error: "Sponsor not found" }, { status: 404 })
     }
 

@@ -1141,7 +1141,7 @@ export default function TechFuelPage() {
       </section>
 
       {/* Sponsors */}
-      <Sponsors variant="light" />
+      <Sponsors variant="light" event="techfuel" />
     </main>
   )
 }

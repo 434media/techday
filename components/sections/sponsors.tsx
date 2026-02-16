@@ -12,30 +12,24 @@ interface Sponsor {
   name: string
   logoUrl: string
   website: string
-  tier: string
 }
 
 interface SponsorsData {
-  platinum: Sponsor[]
-  gold: Sponsor[]
-  silver: Sponsor[]
-  bronze: Sponsor[]
+  sponsors: Sponsor[]
   community: Sponsor[]
 }
 
 const DEFAULT_SPONSORS: SponsorsData = {
-  platinum: [],
-  gold: [],
-  silver: [],
-  bronze: [],
+  sponsors: [],
   community: [],
 }
 
 interface SponsorsProps {
   variant?: "light" | "dark"
+  event?: "techday" | "techfuel"
 }
 
-export function Sponsors({ variant = "light" }: SponsorsProps) {
+export function Sponsors({ variant = "light", event = "techday" }: SponsorsProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [sponsors, setSponsors] = useState<SponsorsData>(DEFAULT_SPONSORS)
@@ -44,7 +38,7 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
   useEffect(() => {
     async function fetchSponsors() {
       try {
-        const response = await fetch("/api/content/sponsors")
+        const response = await fetch(`/api/content/sponsors?event=${event}`)
         const data = await response.json()
         setSponsors(data.sponsors || DEFAULT_SPONSORS)
       } catch (error) {
@@ -54,9 +48,9 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
       }
     }
     fetchSponsors()
-  }, [])
+  }, [event])
 
-  const hasSponsors = sponsors.platinum.length > 0 || sponsors.gold.length > 0 || sponsors.silver.length > 0 || sponsors.bronze.length > 0 || sponsors.community.length > 0
+  const hasSponsors = sponsors.sponsors.length > 0 || sponsors.community.length > 0
 
   const isDark = variant === "dark"
 
@@ -100,7 +94,9 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
             page="global"
             section="sponsors"
           >
-            Tech Day is made possible by the generous support of our sponsors who believe in San Antonio's tech future.
+            {event === "techfuel"
+              ? "Tech Fuel is made possible by the generous support of our sponsors who believe in San Antonio's startup ecosystem."
+              : "Tech Day is made possible by the generous support of our sponsors who believe in San Antonio's tech future."}
           </Editable>
         </motion.div>
 
@@ -119,158 +115,37 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
           </div>
         )}
 
-        {/* Platinum Sponsors */}
-        {sponsors.platinum.length > 0 && (
+        {/* Sponsors */}
+        {sponsors.sponsors.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-12"
+            className="mb-16"
           >
-            <div className="flex justify-center mb-6">
-              <span className="wristband bg-linear-to-r from-primary to-primary/80">
-                ★ Platinum Sponsors
-              </span>
-            </div>
-            <div className="flex flex-wrap justify-center items-center gap-12">
-              {sponsors.platinum.map((sponsor) => (
+            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+              {sponsors.sponsors.map((sponsor) => (
                 <a
                   key={sponsor.id}
                   href={sponsor.website || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative p-8 bg-white border-2 border-primary/30 rounded-xl hover:border-primary transition-all shadow-lg hover:shadow-xl group"
-                >
-                  <div className="absolute top-2 left-2 w-3 h-3 border-l-2 border-t-2 border-primary/30" />
-                  <div className="absolute top-2 right-2 w-3 h-3 border-r-2 border-t-2 border-primary/30" />
-                  <div className="absolute bottom-2 left-2 w-3 h-3 border-l-2 border-b-2 border-primary/30" />
-                  <div className="absolute bottom-2 right-2 w-3 h-3 border-r-2 border-b-2 border-primary/30" />
-                  
-                  {sponsor.logoUrl ? (
-                    <img
-                      src={sponsor.logoUrl}
-                      alt={sponsor.name}
-                      className="h-16 w-auto opacity-80 group-hover:opacity-100 transition-opacity"
-                    />
-                  ) : (
-                    <div className="h-16 flex items-center justify-center text-xl font-bold text-primary">
-                      {sponsor.name}
-                    </div>
-                  )}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Gold Sponsors */}
-        {sponsors.gold.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mb-12"
-          >
-            <div className="flex justify-center mb-6">
-              <span className="px-4 py-1.5 bg-linear-to-r from-amber-500 to-yellow-400 rounded-full text-white font-semibold text-xs tracking-wider uppercase">
-                Gold Sponsors
-              </span>
-            </div>
-            <div className="flex flex-wrap justify-center items-center gap-8">
-              {sponsors.gold.map((sponsor) => (
-                <a
-                  key={sponsor.id}
-                  href={sponsor.website || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-6 bg-white border border-amber-200 rounded-lg hover:border-amber-400 transition-all shadow-md hover:shadow-lg"
+                  className={`relative p-6 md:p-8 border rounded-xl transition-all shadow-sm hover:shadow-lg group ${
+                    isDark
+                      ? "bg-white/5 border-white/10 hover:border-white/30"
+                      : "bg-white border-border hover:border-primary/40"
+                  }`}
                 >
                   {sponsor.logoUrl ? (
                     <img
                       src={sponsor.logoUrl}
                       alt={sponsor.name}
-                      className="h-12 w-auto opacity-70 hover:opacity-100 transition-opacity"
+                      className="h-12 md:h-16 w-auto opacity-80 group-hover:opacity-100 transition-opacity"
                     />
                   ) : (
-                    <div className="h-12 flex items-center justify-center text-lg font-bold text-amber-600">
-                      {sponsor.name}
-                    </div>
-                  )}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Silver Sponsors */}
-        {sponsors.silver.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mb-12"
-          >
-            <div className="flex justify-center mb-6">
-              <span className="px-4 py-1.5 bg-linear-to-r from-gray-400 to-gray-300 rounded-full text-white font-semibold text-xs tracking-wider uppercase">
-                Silver Sponsors
-              </span>
-            </div>
-            <div className="flex flex-wrap justify-center items-center gap-6">
-              {sponsors.silver.map((sponsor) => (
-                <a
-                  key={sponsor.id}
-                  href={sponsor.website || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-400 transition-all shadow-sm hover:shadow-md"
-                >
-                  {sponsor.logoUrl ? (
-                    <img
-                      src={sponsor.logoUrl}
-                      alt={sponsor.name}
-                      className="h-10 w-auto opacity-60 hover:opacity-100 transition-opacity"
-                    />
-                  ) : (
-                    <div className="h-10 flex items-center justify-center text-base font-bold text-gray-600">
-                      {sponsor.name}
-                    </div>
-                  )}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Bronze Sponsors */}
-        {sponsors.bronze.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.45 }}
-            className="mb-12"
-          >
-            <div className="flex justify-center mb-6">
-              <span className="px-4 py-1.5 bg-linear-to-r from-amber-700 to-amber-600 rounded-full text-white font-semibold text-xs tracking-wider uppercase">
-                Bronze Sponsors
-              </span>
-            </div>
-            <div className="flex flex-wrap justify-center items-center gap-4">
-              {sponsors.bronze.map((sponsor) => (
-                <a
-                  key={sponsor.id}
-                  href={sponsor.website || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-white border border-amber-200 rounded-lg hover:border-amber-400 transition-all shadow-sm hover:shadow-md"
-                >
-                  {sponsor.logoUrl ? (
-                    <img
-                      src={sponsor.logoUrl}
-                      alt={sponsor.name}
-                      className="h-8 w-auto opacity-60 hover:opacity-100 transition-opacity"
-                    />
-                  ) : (
-                    <div className="h-8 flex items-center justify-center text-sm font-bold text-amber-700">
+                    <div className={`h-12 md:h-16 flex items-center justify-center text-lg md:text-xl font-bold ${
+                      isDark ? "text-white" : "text-foreground"
+                    }`}>
                       {sponsor.name}
                     </div>
                   )}
@@ -285,7 +160,7 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
             className="mb-16"
           >
             <div className="flex justify-center mb-6">
@@ -300,7 +175,11 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
                   href={sponsor.website || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 bg-white border border-border rounded-lg hover:border-primary/40 transition-all shadow-sm hover:shadow-md"
+                  className={`p-3 border rounded-lg transition-all shadow-sm hover:shadow-md ${
+                    isDark
+                      ? "bg-white/5 border-white/10 hover:border-white/30"
+                      : "bg-white border-border hover:border-primary/40"
+                  }`}
                 >
                   {sponsor.logoUrl ? (
                     <img
@@ -309,7 +188,9 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
                       className="h-8 w-auto opacity-60 hover:opacity-100 transition-opacity"
                     />
                   ) : (
-                    <div className="h-8 flex items-center justify-center text-sm font-bold text-muted-foreground">
+                    <div className={`h-8 flex items-center justify-center text-sm font-bold ${
+                      isDark ? "text-white/60" : "text-muted-foreground"
+                    }`}>
                       {sponsor.name}
                     </div>
                   )}
@@ -323,7 +204,7 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
           className={`relative rounded-2xl overflow-hidden shadow-xl ${isDark ? "bg-white/5 border-2 border-white/10" : "bg-white border-2 border-primary/20"}`}
         >
           <div className="bg-linear-to-r from-primary to-primary/80 px-6 py-4">
@@ -361,7 +242,7 @@ export function Sponsors({ variant = "light" }: SponsorsProps) {
               page="global"
               section="sponsors"
             >
-              Join San Antonio's top companies in supporting the local tech ecosystem. Multiple sponsorship tiers available with exclusive benefits.
+              Join San Antonio&apos;s top companies in supporting the local tech ecosystem.
             </Editable>
             <Link
               href="/sponsor"
