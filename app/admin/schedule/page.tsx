@@ -20,6 +20,7 @@ interface Session {
   time: string
   duration: number
   room: string
+  moderatorIds?: string[]
   speakerIds?: string[]
   type: SessionType
   track?: TrackType
@@ -48,6 +49,7 @@ const EMPTY_SESSION: Session = {
   time: "09:00",
   duration: 30,
   room: "",
+  moderatorIds: [],
   speakerIds: [],
   type: "talk",
   track: "",
@@ -220,6 +222,7 @@ export default function SchedulePage() {
       ) : (
         <div className="space-y-2">
           {sessions.map((session) => {
+            const sessionModerators = speakers.filter((s) => session.moderatorIds?.includes(s.id))
             const sessionSpeakers = speakers.filter((s) => session.speakerIds?.includes(s.id))
             return (
               <div
@@ -280,6 +283,14 @@ export default function SchedulePage() {
                         {session.room}
                       </span>
                     )}
+                    {sessionModerators.length > 0 && (
+                      <span className="flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Mod: {sessionModerators.map(s => s.name).join(", ")}
+                      </span>
+                    )}
                     {sessionSpeakers.length > 0 && (
                       <span className="flex items-center gap-1">
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -321,6 +332,35 @@ export default function SchedulePage() {
                           </svg>
                           {session.room}
                         </span>
+                      )}
+                      {sessionModerators.length > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-medium uppercase tracking-wider text-amber-600 bg-amber-50 px-1.5 py-0.5">Mod</span>
+                          <div className="flex -space-x-1.5">
+                            {sessionModerators.slice(0, 3).map((speaker) => (
+                              speaker.imageUrl ? (
+                                <img
+                                  key={speaker.id}
+                                  src={speaker.imageUrl}
+                                  alt={speaker.name}
+                                  title={`Moderator: ${speaker.name}`}
+                                  className="w-5 h-5 rounded-full object-cover border border-white bg-neutral-100"
+                                />
+                              ) : (
+                                <div
+                                  key={speaker.id}
+                                  title={`Moderator: ${speaker.name}`}
+                                  className="w-5 h-5 rounded-full bg-amber-100 border border-white flex items-center justify-center text-[9px] font-medium text-amber-600"
+                                >
+                                  {speaker.name.charAt(0)}
+                                </div>
+                              )
+                            ))}
+                          </div>
+                          <span className="text-xs text-neutral-500 truncate max-w-37.5">
+                            {sessionModerators.map(s => s.name).join(", ")}
+                          </span>
+                        </div>
                       )}
                       {sessionSpeakers.length > 0 && (
                         <div className="flex items-center gap-2">
@@ -451,9 +491,13 @@ function SessionModal({
 }) {
   const [form, setForm] = useState({
     ...session,
+    moderatorIds: session.moderatorIds || [],
     speakerIds: session.speakerIds || [],
   })
   const [isSaving, setIsSaving] = useState(false)
+  const [showModerators, setShowModerators] = useState((session.moderatorIds || []).length > 0)
+  const [showSpeakers, setShowSpeakers] = useState((session.speakerIds || []).length > 0)
+  const [moderatorSearch, setModeratorSearch] = useState("")
   const [speakerSearch, setSpeakerSearch] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -461,6 +505,15 @@ function SessionModal({
     setIsSaving(true)
     await onSave(form)
     setIsSaving(false)
+  }
+
+  const toggleModerator = (speakerId: string) => {
+    setForm((prev) => ({
+      ...prev,
+      moderatorIds: prev.moderatorIds.includes(speakerId)
+        ? prev.moderatorIds.filter((id: string) => id !== speakerId)
+        : [...prev.moderatorIds, speakerId],
+    }))
   }
 
   const toggleSpeaker = (speakerId: string) => {
@@ -472,12 +525,19 @@ function SessionModal({
     }))
   }
 
+  const filteredModerators = speakers.filter(
+    (s) =>
+      s.name.toLowerCase().includes(moderatorSearch.toLowerCase()) ||
+      s.company.toLowerCase().includes(moderatorSearch.toLowerCase())
+  )
+
   const filteredSpeakers = speakers.filter(
     (s) =>
       s.name.toLowerCase().includes(speakerSearch.toLowerCase()) ||
       s.company.toLowerCase().includes(speakerSearch.toLowerCase())
   )
 
+  const selectedModerators = speakers.filter((s) => form.moderatorIds.includes(s.id))
   const selectedSpeakers = speakers.filter((s) => form.speakerIds.includes(s.id))
 
   return (
@@ -596,96 +656,236 @@ function SessionModal({
             />
           </div>
 
-          {/* Speaker Selection */}
+          {/* Moderator Toggle & Selection */}
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
-              Speakers
-            </label>
-            
-            {/* Selected Speakers */}
-            {selectedSpeakers.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-3">
-                {selectedSpeakers.map((speaker) => (
-                  <div
-                    key={speaker.id}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-neutral-100 border border-neutral-200 rounded-full"
-                  >
-                    {speaker.imageUrl && (
-                      <img
-                        src={speaker.imageUrl}
-                        alt={speaker.name}
-                        className="w-5 h-5 rounded-full object-cover"
-                      />
-                    )}
-                    <span className="text-sm text-neutral-700">{speaker.name}</span>
-                    <button
-                      type="button"
-                      onClick={() => toggleSpeaker(speaker.id)}
-                      className="text-neutral-400 hover:text-red-500"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400">
+                Moderator
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowModerators(!showModerators)
+                  if (showModerators) {
+                    setForm((prev) => ({ ...prev, moderatorIds: [] }))
+                  }
+                }}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                  showModerators ? "bg-amber-500" : "bg-neutral-300"
+                }`}
+              >
+                <span
+                  className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                    showModerators ? "translate-x-4.5" : "translate-x-0.5"
+                  }`}
+                />
+              </button>
+            </div>
+
+            {showModerators && (
+              <div className="space-y-2">
+                {/* Selected Moderators */}
+                {selectedModerators.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-1">
+                    {selectedModerators.map((speaker) => (
+                      <div
+                        key={speaker.id}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-full"
+                      >
+                        {speaker.imageUrl && (
+                          <img
+                            src={speaker.imageUrl}
+                            alt={speaker.name}
+                            className="w-5 h-5 rounded-full object-cover"
+                          />
+                        )}
+                        <span className="text-sm text-amber-800">{speaker.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => toggleModerator(speaker.id)}
+                          className="text-amber-400 hover:text-red-500"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
+
+                {/* Moderator Search */}
+                <input
+                  type="text"
+                  value={moderatorSearch}
+                  onChange={(e) => setModeratorSearch(e.target.value)}
+                  placeholder="Search speakers to add as moderator..."
+                  className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-amber-500 mb-1"
+                />
+
+                {/* Moderator List */}
+                <div className="max-h-40 overflow-y-auto border border-neutral-200 rounded-md">
+                  {filteredModerators.length === 0 ? (
+                    <p className="p-3 text-sm text-neutral-500 text-center">
+                      {speakers.length === 0 ? "No speakers available" : "No speakers found"}
+                    </p>
+                  ) : (
+                    filteredModerators.map((speaker) => {
+                      const isSelected = form.moderatorIds.includes(speaker.id)
+                      return (
+                        <button
+                          key={speaker.id}
+                          type="button"
+                          onClick={() => toggleModerator(speaker.id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-amber-50 border-b border-neutral-100 last:border-b-0 transition-colors ${
+                            isSelected ? "bg-amber-50" : ""
+                          }`}
+                        >
+                          {speaker.imageUrl ? (
+                            <img
+                              src={speaker.imageUrl}
+                              alt={speaker.name}
+                              className="w-8 h-8 rounded-full object-cover bg-neutral-200"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-medium text-neutral-500">
+                              {speaker.name.charAt(0)}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-black truncate">{speaker.name}</p>
+                            <p className="text-xs text-neutral-500 truncate">
+                              {speaker.title}{speaker.company && `, ${speaker.company}`}
+                            </p>
+                          </div>
+                          {isSelected && (
+                            <svg className="w-5 h-5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </button>
+                      )
+                    })
+                  )}
+                </div>
               </div>
             )}
-            
-            {/* Speaker Search */}
-            <input
-              type="text"
-              value={speakerSearch}
-              onChange={(e) => setSpeakerSearch(e.target.value)}
-              placeholder="Search speakers..."
-              className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black mb-2"
-            />
-            
-            {/* Speaker List */}
-            <div className="max-h-40 overflow-y-auto border border-neutral-200 rounded-md">
-              {filteredSpeakers.length === 0 ? (
-                <p className="p-3 text-sm text-neutral-500 text-center">
-                  {speakers.length === 0 ? "No speakers available" : "No speakers found"}
-                </p>
-              ) : (
-                filteredSpeakers.map((speaker) => {
-                  const isSelected = form.speakerIds.includes(speaker.id)
-                  return (
-                    <button
-                      key={speaker.id}
-                      type="button"
-                      onClick={() => toggleSpeaker(speaker.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0 transition-colors ${
-                        isSelected ? "bg-neutral-100" : ""
-                      }`}
-                    >
-                      {speaker.imageUrl ? (
-                        <img
-                          src={speaker.imageUrl}
-                          alt={speaker.name}
-                          className="w-8 h-8 rounded-full object-cover bg-neutral-200"
-                        />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-medium text-neutral-500">
-                          {speaker.name.charAt(0)}
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-black truncate">{speaker.name}</p>
-                        <p className="text-xs text-neutral-500 truncate">
-                          {speaker.title}{speaker.company && `, ${speaker.company}`}
-                        </p>
-                      </div>
-                      {isSelected && (
-                        <svg className="w-5 h-5 text-black shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </button>
-                  )
-                })
-              )}
+          </div>
+
+          {/* Speaker Toggle & Selection */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400">
+                Speakers
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowSpeakers(!showSpeakers)
+                  if (showSpeakers) {
+                    setForm((prev) => ({ ...prev, speakerIds: [] }))
+                  }
+                }}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                  showSpeakers ? "bg-black" : "bg-neutral-300"
+                }`}
+              >
+                <span
+                  className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                    showSpeakers ? "translate-x-4.5" : "translate-x-0.5"
+                  }`}
+                />
+              </button>
             </div>
+
+            {showSpeakers && (
+              <div className="space-y-2">
+                {/* Selected Speakers */}
+                {selectedSpeakers.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-1">
+                    {selectedSpeakers.map((speaker) => (
+                      <div
+                        key={speaker.id}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-neutral-100 border border-neutral-200 rounded-full"
+                      >
+                        {speaker.imageUrl && (
+                          <img
+                            src={speaker.imageUrl}
+                            alt={speaker.name}
+                            className="w-5 h-5 rounded-full object-cover"
+                          />
+                        )}
+                        <span className="text-sm text-neutral-700">{speaker.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => toggleSpeaker(speaker.id)}
+                          className="text-neutral-400 hover:text-red-500"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Speaker Search */}
+                <input
+                  type="text"
+                  value={speakerSearch}
+                  onChange={(e) => setSpeakerSearch(e.target.value)}
+                  placeholder="Search speakers..."
+                  className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black mb-1"
+                />
+
+                {/* Speaker List */}
+                <div className="max-h-40 overflow-y-auto border border-neutral-200 rounded-md">
+                  {filteredSpeakers.length === 0 ? (
+                    <p className="p-3 text-sm text-neutral-500 text-center">
+                      {speakers.length === 0 ? "No speakers available" : "No speakers found"}
+                    </p>
+                  ) : (
+                    filteredSpeakers.map((speaker) => {
+                      const isSelected = form.speakerIds.includes(speaker.id)
+                      return (
+                        <button
+                          key={speaker.id}
+                          type="button"
+                          onClick={() => toggleSpeaker(speaker.id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0 transition-colors ${
+                            isSelected ? "bg-neutral-100" : ""
+                          }`}
+                        >
+                          {speaker.imageUrl ? (
+                            <img
+                              src={speaker.imageUrl}
+                              alt={speaker.name}
+                              className="w-8 h-8 rounded-full object-cover bg-neutral-200"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-medium text-neutral-500">
+                              {speaker.name.charAt(0)}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-black truncate">{speaker.name}</p>
+                            <p className="text-xs text-neutral-500 truncate">
+                              {speaker.title}{speaker.company && `, ${speaker.company}`}
+                            </p>
+                          </div>
+                          {isSelected && (
+                            <svg className="w-5 h-5 text-black shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </button>
+                      )
+                    })
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="pt-4 flex gap-3">

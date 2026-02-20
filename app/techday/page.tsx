@@ -323,11 +323,6 @@ export default function TechDayPage() {
         </div>
       </section>
 
-      {/* Schedule Section */}
-      <div id="schedule" className="bg-foreground">
-        <Schedule variant="dark" />
-      </div>
-
       {/* Speakers Section - Dark Theme */}
       <section className="py-24 md:py-32 bg-foreground/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -413,6 +408,11 @@ export default function TechDayPage() {
           )}
         </div>
       </section>
+
+      {/* Schedule Section */}
+      <div id="schedule" className="bg-foreground">
+        <Schedule variant="dark" />
+      </div>
 
       {/* Sponsors */}
       <Sponsors
