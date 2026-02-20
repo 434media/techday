@@ -28,8 +28,13 @@ const categories = [
 const events = [
   { id: "techfuel", label: "Tech Fuel Pitch Competition", date: "April 20", price: "Free" },
   { id: "techday", label: "Tech Day Conference", date: "April 21", price: "Free" },
-  { id: "2day", label: "2-Day Registration", date: "April 20-21", price: "Free" },
 ]
+
+// Registration limits per event
+const REGISTRATION_LIMITS = {
+  techfuel: 200,
+  techday: 300,
+} as const
 
 export function RegistrationForm() {
   const [formData, setFormData] = useState<RegistrationData>({
@@ -46,6 +51,17 @@ export function RegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [ticketId, setTicketId] = useState("")
+  const [capacityInfo, setCapacityInfo] = useState<Record<string, { count: number; limit: number }> | null>(null)
+
+  // Fetch remaining capacity on mount
+  useState(() => {
+    fetch("/api/register?capacity=true")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.capacity) setCapacityInfo(data.capacity)
+      })
+      .catch(() => {})
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -261,29 +277,50 @@ export function RegistrationForm() {
       {/* Event Selection */}
       <div className="space-y-6">
         <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Select Events</h3>
+        {formData.events.length === 2 && (
+          <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg text-sm text-primary font-medium">
+            ✓ 2-Day Registration — You&apos;re signed up for both days!
+          </div>
+        )}
         <div className="space-y-4">
-          {events.map((event) => (
-            <label
-              key={event.id}
-              className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-colors ${
-                formData.events.includes(event.id)
-                  ? "border-primary bg-primary/5"
-                  : "border-border bg-background hover:border-muted-foreground"
-              }`}
-            >
-              <input
-                type="checkbox"
-                checked={formData.events.includes(event.id)}
-                onChange={() => handleEventToggle(event.id)}
-                className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
-              />
-              <div className="flex-1">
-                <p className="font-medium text-foreground">{event.label}</p>
-                <p className="text-sm text-muted-foreground">{event.date}</p>
-              </div>
-              <span className="font-mono text-sm text-primary">{event.price}</span>
-            </label>
-          ))}
+          {events.map((event) => {
+            const cap = capacityInfo?.[event.id]
+            const remaining = cap ? cap.limit - cap.count : null
+            const isFull = remaining !== null && remaining <= 0
+
+            return (
+              <label
+                key={event.id}
+                className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-colors ${
+                  isFull && !formData.events.includes(event.id)
+                    ? "border-border bg-muted/50 opacity-60 cursor-not-allowed"
+                    : formData.events.includes(event.id)
+                      ? "border-primary bg-primary/5"
+                      : "border-border bg-background hover:border-muted-foreground"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={formData.events.includes(event.id)}
+                  onChange={() => !isFull && handleEventToggle(event.id)}
+                  disabled={isFull && !formData.events.includes(event.id)}
+                  className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
+                />
+                <div className="flex-1">
+                  <p className="font-medium text-foreground">{event.label}</p>
+                  <p className="text-sm text-muted-foreground">{event.date}</p>
+                </div>
+                <div className="text-right">
+                  <span className="font-mono text-sm text-primary">{event.price}</span>
+                  {remaining !== null && (
+                    <p className={`text-xs mt-1 ${isFull ? "text-red-500 font-medium" : "text-muted-foreground"}`}>
+                      {isFull ? "SOLD OUT" : `${remaining} spots left`}
+                    </p>
+                  )}
+                </div>
+              </label>
+            )
+          })}
         </div>
       </div>
 

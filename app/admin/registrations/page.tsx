@@ -12,8 +12,21 @@ interface Registration {
   company: string
   title: string
   events: string[]
+  eventLabel: string
   status: string
   createdAt: string
+}
+
+interface RegistrationStats {
+  total: number
+  techday: number
+  techfuel: number
+  bothDays: number
+  techdayOnly: number
+  techfuelOnly: number
+  limits: Record<string, number>
+  activeTechday: number
+  activeTechfuel: number
 }
 
 const CATEGORIES = [
@@ -33,18 +46,29 @@ const STATUSES = [
   { value: "cancelled", label: "Cancelled" },
 ]
 
+const EVENT_FILTERS = [
+  { value: "", label: "All Events" },
+  { value: "techday", label: "Tech Day (all)" },
+  { value: "techfuel", label: "Tech Fuel (all)" },
+  { value: "both", label: "Both Days" },
+  { value: "techday-only", label: "Tech Day Only" },
+  { value: "techfuel-only", label: "Tech Fuel Only" },
+]
+
 export default function RegistrationsPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([])
+  const [stats, setStats] = useState<RegistrationStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("")
   const [status, setStatus] = useState("")
+  const [eventFilter, setEventFilter] = useState("")
   const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null)
   const [isDeletingAll, setIsDeletingAll] = useState(false)
 
   useEffect(() => {
     fetchRegistrations()
-  }, [category, status])
+  }, [category, status, eventFilter])
 
   async function fetchRegistrations() {
     setIsLoading(true)
@@ -52,12 +76,14 @@ export default function RegistrationsPage() {
       const params = new URLSearchParams()
       if (category) params.set("category", category)
       if (status) params.set("status", status)
+      if (eventFilter) params.set("event", eventFilter)
 
       const response = await fetch(`/api/admin/data/registrations?${params}`, {
         credentials: "include",
       })
       const data = await response.json()
       setRegistrations(data.registrations || [])
+      if (data.stats) setStats(data.stats)
     } catch (error) {
       console.error("Failed to fetch registrations:", error)
     } finally {
@@ -86,7 +112,8 @@ export default function RegistrationsPage() {
       "Category",
       "Company",
       "Title",
-      "Events",
+      "Event",
+      "Events (raw)",
       "Status",
       "Registration Date",
     ]
@@ -98,6 +125,7 @@ export default function RegistrationsPage() {
       reg.category || "",
       reg.company || "",
       reg.title || "",
+      reg.eventLabel || "",
       reg.events?.join("; ") || "",
       reg.status || "",
       reg.createdAt ? new Date(reg.createdAt).toLocaleDateString() : "",
@@ -200,6 +228,28 @@ export default function RegistrationsPage() {
         </div>
       </div>
 
+      {/* Stats Cards */}
+      {stats && (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+          <StatCard label="Total" value={stats.total} />
+          <StatCard
+            label="Tech Day"
+            value={stats.techday}
+            sublabel={`${stats.activeTechday} / ${stats.limits.techday} capacity`}
+            progress={(stats.activeTechday / stats.limits.techday) * 100}
+          />
+          <StatCard
+            label="Tech Fuel"
+            value={stats.techfuel}
+            sublabel={`${stats.activeTechfuel} / ${stats.limits.techfuel} capacity`}
+            progress={(stats.activeTechfuel / stats.limits.techfuel) * 100}
+          />
+          <StatCard label="Both Days" value={stats.bothDays} accent="blue" />
+          <StatCard label="Tech Day Only" value={stats.techdayOnly} accent="green" />
+          <StatCard label="Tech Fuel Only" value={stats.techfuelOnly} accent="purple" />
+        </div>
+      )}
+
       {/* Filters */}
       <div className="bg-white border border-neutral-200 p-4 mb-6">
         <div className="flex flex-wrap gap-4">
@@ -214,6 +264,22 @@ export default function RegistrationsPage() {
               placeholder="Name, email, company, ticket..."
               className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black placeholder:text-neutral-400 focus:outline-none focus:border-black"
             />
+          </div>
+          <div className="w-44">
+            <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
+              Event
+            </label>
+            <select
+              value={eventFilter}
+              onChange={(e) => setEventFilter(e.target.value)}
+              className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black"
+            >
+              {EVENT_FILTERS.map((ef) => (
+                <option key={ef.value} value={ef.value}>
+                  {ef.label}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="w-40">
             <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
@@ -282,6 +348,9 @@ export default function RegistrationsPage() {
                     Company
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
+                    Event
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
                     Status
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
@@ -312,6 +381,9 @@ export default function RegistrationsPage() {
                     </td>
                     <td className="px-4 py-3 text-sm text-neutral-600 cursor-pointer" onClick={() => setSelectedRegistration(reg)}>
                       {reg.company || "—"}
+                    </td>
+                    <td className="px-4 py-3 cursor-pointer" onClick={() => setSelectedRegistration(reg)}>
+                      <EventBadge label={reg.eventLabel} />
                     </td>
                     <td className="px-4 py-3 cursor-pointer" onClick={() => setSelectedRegistration(reg)}>
                       <StatusBadge status={reg.status} />
@@ -349,6 +421,74 @@ export default function RegistrationsPage() {
         />
       )}
     </div>
+  )
+}
+
+function StatCard({
+  label,
+  value,
+  sublabel,
+  progress,
+  accent,
+}: {
+  label: string
+  value: number
+  sublabel?: string
+  progress?: number
+  accent?: "blue" | "green" | "purple"
+}) {
+  const accentColors = {
+    blue: "border-blue-200 bg-blue-50/50",
+    green: "border-green-200 bg-green-50/50",
+    purple: "border-purple-200 bg-purple-50/50",
+  }
+  const accentTextColors = {
+    blue: "text-blue-700",
+    green: "text-green-700",
+    purple: "text-purple-700",
+  }
+
+  return (
+    <div className={`border p-4 ${accent ? accentColors[accent] : "border-neutral-200 bg-white"}`}>
+      <p className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-1">
+        {label}
+      </p>
+      <p className={`text-2xl font-semibold ${accent ? accentTextColors[accent] : "text-black"}`}>
+        {value}
+      </p>
+      {sublabel && (
+        <p className="text-xs text-neutral-500 mt-1">{sublabel}</p>
+      )}
+      {progress !== undefined && (
+        <div className="mt-2 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all ${
+              progress >= 90 ? "bg-red-500" : progress >= 70 ? "bg-yellow-500" : "bg-black"
+            }`}
+            style={{ width: `${Math.min(progress, 100)}%` }}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function EventBadge({ label }: { label: string }) {
+  const styles: Record<string, string> = {
+    "Both Days": "bg-blue-100 text-blue-700",
+    "Tech Day Only": "bg-green-100 text-green-700",
+    "Tech Fuel Only": "bg-purple-100 text-purple-700",
+    None: "bg-neutral-100 text-neutral-500",
+  }
+
+  return (
+    <span
+      className={`inline-block px-2 py-0.5 text-xs font-medium tracking-wider ${
+        styles[label] || styles.None
+      }`}
+    >
+      {label}
+    </span>
   )
 }
 
@@ -405,7 +545,13 @@ function RegistrationDetailModal({
           <DetailRow label="Category" value={registration.category} capitalize />
           <DetailRow label="Company" value={registration.company || "—"} />
           <DetailRow label="Title" value={registration.title || "—"} />
-          <DetailRow label="Events" value={registration.events?.join(", ") || "—"} />
+          <div className="flex justify-between items-start gap-4">
+            <dt className="text-sm text-neutral-500 shrink-0">Event</dt>
+            <dd className="text-right">
+              <EventBadge label={registration.eventLabel} />
+            </dd>
+          </div>
+          <DetailRow label="Events (raw)" value={registration.events?.join(", ") || "—"} />
           <DetailRow label="Status" value={registration.status} capitalize />
           <DetailRow
             label="Registered"
