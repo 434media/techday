@@ -120,6 +120,7 @@ export async function POST(request: Request) {
       company: data.company?.trim() || "",
       title: data.title?.trim() || "",
       events: selectedEvents,
+      ecosystemTours: data.ecosystemTours === true,
       dietaryRestrictions: data.dietaryRestrictions?.trim() || "",
       ticketId,
       status: "confirmed",
@@ -142,7 +143,8 @@ export async function POST(request: Request) {
       registration.lastName,
       ticketId,
       registration.category,
-      registration.events
+      registration.events,
+      registration.ecosystemTours
     )
 
     if (!emailResult.success) {

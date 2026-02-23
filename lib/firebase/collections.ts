@@ -40,6 +40,7 @@ export interface RegistrationDocument {
   company: string
   title: string
   events: string[]
+  ecosystemTours?: boolean
   dietaryRestrictions: string
   ticketId: string
   status: "pending" | "confirmed" | "checked-in" | "cancelled"

@@ -233,7 +233,8 @@ export async function sendRegistrationConfirmation(
   lastName: string,
   ticketId: string,
   category: string,
-  events: string[] = ["techday"]
+  events: string[] = ["techday"],
+  ecosystemTours: boolean = false
 ) {
   const eventType = getEventType(events)
   const message = getRegistrationMessage(eventType, firstName)
@@ -294,6 +295,32 @@ export async function sendRegistrationConfirmation(
       <li>Check the schedule at <a href="${message.scheduleLink}" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a></li>
     </ul>
     
+    ${ecosystemTours ? `
+    <!-- Ecosystem Tours Section -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); border-radius: 8px; padding: 30px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.08; transform: rotate(45deg);">
+            ${DOWN_ARROW_SVG}
+          </div>
+          
+          <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+            You're signed up
+          </p>
+          <p style="margin: 0 0 15px; color: #ffffff; font-size: 20px; font-weight: 600;">
+            🚌 Ecosystem Tours
+          </p>
+          <p style="margin: 0 0 15px; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
+            This year, we're placing attendees directly inside the environments shaping San Antonio and South Texas' emerging industry clusters. Our ecosystem tours will begin at <strong style="color: #ffffff;">Port San Antonio</strong>—a 20-year industrial redevelopment now serving as one of the nation's leading hubs for cyber, aerospace, and advanced manufacturing—followed by a visit to <strong style="color: #ffffff;">VelocityTX</strong>, an internationally recognized bioscience innovation campus purpose-built to accelerate translational research and commercialization.
+          </p>
+          <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
+            Together, these redeveloped assets reflect a coordinated regional strategy to advance innovation across both industrial and life sciences domains—spanning cyber, aerospace, advanced manufacturing, and bioscience. This integrated approach positions San Antonio as one of the few U.S. markets capable of supporting the development and dual-use commercialization of technologies across both defense and civilian applications.
+          </p>
+        </td>
+      </tr>
+    </table>
+    ` : ''}
+
     <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
       Questions? Reply to this email or reach out on social media.
     </p>

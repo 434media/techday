@@ -13,6 +13,7 @@ interface RegistrationData {
   company: string
   title: string
   events: string[]
+  ecosystemTours: boolean
   dietaryRestrictions: string
   agreeToTerms: boolean
 }
@@ -45,6 +46,7 @@ export function RegistrationForm() {
     company: "",
     title: "",
     events: ["techday"],
+    ecosystemTours: false,
     dietaryRestrictions: "none",
     agreeToTerms: false,
   })
@@ -72,10 +74,16 @@ export function RegistrationForm() {
   }
 
   const handleEventToggle = (eventId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      events: prev.events.includes(eventId) ? prev.events.filter((e) => e !== eventId) : [...prev.events, eventId],
-    }))
+    setFormData((prev) => {
+      const newEvents = prev.events.includes(eventId)
+        ? prev.events.filter((e) => e !== eventId)
+        : [...prev.events, eventId]
+      // Reset ecosystemTours if Tech Fuel is deselected
+      const ecosystemTours = eventId === "techfuel" && prev.events.includes("techfuel")
+        ? false
+        : prev.ecosystemTours
+      return { ...prev, events: newEvents, ecosystemTours }
+    })
   }
 
   const [error, setError] = useState<string | null>(null)
@@ -185,7 +193,7 @@ export function RegistrationForm() {
               value={formData.firstName}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="John"
+              placeholder="Elton"
             />
           </div>
           <div>
@@ -200,7 +208,7 @@ export function RegistrationForm() {
               value={formData.lastName}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="Doe"
+              placeholder="John"
             />
           </div>
         </div>
@@ -217,7 +225,7 @@ export function RegistrationForm() {
             value={formData.email}
             onChange={handleChange}
             className="w-full px-4 py-3 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            placeholder="john@company.com"
+            placeholder="elton@rocketman.com"
           />
         </div>
 
@@ -254,7 +262,7 @@ export function RegistrationForm() {
               value={formData.company}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="Acme Corp"
+              placeholder="Rocketman Inc."
             />
           </div>
           <div>
@@ -289,36 +297,104 @@ export function RegistrationForm() {
             const isFull = remaining !== null && remaining <= 0
 
             return (
-              <label
-                key={event.id}
-                className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-colors ${
-                  isFull && !formData.events.includes(event.id)
-                    ? "border-border bg-muted/50 opacity-60 cursor-not-allowed"
-                    : formData.events.includes(event.id)
-                      ? "border-primary bg-primary/5"
-                      : "border-border bg-background hover:border-muted-foreground"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={formData.events.includes(event.id)}
-                  onChange={() => !isFull && handleEventToggle(event.id)}
-                  disabled={isFull && !formData.events.includes(event.id)}
-                  className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
-                />
-                <div className="flex-1">
-                  <p className="font-medium text-foreground">{event.label}</p>
-                  <p className="text-sm text-muted-foreground">{event.date}</p>
-                </div>
-                <div className="text-right">
-                  <span className="font-mono text-sm text-primary">{event.price}</span>
-                  {remaining !== null && (
-                    <p className={`text-xs mt-1 ${isFull ? "text-red-500 font-medium" : "text-muted-foreground"}`}>
-                      {isFull ? "SOLD OUT" : `${remaining} spots left`}
-                    </p>
-                  )}
-                </div>
-              </label>
+              <div key={event.id}>
+                <label
+                  className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border cursor-pointer transition-colors ${
+                    isFull && !formData.events.includes(event.id)
+                      ? "border-border bg-muted/50 opacity-60 cursor-not-allowed"
+                      : formData.events.includes(event.id)
+                        ? "border-primary bg-primary/5"
+                        : "border-border bg-background hover:border-muted-foreground"
+                  } ${event.id === "techfuel" && formData.events.includes("techfuel") ? "rounded-b-none border-b-0" : ""}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.events.includes(event.id)}
+                    onChange={() => !isFull && handleEventToggle(event.id)}
+                    disabled={isFull && !formData.events.includes(event.id)}
+                    className="w-5 h-5 shrink-0 rounded border-border text-primary focus:ring-primary"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground text-[15px] leading-snug">{event.label}</p>
+                    <p className="text-[13px] text-muted-foreground mt-0.5">{event.date}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="font-mono text-sm text-primary">{event.price}</span>
+                    {remaining !== null && (
+                      <p className={`text-xs mt-1 ${isFull ? "text-red-500 font-medium" : "text-muted-foreground"}`}>
+                        {isFull ? "SOLD OUT" : `${remaining} spots left`}
+                      </p>
+                    )}
+                  </div>
+                </label>
+
+                {/* Ecosystem Tours Accordion — only visible when Tech Fuel is selected */}
+                {event.id === "techfuel" && (
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      height: formData.events.includes("techfuel") ? "auto" : 0,
+                      opacity: formData.events.includes("techfuel") ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+                    <div className="border border-t-0 border-primary/30 bg-primary/5 rounded-b-lg px-3 py-3 sm:px-5 sm:py-4">
+                      <label className="flex items-start gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={formData.ecosystemTours}
+                          onChange={(e) =>
+                            setFormData((prev) => ({ ...prev, ecosystemTours: e.target.checked }))
+                          }
+                          className="mt-0.5 w-5 h-5 shrink-0 rounded border-border text-primary focus:ring-primary"
+                        />
+                        <div className="min-w-0">
+                          <p className="text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary transition-colors">
+                            Ecosystem Tours
+                          </p>
+                          <p className="text-[13px] leading-relaxed text-muted-foreground mt-0.5">
+                            Included with your Tech Fuel registration &bull; Running throughout the day
+                          </p>
+                        </div>
+                      </label>
+
+                      {formData.ecosystemTours && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="mt-3 ml-0 sm:ml-8 p-4 bg-background/70 border border-border/60 rounded-lg space-y-3"
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-base" aria-hidden="true">🚐</span>
+                            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+                              Tour Stops
+                            </span>
+                          </div>
+                          <p className="text-[13px] sm:text-sm leading-[1.7] font-normal text-muted-foreground">
+                            This year, we&apos;re placing attendees directly inside the environments shaping San Antonio
+                            and South Texas&apos; emerging industry clusters. Our ecosystem tours will begin at{" "}
+                            <strong className="font-semibold text-foreground">Port San Antonio</strong>—a 20-year
+                            industrial redevelopment now serving as one of the nation&apos;s leading hubs for cyber,
+                            aerospace, and advanced manufacturing—followed by a visit to{" "}
+                            <strong className="font-semibold text-foreground">VelocityTX</strong>, an internationally
+                            recognized bioscience innovation campus purpose-built to accelerate translational research
+                            and commercialization.
+                          </p>
+                          <p className="text-[13px] sm:text-sm leading-[1.7] font-normal text-muted-foreground">
+                            Together, these redeveloped assets reflect a coordinated regional strategy to advance
+                            innovation across both industrial and life sciences domains—spanning cyber, aerospace,
+                            advanced manufacturing, and bioscience. This integrated approach positions San Antonio as
+                            one of the few U.S. markets capable of supporting the development and dual-use
+                            commercialization of technologies across both defense and civilian applications.
+                          </p>
+                        </motion.div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
             )
           })}
         </div>
