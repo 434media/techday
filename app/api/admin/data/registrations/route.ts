@@ -123,8 +123,9 @@ export async function GET(request: Request) {
 
     // Compute stats from ALL registrations (before event filter, after status/category filter)
     const allRegs = snapshot.docs.map((doc) => {
-      const events: string[] = doc.data().events || []
-      return getEffectiveEvents(events)
+      const data = doc.data()
+      const events: string[] = data.events || []
+      return { ...getEffectiveEvents(events), ecosystemTours: data.ecosystemTours === true }
     })
     // Only count non-cancelled for capacity
     const activeRegs = snapshot.docs
@@ -144,6 +145,7 @@ export async function GET(request: Request) {
       bothDays: allRegs.filter((e) => e.techday && e.techfuel).length,
       techdayOnly: allRegs.filter((e) => e.techday && !e.techfuel).length,
       techfuelOnly: allRegs.filter((e) => e.techfuel && !e.techday).length,
+      ecosystemTours: allRegs.filter((e) => e.ecosystemTours).length,
       limits: REGISTRATION_LIMITS,
       // Active counts (non-cancelled) for capacity tracking
       activeTechday: activeRegs.filter((e) => e.techday).length,

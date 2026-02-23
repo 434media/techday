@@ -12,6 +12,7 @@ interface Registration {
   company: string
   title: string
   events: string[]
+  ecosystemTours?: boolean
   eventLabel: string
   status: string
   createdAt: string
@@ -24,6 +25,7 @@ interface RegistrationStats {
   bothDays: number
   techdayOnly: number
   techfuelOnly: number
+  ecosystemTours: number
   limits: Record<string, number>
   activeTechday: number
   activeTechfuel: number
@@ -114,6 +116,7 @@ export default function RegistrationsPage() {
       "Title",
       "Event",
       "Events (raw)",
+      "Ecosystem Tours",
       "Status",
       "Registration Date",
     ]
@@ -127,6 +130,7 @@ export default function RegistrationsPage() {
       reg.title || "",
       reg.eventLabel || "",
       reg.events?.join("; ") || "",
+      reg.ecosystemTours ? "Yes" : "No",
       reg.status || "",
       reg.createdAt ? new Date(reg.createdAt).toLocaleDateString() : "",
     ])
@@ -230,7 +234,7 @@ export default function RegistrationsPage() {
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+        <div className="grid grid-cols-4 lg:grid-cols-7 gap-3 mb-5">
           <StatCard label="Total" value={stats.total} />
           <StatCard
             label="Tech Day"
@@ -247,6 +251,7 @@ export default function RegistrationsPage() {
           <StatCard label="Both Days" value={stats.bothDays} accent="blue" />
           <StatCard label="TD Only" value={stats.techdayOnly} accent="green" />
           <StatCard label="TF Only" value={stats.techfuelOnly} accent="purple" />
+          <StatCard label="Eco Tours" value={stats.ecosystemTours} accent="amber" />
         </div>
       )}
 
@@ -343,13 +348,16 @@ export default function RegistrationsPage() {
                 <th className="w-[11%] px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
                   Category
                 </th>
-                <th className="w-[14%] px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+                <th className="w-[12%] px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
                   Event
                 </th>
-                <th className="w-[11%] px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
-                  Status
+                <th className="w-[7%] px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+                  Tours
                 </th>
                 <th className="w-[10%] px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+                  Status
+                </th>
+                <th className="w-[9%] px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
                   Date
                 </th>
                 <th className="w-[4%] px-2 py-2">
@@ -378,6 +386,15 @@ export default function RegistrationsPage() {
                   </td>
                   <td className="px-3 py-2">
                     <EventBadge label={reg.eventLabel} />
+                  </td>
+                  <td className="px-3 py-2">
+                    {reg.ecosystemTours ? (
+                      <span className="inline-block px-1.5 py-px text-[10px] font-semibold tracking-wide leading-relaxed bg-amber-100 text-amber-700">
+                        Yes
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-neutral-300">—</span>
+                    )}
                   </td>
                   <td className="px-3 py-2">
                     <StatusBadge status={reg.status} />
@@ -428,17 +445,19 @@ function StatCard({
   value: number
   sublabel?: string
   progress?: number
-  accent?: "blue" | "green" | "purple"
+  accent?: "blue" | "green" | "purple" | "amber"
 }) {
   const accentColors = {
     blue: "border-blue-200 bg-blue-50/50",
     green: "border-green-200 bg-green-50/50",
     purple: "border-purple-200 bg-purple-50/50",
+    amber: "border-amber-200 bg-amber-50/50",
   }
   const accentTextColors = {
     blue: "text-blue-700",
     green: "text-green-700",
     purple: "text-purple-700",
+    amber: "text-amber-700",
   }
 
   return (
@@ -549,6 +568,18 @@ function RegistrationDetailModal({
             <dt className="text-xs text-neutral-400 font-medium shrink-0">Event</dt>
             <dd className="text-right">
               <EventBadge label={registration.eventLabel} />
+            </dd>
+          </div>
+          <div className="flex justify-between items-center gap-4">
+            <dt className="text-xs text-neutral-400 font-medium shrink-0">Ecosystem Tours</dt>
+            <dd className="text-right">
+              {registration.ecosystemTours ? (
+                <span className="inline-block px-1.5 py-px text-[10px] font-semibold tracking-wide leading-relaxed bg-amber-100 text-amber-700">
+                  Registered
+                </span>
+              ) : (
+                <span className="text-xs text-neutral-400">No</span>
+              )}
             </dd>
           </div>
           <DetailRow label="Status" value={registration.status} capitalize />
