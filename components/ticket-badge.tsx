@@ -58,7 +58,7 @@ export function TicketBadge({
         <div className={`bg-linear-to-r ${typeColors[type]} px-4 py-2 text-white`}>
           <div className="flex items-center justify-between">
             <Image
-              src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/10Years_Red.svg"
+              src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/10Years_Red.svg"
               alt="Tech Day"
               width={60}
               height={24}
@@ -215,7 +215,7 @@ export function EventTicket({ className = "", variant = "horizontal" }: EventTic
                 <p className="text-6xl font-black text-primary -mt-2">2026</p>
               </div>
               <Image
-                src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/10Years_Red.svg"
+                src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/10Years_Red.svg"
                 alt="Tech Day 10 Years"
                 width={80}
                 height={80}

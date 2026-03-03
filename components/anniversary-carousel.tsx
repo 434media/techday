@@ -11,11 +11,11 @@ interface CarouselImage {
 
 const anniversaryImages: CarouselImage[] = [
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/guber.png",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/guber.png",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc4.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc4.jpeg",
     aspectRatio: "portrait",
   },
   {
@@ -23,23 +23,23 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc5-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc5-wide.jpeg",
     aspectRatio: "wide",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc29.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc29.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc6.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc6.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc7.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc7.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc32-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc32-wide.jpeg",
     aspectRatio: "wide",
   },
   {
@@ -47,15 +47,15 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "wide",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc8.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc8.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc9.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc9.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc20-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc20-wide.jpeg",
     aspectRatio: "wide",
   },
   {
@@ -63,11 +63,11 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc11.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc11.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc12.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc12.jpeg",
     aspectRatio: "portrait",
   },
   {
@@ -79,11 +79,11 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc13.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc13.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc14-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc14-wide.jpeg",
     aspectRatio: "wide",
   },
   {
@@ -91,11 +91,11 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc17.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc17.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc18.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc18.jpeg",
     aspectRatio: "portrait",
   },
   {
@@ -103,15 +103,15 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc33-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc33-wide.jpeg",
     aspectRatio: "wide",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc19.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc19.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc21.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc21.jpeg",
     aspectRatio: "portrait",
   },
   {
@@ -119,11 +119,11 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc34.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc34.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc28-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc28-wide.jpeg",
     aspectRatio: "wide",
   },
   {
@@ -131,11 +131,11 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc22.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc22.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc23.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc23.jpeg",
     aspectRatio: "portrait",
   },
   {
@@ -143,15 +143,15 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc24.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc24.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc25.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc25.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc30-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc30-wide.jpeg",
     aspectRatio: "wide",
   },
   {
@@ -159,27 +159,27 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc26.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc26.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc27.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc27.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc31-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc31-wide.jpeg",
     aspectRatio: "wide",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc10.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc10.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc16.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc16.jpeg",
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc35-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc35-wide.jpeg",
     aspectRatio: "wide",
   },
   {
@@ -187,7 +187,7 @@ const anniversaryImages: CarouselImage[] = [
     aspectRatio: "portrait",
   },
   {
-    src: "https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc3-wide.jpeg",
+    src: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc3-wide.jpeg",
     aspectRatio: "portrait",
   },
 ]

@@ -216,7 +216,7 @@ export function EasterEggArrow({
           </svg>
         ) : (
           <Image
-            src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg"
+            src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg"
             alt="Easter egg - click to discover"
             width={180}
             height={180}
@@ -253,7 +253,7 @@ export function EasterEggArrow({
         transition={{ duration: 0.8, repeat: isHovered ? Infinity : 0, ease: "easeInOut" }}
       >
         <Image
-          src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg"
+          src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg"
           alt="Easter egg - click to discover"
           width={180}
           height={180}
@@ -289,7 +289,7 @@ export function EasterEggArrow({
       <VideoModal
         isOpen={isVideoOpen}
         onClose={() => setIsVideoOpen(false)}
-        videoSrc="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc-anniversary.mov"
+        videoSrc="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc-anniversary.mov"
       />
     </>
   )
@@ -326,7 +326,7 @@ export function MadeInSAEasterEgg({ className = "", type }: MadeInSAEasterEggPro
         transition={{ duration: 1.2, repeat: isHovered ? Infinity : 0, ease: "easeInOut" }}
       >
         <Image
-          src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/MadeinSA.svg"
+          src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/MadeinSA.svg"
           alt="Made in San Antonio - click to discover"
           width={160}
           height={160}
@@ -361,7 +361,7 @@ export function MadeInSAEasterEgg({ className = "", type }: MadeInSAEasterEggPro
       <VideoModal
         isOpen={isVideoOpen}
         onClose={() => setIsVideoOpen(false)}
-        videoSrc="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc-anniversary.mov"
+        videoSrc="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc-anniversary.mov"
       />
     </>
   )

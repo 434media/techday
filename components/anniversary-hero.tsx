@@ -31,12 +31,12 @@ export function AnniversaryHero() {
             muted
             playsInline
             className="absolute inset-0 h-full w-full object-cover"
-            poster="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/tb-poster.webp"
+            poster="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/tb-poster.webp"
             title="San Antonio Tech Bloc 10th Anniversary Celebration Video"
             aria-label="Anniversary celebration video showcasing 10 years of San Antonio Tech Bloc"
           >
             <source
-              src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc-anniversary.mov"
+              src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc-anniversary.mov"
               type="video/mp4"
             />
             <p>

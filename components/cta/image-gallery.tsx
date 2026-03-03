@@ -14,7 +14,7 @@ const images = [
     width: 1200,
     height: 800,
     type: "banner",
-    videoUrl: "https://ampd-asset.s3.us-east-2.amazonaws.com/TechDay2024.mp4",
+    videoUrl: "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/TechDay2024.mp4",
   },
   {
     id: 2,

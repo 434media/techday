@@ -68,7 +68,7 @@ export function Hero() {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.03]"
         style={{
-          backgroundImage: "url('https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg')",
+          backgroundImage: "url('https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg')",
         }}
       />
 
@@ -95,7 +95,7 @@ export function Hero() {
           }}
         >
           <Image
-            src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/TechBlocBlimp.png"
+            src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/TechBlocBlimp.png"
             alt="Tech Bloc Blimp"
             width={300}
             height={150}

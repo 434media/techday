@@ -30,7 +30,7 @@ export function AnniversaryPopup() {
         aria-label="Celebrate 10 years of Tech Bloc"
       >
         <Image
-          src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/10Years_Red.svg"
+          src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/10Years_Red.svg"
           alt="10 Years Tech Bloc"
           width={80}
           height={80}
@@ -73,7 +73,7 @@ export function AnniversaryPopup() {
                 {/* Image Section - 2/5 of height */}
                 <div className="h-[40%] overflow-hidden flex-shrink-0">
                   <Image
-                    src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/guber.png"
+                    src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/guber.png"
                     alt="Tech Bloc Anniversary"
                     width={400}
                     height={300}

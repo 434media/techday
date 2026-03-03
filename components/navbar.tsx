@@ -23,7 +23,7 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <Image
-              src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/10Years_Red.svg"
+              src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/10Years_Red.svg"
               alt="Tech Day 10 Years"
               width={48}
               height={48}

@@ -96,7 +96,7 @@ export function AnimatedBlimp() {
 
             {/* Blimp image */}
             <motion.img
-              src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/TechBlocBlimp.png"
+              src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/TechBlocBlimp.png"
               alt="Tech Bloc Blimp - Click to watch anniversary video"
               className="w-75 md:w-100 lg:w-125 h-auto drop-shadow-2xl select-none"
               style={{
@@ -159,12 +159,12 @@ export function AnimatedBlimp() {
                   muted
                   playsInline
                   className="absolute inset-0 h-full w-full object-cover"
-                  poster="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/tb-poster.webp"
+                  poster="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/tb-poster.webp"
                   title="San Antonio Tech Bloc 10th Anniversary Celebration Video"
                   aria-label="Anniversary celebration video showcasing 10 years of San Antonio Tech Bloc"
                 >
                   <source
-                    src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/techbloc-anniversary.mov"
+                    src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc-anniversary.mov"
                     type="video/mp4"
                   />
                   <p>Your browser does not support the video tag.</p>

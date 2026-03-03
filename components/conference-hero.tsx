@@ -15,7 +15,7 @@ function ScrollArrow() {
       transition={{ delay: 1, duration: 0.5 }}
     >
       <motion.img
-        src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg"
+        src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg"
         alt="Scroll down"
         className="w-8 h-8 md:w-10 md:h-10"
         animate={{ y: [0, 8, 0] }}
@@ -223,7 +223,7 @@ export function ConferenceHero() {
           style={{ y: backgroundY }}
         >
           <Image
-            src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowpixels.png"
+            src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowpixels.png"
             alt=""
             fill
             className="object-cover opacity-20"
@@ -294,7 +294,7 @@ export function ConferenceHero() {
             >
               <span className="text-sm mb-2">Scroll to explore</span>
               <img
-                src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg"
+                src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg"
                 alt=""
                 className="w-6 h-6 opacity-50"
               />

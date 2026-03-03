@@ -68,7 +68,7 @@ export default function RegisterPage() {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.05]"
           style={{
-            backgroundImage: "url('https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg')",
+            backgroundImage: "url('https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg')",
           }}
         />
         
@@ -88,7 +88,7 @@ export default function RegisterPage() {
                 <p className="text-sm text-muted-foreground mt-1 font-medium">April 20–21, 2026 • San Antonio, TX</p>
               </div>
               <Image
-                src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/10Years_Red.svg"
+                src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/10Years_Red.svg"
                 alt="Tech Day 10 Years"
                 width={56}
                 height={56}
@@ -106,7 +106,7 @@ export default function RegisterPage() {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.03]"
           style={{
-            backgroundImage: "url('https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg')",
+            backgroundImage: "url('https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg')",
           }}
         />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

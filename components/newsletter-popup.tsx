@@ -60,7 +60,7 @@ export function NewsletterPopup() {
         aria-label="Open newsletter signup"
       >
         <Image
-          src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/MadeinSA.svg"
+          src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/MadeinSA.svg"
           alt="Get Notified"
           width={120}
           height={80}

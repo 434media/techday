@@ -306,7 +306,7 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
             {/* Arrow SVG Background */}
             <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
               <Image
-                src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg"
+                src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg"
                 alt=""
                 fill
                 className="object-cover scale-150"
@@ -318,7 +318,7 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
               {/* Logo */}
               <div className="flex px-2 pt-1">
                 <Image
-                  src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/10Years_Red.svg"
+                  src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/10Years_Red.svg"
                   alt="Tech Day 10 Years"
                   width={64}
                   height={64}
@@ -403,7 +403,7 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
             <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
               <div className="relative w-full h-full">
                 <Image
-                  src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/arrowdown.svg"
+                  src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg"
                   alt="Tech Day Arrow"
                   fill
                   className="object-contain scale-125"
@@ -418,7 +418,7 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
             <div className="relative z-10 flex-1 flex flex-col items-center justify-end p-8 pb-10">
               <div className="text-center">
                 <Image
-                  src="https://ampd-asset.s3.us-east-2.amazonaws.com/techday/10Years_Red.svg"
+                  src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/10Years_Red.svg"
                   alt="Tech Day 10 Years"
                   width={80}
                   height={80}
