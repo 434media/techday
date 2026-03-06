@@ -246,7 +246,7 @@ export function Hero() {
             <p className="text-[#0a0a0a]/50 text-xs font-mono uppercase tracking-widest">Sponsored by</p>
             <div className="flex items-center gap-6 md:gap-8">
               {/* H-E-B */}
-              <a
+              {/* <a
                 href="https://www.heb.com"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -261,7 +261,7 @@ export function Hero() {
                   <path fill="currentColor" d="M530.34 172.78c0-2.46-1.46-3.54-4.4-3.54h-4.74v12.44h1.88v-5.39h2.17l3.28 5.39h2.11l-3.54-5.48c1.83-.23 3.23-1.2 3.23-3.42Zm-7.25 1.91v-3.86h2.57c1.31 0 2.71.29 2.71 1.83 0 1.92-1.43 2.03-3.03 2.03h-2.26Z" />
                   <path fill="currentColor" d="M525.37 164.67c-5.93 0-10.96 4.57-10.96 10.76s5.02 10.81 10.96 10.81 10.9-4.57 10.9-10.81-5.02-10.76-10.9-10.76m0 19.78c-4.93 0-8.79-3.83-8.79-9.02s3.85-8.96 8.79-8.96 8.73 3.85 8.73 8.96-3.85 9.02-8.73 9.02" />
                 </svg>
-              </a>
+              </a> */}
               {/* IRYS */}
               <a
                 href="https://www.irystechnologies.com/"
