@@ -247,7 +247,7 @@ export function Hero() {
             <p className="text-[#0a0a0a]/50 text-xs font-mono uppercase tracking-widest">Sponsored by</p>
             <div className="flex items-center gap-6 md:gap-8">
               {/* CMS Sponsors (e.g. Port SA) */}
-              {apiSponsors.map((sponsor) => (
+              {apiSponsors.slice(0, 3).map((sponsor) => (
                 <a
                   key={sponsor.id}
                   href={sponsor.website || "#"}
