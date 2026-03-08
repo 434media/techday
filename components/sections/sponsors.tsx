@@ -60,10 +60,8 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
 
   const hasSponsors = sponsors.sponsors.length > 0 || sponsors.community.length > 0 || staticSponsors.length > 0
 
-  const isDark = variant === "dark"
-
   return (
-    <section ref={ref} id="sponsors" className={`relative py-24 md:py-32 ${isDark ? "bg-foreground" : "bg-white"}`}>
+    <section ref={ref} id="sponsors" className="relative py-24 md:py-32 bg-white">
       {/* Pixel Arrow - Top Right */}
       <PixelArrow position="top-right" size="xl" variant={variant} type="video" />
       {/* Pixel Arrow - Bottom Left */}
@@ -89,7 +87,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
           <Editable 
             id="sponsors.title" 
             as="h2" 
-            className={`text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-[0.95] tracking-tight ${isDark ? "text-white" : "text-foreground"}`}
+            className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-[0.95] tracking-tight text-foreground"
             page="global"
             section="sponsors"
           >
@@ -98,7 +96,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
           <Editable 
             id="sponsors.description" 
             as="p" 
-            className={`text-lg md:text-xl max-w-2xl mx-auto leading-relaxed ${isDark ? "text-white/60" : "text-muted-foreground"}`}
+            className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed text-muted-foreground"
             page="global"
             section="sponsors"
           >
@@ -112,45 +110,15 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
         {isLoading && (
           <div className="text-center py-12">
             <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-            <p className={isDark ? "text-white/60" : "text-muted-foreground"}>Loading sponsors...</p>
+            <p className="text-muted-foreground">Loading sponsors...</p>
           </div>
         )}
 
         {/* No Sponsors Message */}
         {!isLoading && !hasSponsors && (
           <div className="text-center py-12 mb-12">
-            <p className={isDark ? "text-white/60" : "text-muted-foreground"}>Sponsor announcements coming soon...</p>
+            <p className="text-muted-foreground">Sponsor announcements coming soon...</p>
           </div>
-        )}
-
-        {/* Static Sponsors (inline SVGs) */}
-        {staticSponsors.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="mb-16"
-          >
-            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-              {staticSponsors.map((sponsor) => (
-                <a
-                  key={sponsor.name}
-                  href={sponsor.website || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`relative p-6 md:p-8 border rounded-xl transition-all shadow-sm hover:shadow-lg group ${
-                    isDark
-                      ? "bg-white/5 border-white/10 hover:border-white/30"
-                      : "bg-white border-border hover:border-primary/40"
-                  }`}
-                >
-                  <div className="h-12 md:h-16 w-auto flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
-                    {sponsor.logo}
-                  </div>
-                </a>
-              ))}
-            </div>
-          </motion.div>
         )}
 
         {/* Sponsors */}
@@ -161,18 +129,14 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mb-16"
           >
-            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
               {sponsors.sponsors.map((sponsor) => (
                 <a
                   key={sponsor.id}
                   href={sponsor.website || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`relative p-6 md:p-8 border rounded-xl transition-all shadow-sm hover:shadow-lg group ${
-                    isDark
-                      ? "bg-white/5 border-white/10 hover:border-white/30"
-                      : "bg-white border-border hover:border-primary/40"
-                  }`}
+                  className="relative p-6 md:p-8 border rounded-xl transition-all hover:shadow-lg group border-border hover:border-primary/40 flex items-center justify-center"
                 >
                   {sponsor.logoUrl ? (
                     <img
@@ -183,9 +147,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
                       }`}
                     />
                   ) : (
-                    <div className={`h-12 md:h-16 flex items-center justify-center text-lg md:text-xl font-bold ${
-                      isDark ? "text-white" : "text-foreground"
-                    }`}>
+                    <div className="h-12 md:h-16 flex items-center justify-center text-lg md:text-xl font-bold text-foreground">
                       {sponsor.name}
                     </div>
                   )}
@@ -215,11 +177,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
                   href={sponsor.website || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`p-3 border rounded-lg transition-all shadow-sm hover:shadow-md ${
-                    isDark
-                      ? "bg-white/5 border-white/10 hover:border-white/30"
-                      : "bg-white border-border hover:border-primary/40"
-                  }`}
+                  className="p-3 border rounded-lg transition-all shadow-sm hover:shadow-md border-border hover:border-primary/40"
                 >
                   {sponsor.logoUrl ? (
                     <img
@@ -230,9 +188,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
                       }`}
                     />
                   ) : (
-                    <div className={`h-8 flex items-center justify-center text-sm font-bold ${
-                      isDark ? "text-white/60" : "text-muted-foreground"
-                    }`}>
+                    <div className="h-8 flex items-center justify-center text-sm font-bold text-muted-foreground">
                       {sponsor.name}
                     </div>
                   )}
@@ -247,7 +203,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className={`relative rounded-2xl overflow-hidden shadow-xl ${isDark ? "bg-white/5 border-2 border-white/10" : "bg-white border-2 border-primary/20"}`}
+          className="relative rounded-2xl overflow-hidden shadow-xl bg-white border-2 border-primary/20"
         >
           <div className="bg-linear-to-r from-primary to-primary/80 px-6 py-4">
             <Editable 
@@ -262,16 +218,16 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
           </div>
           
           <div className="absolute top-16 left-0 right-0 flex items-center justify-between">
-            <div className={`w-4 h-8 rounded-r-full -ml-0.5 ${isDark ? "bg-foreground" : "bg-background"}`} />
-            <div className={`flex-1 border-t-2 border-dashed ${isDark ? "border-white/10" : "border-border"}`} />
-            <div className={`w-4 h-8 rounded-l-full -mr-0.5 ${isDark ? "bg-foreground" : "bg-background"}`} />
+            <div className="w-4 h-8 rounded-r-full -ml-0.5 bg-background" />
+            <div className="flex-1 border-t-2 border-dashed border-border" />
+            <div className="w-4 h-8 rounded-l-full -mr-0.5 bg-background" />
           </div>
           
           <div className="p-8 md:p-10 pt-14 text-center">
             <Editable 
               id="sponsors.cta.title" 
               as="h3" 
-              className={`text-2xl md:text-3xl font-bold mb-4 leading-tight tracking-tight ${isDark ? "text-white" : "text-foreground"}`}
+              className="text-2xl md:text-3xl font-bold mb-4 leading-tight tracking-tight text-foreground"
               page="global"
               section="sponsors"
             >
@@ -280,7 +236,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
             <Editable 
               id="sponsors.cta.description" 
               as="p" 
-              className={`mb-8 max-w-lg mx-auto leading-relaxed text-base md:text-lg ${isDark ? "text-white/60" : "text-muted-foreground"}`}
+              className="mb-8 max-w-lg mx-auto leading-relaxed text-base md:text-lg text-muted-foreground"
               page="global"
               section="sponsors"
             >
