@@ -10,6 +10,7 @@ interface Sponsor {
   name: string
   logoUrl: string
   website: string
+  logoSize?: "default" | "large"
 }
 
 interface EventSponsors {
@@ -37,6 +38,7 @@ const EMPTY_SPONSOR: Sponsor = {
   name: "",
   logoUrl: "",
   website: "",
+  logoSize: "default",
 }
 
 export default function SponsorsPage() {
@@ -632,6 +634,21 @@ function SponsorModal({
               placeholder="https://..."
               className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black rounded-md"
             />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium uppercase tracking-wider text-neutral-400 mb-2">
+              Logo Size
+            </label>
+            <select
+              value={form.logoSize || "default"}
+              onChange={(e) => setForm({ ...form, logoSize: e.target.value as "default" | "large" })}
+              className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black focus:outline-none focus:border-black rounded-md"
+            >
+              <option value="default">Default</option>
+              <option value="large">Large</option>
+            </select>
+            <p className="text-xs text-neutral-400 mt-1">Use &quot;Large&quot; for logos that appear too small at default size</p>
           </div>
 
           <div className="pt-4 flex gap-3">

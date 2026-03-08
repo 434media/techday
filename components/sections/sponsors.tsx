@@ -12,6 +12,7 @@ interface Sponsor {
   name: string
   logoUrl: string
   website: string
+  logoSize?: "default" | "large"
 }
 
 interface StaticSponsor {
@@ -177,7 +178,9 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
                     <img
                       src={sponsor.logoUrl}
                       alt={sponsor.name}
-                      className="h-12 md:h-16 w-auto opacity-80 group-hover:opacity-100 transition-opacity"
+                      className={`w-auto opacity-80 group-hover:opacity-100 transition-opacity ${
+                        sponsor.logoSize === "large" ? "h-20 md:h-28" : "h-12 md:h-16"
+                      }`}
                     />
                   ) : (
                     <div className={`h-12 md:h-16 flex items-center justify-center text-lg md:text-xl font-bold ${
@@ -222,7 +225,9 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
                     <img
                       src={sponsor.logoUrl}
                       alt={sponsor.name}
-                      className="h-8 w-auto opacity-60 hover:opacity-100 transition-opacity"
+                      className={`w-auto opacity-60 hover:opacity-100 transition-opacity ${
+                        sponsor.logoSize === "large" ? "h-14 md:h-20" : "h-8"
+                      }`}
                     />
                   ) : (
                     <div className={`h-8 flex items-center justify-center text-sm font-bold ${

@@ -129,6 +129,7 @@ export interface SponsorContent {
   name: string
   logoUrl: string
   website: string
+  logoSize?: "default" | "large"
 }
 
 export type SponsorEvent = "techday" | "techfuel"
