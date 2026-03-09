@@ -16,6 +16,7 @@ const protectedRoutes = [
   { path: "/api/sponsor-contact", method: "POST" },
   { path: "/api/semifinals-judges", method: "POST" },
   { path: "/api/semifinals-pitches", method: "POST" },
+  { path: "/api/ecosystem-tours", method: "POST" },
 ]
 
 const spaceGrotesk = Space_Grotesk({
