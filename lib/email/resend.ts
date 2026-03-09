@@ -1011,3 +1011,285 @@ export async function sendPitchSchedulingConfirmation(
     return { success: false, error }
   }
 }
+
+// Judge invitation email — directs judges to the scheduling page
+export async function sendJudgeInvitationEmail(
+  email: string,
+  judgeName: string
+) {
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      You're Invited to Judge, ${judgeName}! 🎓
+    </h2>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Thank you for volunteering to be a judge for the <strong>Tech Fuel 2026 Semi-Finals</strong>. We're excited to have you on the panel!
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      The semi-finals will take place via <strong>Zoom</strong> on <strong>April 2–3, 2026</strong>. Each judging block is approximately 90 minutes and includes a brief orientation, startup pitches, and deliberation.
+    </p>
+    
+    <!-- Action Card -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 30px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">
+            ${DOWN_ARROW_SVG}
+          </div>
+          
+          <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+            Action Required
+          </p>
+          
+          <p style="margin: 15px 0 0; color: #ffffff; font-size: 16px; line-height: 1.6;">
+            Please select your preferred judging session. Available dates and time slots are shown on the scheduling page.
+          </p>
+          
+          <p style="margin: 15px 0 0; color: rgba(255,255,255,0.5); font-size: 13px;">
+            Slots are first-come, first-served — once you select a time, it's locked in.
+          </p>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Schedule Button -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
+      <tr>
+        <td align="center">
+          <a href="https://sanantoniotechday.com/semifinals-judges" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
+            Schedule Your Judging Session
+          </a>
+        </td>
+      </tr>
+    </table>
+    
+    <h3 style="margin: 30px 0 15px; color: #0a0a0a; font-size: 18px; font-weight: 600;">
+      What to Expect
+    </h3>
+    
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">1</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Pick a Date &amp; Time</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Choose from available 90-minute blocks on April 2 or 3</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">2</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Receive Confirmation</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">You'll get a follow-up email with Zoom details and calendar invite</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 0;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">3</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Judge Day</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Join via Zoom, review pitches, and help select the finalists</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+      Questions? Reply to this email or reach out to the Tech Bloc team.
+    </p>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: `You're invited to judge Tech Fuel 2026 Semi-Finals 🎓`,
+      html: getEmailTemplate(content, "Please schedule your judging session at your earliest convenience"),
+    })
+
+    console.log(`Judge invitation email sent to ${email}:`, result)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send judge invitation email to ${email}:`, error)
+    return { success: false, error }
+  }
+}
+
+// Pitch semifinals notification email — notifies accepted pitches they're moving to semifinals
+export async function sendPitchSemifinalsNotification(
+  email: string,
+  founderName: string,
+  companyName: string
+) {
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      Congratulations, ${founderName}! 🚀
+    </h2>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      We're thrilled to let you know that <strong>${companyName}</strong> has been selected to advance to the <strong>Tech Fuel 2026 Semi-Finals</strong>!
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      The semi-finals will take place via <strong>Zoom</strong> on <strong>April 2–3, 2026</strong>. You'll have a 5-minute pitch slot followed by 5 minutes of Q&A with a panel of judges.
+    </p>
+    
+    <!-- Celebration Card -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 30px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">
+            ${DOWN_ARROW_SVG}
+          </div>
+          
+          <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+            Semi-Finals Selection
+          </p>
+          
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top: 15px;">
+            <tr>
+              <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Company</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${companyName}</p>
+              </td>
+              <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Status</p>
+                <p style="margin: 0; color: #22c55e; font-size: 15px; font-weight: 700;">SEMI-FINALIST ✓</p>
+              </td>
+            </tr>
+            <tr>
+              <td width="50%" style="vertical-align: top;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Dates</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">April 2–3, 2026</p>
+              </td>
+              <td width="50%" style="vertical-align: top;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Format</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">Zoom (Virtual)</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Next Step -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background-color: #fef9c3; border: 1px solid #fde047; border-radius: 8px; padding: 20px;">
+          <p style="margin: 0; color: #854d0e; font-size: 14px; font-weight: 600;">
+            ⚡ Next Step: Schedule Your Pitch Time
+          </p>
+          <p style="margin: 8px 0 0; color: #a16207; font-size: 14px; line-height: 1.5;">
+            Click the button below to select your preferred pitch slot. Slots are first-come, first-served — once you pick a time, it's locked in.
+          </p>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Schedule Button -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
+      <tr>
+        <td align="center">
+          <a href="https://sanantoniotechday.com/semifinals-pitches" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
+            Schedule Your Pitch Slot
+          </a>
+        </td>
+      </tr>
+    </table>
+    
+    <h3 style="margin: 30px 0 15px; color: #0a0a0a; font-size: 18px; font-weight: 600;">
+      What to Expect
+    </h3>
+    
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">1</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Pick Your Pitch Slot</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Choose a 10-minute slot on April 2 or 3</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">2</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Receive Confirmation</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">You'll get a follow-up email with Zoom details and calendar invite</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 0;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">3</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Pitch Day</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">5-minute pitch + 5-minute Q&A with judges via Zoom</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+      Questions? Reply to this email or reach out to the Tech Bloc team.
+    </p>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: `${companyName} is a Tech Fuel 2026 Semi-Finalist! 🎉`,
+      html: getEmailTemplate(content, "Schedule your pitch slot as soon as possible — slots are first-come, first-served"),
+    })
+
+    console.log(`Pitch semifinals notification sent to ${email}:`, result)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send pitch semifinals notification to ${email}:`, error)
+    return { success: false, error }
+  }
+}

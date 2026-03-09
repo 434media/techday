@@ -49,6 +49,8 @@ export default function AdminJudgeSchedulingPage() {
   const [removingId, setRemovingId] = useState<string | null>(null)
   const [sendingEmailId, setSendingEmailId] = useState<string | null>(null)
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null)
+  const [isBulkSending, setIsBulkSending] = useState(false)
+  const [bulkNotifyMeta, setBulkNotifyMeta] = useState<{ lastSentAt: string | null; sentBy?: string; sentCount?: number }>({ lastSentAt: null })
 
   function showToast(message: string, type: "success" | "error" = "success") {
     setToast({ message, type })
@@ -72,7 +74,47 @@ export default function AdminJudgeSchedulingPage() {
     }
   }
 
-  useEffect(() => { fetchJudges() }, [])
+  async function fetchBulkNotifyMeta() {
+    try {
+      const res = await fetch("/api/admin/data/semifinals-judges/notify", { credentials: "include" })
+      if (res.ok) {
+        const data = await res.json()
+        setBulkNotifyMeta(data)
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  async function handleBulkNotify() {
+    const judgesWithEmail = judges.filter((j) => j.email)
+    if (judgesWithEmail.length === 0) {
+      showToast("No judges with email addresses to notify", "error")
+      return
+    }
+    if (!confirm(`Send invitation emails to ${judgesWithEmail.length} judge${judgesWithEmail.length !== 1 ? "s" : ""}? This will direct them to the scheduling page.`)) return
+
+    setIsBulkSending(true)
+    try {
+      const res = await fetch("/api/admin/data/semifinals-judges/notify", {
+        method: "POST",
+        credentials: "include",
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        showToast(data.error || "Failed to send notifications", "error")
+        return
+      }
+      showToast(`Invitation sent to ${data.sent} judge${data.sent !== 1 ? "s" : ""}${data.failed ? ` (${data.failed} failed)` : ""}`)
+      setBulkNotifyMeta({ lastSentAt: data.lastSentAt, sentCount: data.sent })
+    } catch {
+      showToast("Failed to send notifications", "error")
+    } finally {
+      setIsBulkSending(false)
+    }
+  }
+
+  useEffect(() => { fetchJudges(); fetchBulkNotifyMeta() }, [])
 
   async function handleAddJudge(e: React.FormEvent) {
     e.preventDefault()
@@ -199,15 +241,56 @@ export default function AdminJudgeSchedulingPage() {
             {totalJudges} judge{totalJudges !== 1 ? "s" : ""} confirmed across {ALL_DATES.length} days
           </p>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-black text-white text-sm font-semibold rounded-md hover:bg-neutral-800 transition-colors leading-5"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Add Judge
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-black text-white text-sm font-semibold rounded-md hover:bg-neutral-800 transition-colors leading-5"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Judge
+          </button>
+        </div>
+      </div>
+
+      {/* Bulk Notification */}
+      <div className="mb-10 bg-neutral-50 border border-neutral-200 rounded-md p-5">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h3 className="text-sm font-bold text-black leading-5">Notify All Judges</h3>
+            <p className="text-[13px] text-neutral-500 mt-1 leading-5">
+              Send an invitation email to all judges directing them to schedule their judging session.
+            </p>
+            <p className="text-[12px] text-neutral-400 mt-1.5 leading-4 font-mono">
+              {bulkNotifyMeta.lastSentAt
+                ? `Last sent: ${new Date(bulkNotifyMeta.lastSentAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}${bulkNotifyMeta.sentCount ? ` — ${bulkNotifyMeta.sentCount} email${bulkNotifyMeta.sentCount !== 1 ? "s" : ""}` : ""}`
+                : "Never sent"}
+            </p>
+          </div>
+          <button
+            onClick={handleBulkNotify}
+            disabled={isBulkSending || judges.length === 0}
+            className="flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed leading-5 shrink-0"
+          >
+            {isBulkSending ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Sending...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Notify All Judges
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
