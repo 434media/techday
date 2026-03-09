@@ -228,7 +228,7 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
             {/* Schedule Timeline */}
             <div className="relative">
               {/* Timeline line */}
-              <div className={`absolute left-0 md:left-24 top-0 bottom-0 w-px ${isDark ? "bg-white/10" : "bg-border"}`} />
+              <div className={`absolute left-0 md:left-28 top-0 bottom-0 w-px ${isDark ? "bg-white/10" : "bg-border"}`} />
 
               <AnimatePresence mode="wait">
                 <motion.div key={filter} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -244,19 +244,19 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05 }}
-                        className="relative flex flex-col md:flex-row gap-3 md:gap-6 pb-5 last:pb-0"
+                        className="relative flex flex-col md:flex-row gap-4 md:gap-8 pb-8 last:pb-0"
                       >
                         {/* Time - styled as ticket stub */}
-                        <div className="md:w-24 shrink-0">
-                          <div className="inline-flex md:flex-col items-center md:items-end gap-1">
-                            <span className="font-mono text-sm text-primary font-semibold tracking-tight">{formatTime(session.time)}</span>
-                            <span className="font-mono text-[10px] text-muted-foreground/80 tracking-wider font-medium">{formatDuration(session.duration)}</span>
+                        <div className="md:w-28 shrink-0">
+                          <div className="inline-flex md:flex-col items-center md:items-end gap-1.5">
+                            <span className="font-mono text-sm text-primary font-bold tracking-tight leading-none">{formatTime(session.time)}</span>
+                            <span className="font-mono text-[10px] text-muted-foreground/70 tracking-wider font-semibold leading-none">{formatDuration(session.duration)}</span>
                           </div>
                         </div>
 
                         {/* Timeline dot - colored by track */}
                         <div
-                          className={`absolute left-0 md:left-24 -translate-x-1/2 w-3 h-3 rounded-full border-[3px] ${isDark ? "border-foreground" : "border-background"} ${
+                          className={`absolute left-0 md:left-28 -translate-x-1/2 w-3.5 h-3.5 rounded-full border-[3px] ${isDark ? "border-foreground" : "border-background"} ${
                             trackStyle ? trackStyle.dot : isBreakOrNetworking ? "bg-muted-foreground" : session.type === "keynote" ? "bg-primary" : "bg-foreground"
                           }`}
                         />
@@ -292,47 +292,47 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
                                   : isDark ? "bg-linear-to-r from-white to-white/50" : "bg-linear-to-r from-foreground to-foreground/50"
                           }`} />
                           
-                          <div className="px-4 py-3 md:px-5 md:py-4">
+                          <div className="px-5 py-4 md:px-6 md:py-5">
                             {/* Title row with inline badges */}
-                            <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1 mb-1.5">
-                              <h3 className={`text-base font-bold leading-tight tracking-tight ${isDark ? "text-white" : "text-foreground"}`}>{session.title}</h3>
-                              <div className="flex items-center gap-1.5">
+                            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 mb-2">
+                              <h3 className={`text-[17px] font-extrabold leading-snug tracking-tight ${isDark ? "text-white" : "text-foreground"}`}>{session.title}</h3>
+                              <div className="flex items-center gap-2">
                                 {trackStyle && (
-                                  <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded ${trackStyle.bgLight} ${trackStyle.text}`}>
+                                  <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded ${trackStyle.bgLight} ${trackStyle.text}`}>
                                     {session.track === "emerging" ? "Emerging" : session.track === "founders" ? "Founders" : "AI"}
                                   </span>
                                 )}
-                                <span className={`text-[10px] font-mono font-medium px-1.5 py-0.5 rounded capitalize ${isDark ? "bg-white/10 text-white/60" : "bg-muted text-muted-foreground"}`}>{session.type}</span>
+                                <span className={`text-[11px] font-mono font-semibold px-2 py-0.5 rounded capitalize ${isDark ? "bg-white/10 text-white/60" : "bg-muted text-muted-foreground"}`}>{session.type}</span>
                               </div>
                             </div>
 
                             {/* Description */}
                             {session.description && (
-                              <p className={`text-[13px] leading-[1.6] font-normal mb-3 ${isDark ? "text-white/55" : "text-muted-foreground"}`}>{session.description}</p>
+                              <p className={`text-sm leading-[1.7] font-normal mb-4 ${isDark ? "text-white/55" : "text-muted-foreground"}`}>{session.description}</p>
                             )}
                             
                             {/* Moderators + Speakers inline row */}
                             {(sessionModerators.length > 0 || sessionSpeakers.length > 0) && (
-                              <div className={`flex flex-wrap gap-x-5 gap-y-2.5 ${session.room ? "mb-2.5" : ""}`}>
+                              <div className={`flex flex-wrap gap-x-6 gap-y-3 ${session.room ? "mb-3" : ""}`}>
                                 {/* Moderators */}
                                 {sessionModerators.length > 0 && (
                                   <div>
-                                    <p className={`text-[10px] font-mono uppercase tracking-widest mb-1.5 font-semibold ${isDark ? "text-amber-400/80" : "text-amber-600"}`}>
+                                    <p className={`text-[10px] font-mono uppercase tracking-widest mb-2 font-bold ${isDark ? "text-amber-400/80" : "text-amber-600"}`}>
                                       {sessionModerators.length === 1 ? "Moderator" : "Moderators"}
                                     </p>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-3">
                                       {sessionModerators.map((speaker) => (
-                                        <div key={speaker.id} className={`flex items-center gap-2`}>
+                                        <div key={speaker.id} className={`flex items-center gap-2.5`}>
                                           {speaker.imageUrl ? (
-                                            <img src={speaker.imageUrl} alt={speaker.name} className="w-6 h-6 rounded object-cover bg-muted" />
+                                            <img src={speaker.imageUrl} alt={speaker.name} className="w-7 h-7 rounded object-cover bg-muted" />
                                           ) : (
-                                            <div className={`w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold ${isDark ? "bg-amber-500/20 text-amber-400" : "bg-amber-100 text-amber-700"}`}>
+                                            <div className={`w-7 h-7 rounded flex items-center justify-center text-[11px] font-bold ${isDark ? "bg-amber-500/20 text-amber-400" : "bg-amber-100 text-amber-700"}`}>
                                               {speaker.name.charAt(0)}
                                             </div>
                                           )}
                                           <div>
-                                            <p className={`text-[13px] font-semibold leading-none ${isDark ? "text-amber-300" : "text-amber-900"}`}>{speaker.name}</p>
-                                            <p className={`text-[11px] leading-none mt-0.5 font-medium ${isDark ? "text-amber-400/50" : "text-amber-700/60"}`}>{speaker.company}</p>
+                                            <p className={`text-sm font-bold leading-tight ${isDark ? "text-amber-300" : "text-amber-900"}`}>{speaker.name}</p>
+                                            <p className={`text-xs leading-tight mt-0.5 font-medium ${isDark ? "text-amber-400/50" : "text-amber-700/60"}`}>{speaker.company}</p>
                                           </div>
                                         </div>
                                       ))}
@@ -343,22 +343,22 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
                                 {/* Speakers */}
                                 {sessionSpeakers.length > 0 && (
                                   <div>
-                                    <p className={`text-[10px] font-mono uppercase tracking-widest mb-1.5 font-semibold ${isDark ? "text-white/35" : "text-muted-foreground"}`}>
+                                    <p className={`text-[10px] font-mono uppercase tracking-widest mb-2 font-bold ${isDark ? "text-white/35" : "text-muted-foreground"}`}>
                                       {sessionSpeakers.length === 1 ? "Speaker" : "Speakers"}
                                     </p>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-3">
                                       {sessionSpeakers.map((speaker) => (
-                                        <div key={speaker.id} className="flex items-center gap-2">
+                                        <div key={speaker.id} className="flex items-center gap-2.5">
                                           {speaker.imageUrl ? (
-                                            <img src={speaker.imageUrl} alt={speaker.name} className="w-6 h-6 rounded object-cover bg-muted grayscale" />
+                                            <img src={speaker.imageUrl} alt={speaker.name} className="w-7 h-7 rounded object-cover bg-muted grayscale" />
                                           ) : (
-                                            <div className={`w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold ${isDark ? "bg-white/10 text-white/60" : "bg-muted text-muted-foreground"}`}>
+                                            <div className={`w-7 h-7 rounded flex items-center justify-center text-[11px] font-bold ${isDark ? "bg-white/10 text-white/60" : "bg-muted text-muted-foreground"}`}>
                                               {speaker.name.charAt(0)}
                                             </div>
                                           )}
                                           <div>
-                                            <p className={`text-[13px] font-semibold leading-none ${isDark ? "text-white" : "text-foreground"}`}>{speaker.name}</p>
-                                            <p className={`text-[11px] leading-none mt-0.5 font-medium ${isDark ? "text-white/45" : "text-muted-foreground"}`}>{speaker.company}</p>
+                                            <p className={`text-sm font-bold leading-tight ${isDark ? "text-white" : "text-foreground"}`}>{speaker.name}</p>
+                                            <p className={`text-xs leading-tight mt-0.5 font-medium ${isDark ? "text-white/45" : "text-muted-foreground"}`}>{speaker.company}</p>
                                           </div>
                                         </div>
                                       ))}
@@ -370,8 +370,8 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
                             
                             {/* Room - compact inline */}
                             {session.room && (
-                              <div className={`flex items-center gap-1.5 pt-2.5 mt-2.5 border-t border-dashed ${isDark ? "border-white/8" : "border-border"}`}>
-                                <span className={`text-[11px] font-medium ${isDark ? "text-white/50" : "text-muted-foreground"}`}>
+                              <div className={`flex items-center gap-1.5 pt-3 mt-3 border-t border-dashed ${isDark ? "border-white/8" : "border-border"}`}>
+                                <span className={`text-xs font-semibold ${isDark ? "text-white/50" : "text-muted-foreground"}`}>
                                   📍 {session.room}
                                 </span>
                               </div>
