@@ -57,14 +57,30 @@ export async function POST() {
       }
     }
 
-    const results = await Promise.allSettled(
-      uniquePitches.map((pitch) =>
-        sendPitchSemifinalsNotification(pitch.email, pitch.founderName, pitch.companyName)
-      )
-    )
+    // Send in batches of 8 to respect Resend's 10/second rate limit
+    const BATCH_SIZE = 8
+    const BATCH_DELAY_MS = 1500
+    let sent = 0
+    let failed = 0
 
-    const sent = results.filter((r) => r.status === "fulfilled" && r.value.success).length
-    const failed = results.length - sent
+    for (let i = 0; i < uniquePitches.length; i += BATCH_SIZE) {
+      const batch = uniquePitches.slice(i, i + BATCH_SIZE)
+      const results = await Promise.allSettled(
+        batch.map((pitch) =>
+          sendPitchSemifinalsNotification(pitch.email, pitch.founderName, pitch.companyName)
+        )
+      )
+      for (const r of results) {
+        if (r.status === "fulfilled" && r.value.success) {
+          sent++
+        } else {
+          failed++
+        }
+      }
+      if (i + BATCH_SIZE < uniquePitches.length) {
+        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
+      }
+    }
 
     // Store the timestamp in Firebase
     await adminDb

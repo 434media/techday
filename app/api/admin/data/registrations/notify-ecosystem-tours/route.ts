@@ -62,16 +62,31 @@ export async function POST() {
       )
     }
 
-    const results = await Promise.allSettled(
-      eligible.map((reg) =>
-        sendEcosystemToursNotification(reg.email, reg.firstName, reg.events)
-      )
-    )
+    // Send in batches of 8 to respect Resend's 10/second rate limit
+    const BATCH_SIZE = 8
+    const BATCH_DELAY_MS = 1500
+    let sent = 0
+    let failed = 0
 
-    const sent = results.filter(
-      (r) => r.status === "fulfilled" && r.value.success
-    ).length
-    const failed = results.length - sent
+    for (let i = 0; i < eligible.length; i += BATCH_SIZE) {
+      const batch = eligible.slice(i, i + BATCH_SIZE)
+      const results = await Promise.allSettled(
+        batch.map((reg) =>
+          sendEcosystemToursNotification(reg.email, reg.firstName, reg.events)
+        )
+      )
+      for (const r of results) {
+        if (r.status === "fulfilled" && r.value.success) {
+          sent++
+        } else {
+          failed++
+        }
+      }
+      // Wait between batches (skip delay after the last batch)
+      if (i + BATCH_SIZE < eligible.length) {
+        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
+      }
+    }
 
     // Store the timestamp in a meta doc
     await adminDb

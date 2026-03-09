@@ -339,6 +339,10 @@ export async function sendRegistrationConfirmation(
       html: getEventEmailTemplate(content, eventType, "Keep this email - you'll need your ticket ID for check-in"),
     })
 
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
     console.log(`Registration confirmation sent to ${email}:`, result)
     return { success: true, data: result }
   } catch (error) {
@@ -467,6 +471,10 @@ export async function sendPitchConfirmation(
       html: getEmailTemplate(content, "We'll be in touch within 2 weeks with next steps"),
     })
 
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
     console.log(`Pitch confirmation sent to ${email}:`, result)
     return { success: true, data: result }
   } catch (error) {
@@ -601,6 +609,10 @@ export async function sendSponsorInquiryConfirmation(
       html: getEmailTemplate(content, "Our partnerships team will be in touch soon"),
     })
 
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
     console.log(`Sponsor inquiry confirmation sent to ${email}:`, result)
     return { success: true, data: result }
   } catch (error) {
@@ -820,6 +832,10 @@ export async function sendJudgeSchedulingConfirmation(
       html: getEmailTemplate(content, "Save this email — it contains your Zoom details for judging day"),
     })
 
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
     console.log(`Judge scheduling confirmation sent to ${email}:`, result)
     return { success: true, data: result }
   } catch (error) {
@@ -1004,6 +1020,10 @@ export async function sendPitchSchedulingConfirmation(
       html: getEmailTemplate(content, "Save this email — it contains your Zoom details and pitch time"),
     })
 
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
     console.log(`Pitch scheduling confirmation sent to ${email}:`, result)
     return { success: true, data: result }
   } catch (error) {
@@ -1130,6 +1150,10 @@ export async function sendJudgeInvitationEmail(
       html: getEmailTemplate(content, "Please schedule your judging session at your earliest convenience"),
     })
 
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
     console.log(`Judge invitation email sent to ${email}:`, result)
     return { success: true, data: result }
   } catch (error) {
@@ -1286,6 +1310,10 @@ export async function sendPitchSemifinalsNotification(
       html: getEmailTemplate(content, "Schedule your pitch slot as soon as possible — slots are first-come, first-served"),
     })
 
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
     console.log(`Pitch semifinals notification sent to ${email}:`, result)
     return { success: true, data: result }
   } catch (error) {
@@ -1378,6 +1406,10 @@ export async function sendEcosystemToursNotification(
       html: getEventEmailTemplate(content, eventType, "Ecosystem tours are included with your Tech Fuel registration"),
     })
 
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
     console.log(`Ecosystem tours notification sent to ${email}:`, result)
     return { success: true, data: result }
   } catch (error) {
