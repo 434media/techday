@@ -11,8 +11,11 @@ import "./globals.css"
 const protectedRoutes = [
   { path: "/api/register", method: "POST" },
   { path: "/api/pitch", method: "POST" },
+  { path: "/api/pitch/upload", method: "POST" },
   { path: "/api/newsletter", method: "POST" },
   { path: "/api/sponsor-contact", method: "POST" },
+  { path: "/api/semifinals-judges", method: "POST" },
+  { path: "/api/semifinals-pitches", method: "POST" },
 ]
 
 const spaceGrotesk = Space_Grotesk({

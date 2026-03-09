@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS } from "@/lib/firebase/collections"
+import { FieldValue } from "firebase-admin/firestore"
 import { verifyAdminSession, sessionHasPermission } from "@/lib/admin/session"
 
 export const dynamic = "force-dynamic"
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
   }
 }
 
-// PATCH - Update pitch status
+// PATCH - Update pitch (status, comments, logo)
 export async function PATCH(request: Request) {
   const session = await verifyAdminSession()
   if (!session) {
@@ -76,10 +77,72 @@ export async function PATCH(request: Request) {
 
   try {
     const data = await request.json()
-    const { id, status, reviewNotes } = data
+    const { id, action } = data
 
-    if (!id || !status) {
-      return NextResponse.json({ error: "ID and status are required" }, { status: 400 })
+    if (!id) {
+      return NextResponse.json({ error: "Pitch ID is required" }, { status: 400 })
+    }
+
+    const docRef = adminDb.collection(COLLECTIONS.PITCH_SUBMISSIONS).doc(id)
+
+    // Add a comment
+    if (action === "addComment") {
+      const { text } = data
+      if (!text || typeof text !== "string" || text.trim().length === 0) {
+        return NextResponse.json({ error: "Comment text is required" }, { status: 400 })
+      }
+
+      const comment = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        text: text.trim().slice(0, 2000),
+        authorEmail: session.email,
+        authorName: session.name,
+        createdAt: new Date().toISOString(),
+      }
+
+      await docRef.update({
+        comments: FieldValue.arrayUnion(comment),
+      })
+
+      return NextResponse.json({ success: true, comment })
+    }
+
+    // Delete a comment
+    if (action === "deleteComment") {
+      const { commentId } = data
+      if (!commentId) {
+        return NextResponse.json({ error: "Comment ID is required" }, { status: 400 })
+      }
+
+      const doc = await docRef.get()
+      if (!doc.exists) {
+        return NextResponse.json({ error: "Pitch not found" }, { status: 404 })
+      }
+
+      const comments = (doc.data()?.comments || []).filter(
+        (c: { id: string; authorEmail: string }) => {
+          if (c.id !== commentId) return true
+          // Only the comment author can delete their own comment
+          return c.authorEmail !== session.email
+        }
+      )
+
+      await docRef.update({ comments })
+      return NextResponse.json({ success: true })
+    }
+
+    // Update logo
+    if (action === "updateLogo") {
+      const { logoUrl } = data
+      await docRef.update({ logoUrl: logoUrl || "" })
+      return NextResponse.json({ success: true })
+    }
+
+    // Default: update status
+    const { status, reviewNotes } = data
+
+    if (!status) {
+      return NextResponse.json({ error: "Status is required" }, { status: 400 })
     }
 
     const validStatuses = ["pending", "reviewing", "accepted", "rejected"]
@@ -87,7 +150,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 })
     }
 
-    await adminDb.collection(COLLECTIONS.PITCH_SUBMISSIONS).doc(id).update({
+    await docRef.update({
       status,
       reviewNotes: reviewNotes || "",
       reviewedAt: new Date(),

@@ -93,6 +93,7 @@ export async function POST(request: Request) {
       fundingRaised: data.fundingRaised?.trim() || "",
       fundingGoal: data.fundingGoal?.trim() || "",
       deckUrl: data.deckUrl?.trim() || "",
+      logoUrl: data.logoUrl?.trim() || "",
       status: "pending",
       submittedAt: new Date(),
     }

@@ -11,12 +11,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  // Check for any content permission (speakers, sponsors, or schedule)
+  // Check for any content permission (speakers, sponsors, schedule, or pitches)
   const hasSpeakersPermission = await sessionHasPermission("speakers", session)
   const hasSponsorsPermission = await sessionHasPermission("sponsors", session)
   const hasSchedulePermission = await sessionHasPermission("schedule", session)
+  const hasPitchesPermission = await sessionHasPermission("pitches", session)
   
-  if (!hasSpeakersPermission && !hasSponsorsPermission && !hasSchedulePermission) {
+  if (!hasSpeakersPermission && !hasSponsorsPermission && !hasSchedulePermission && !hasPitchesPermission) {
     return NextResponse.json({ error: "Permission denied" }, { status: 403 })
   }
 

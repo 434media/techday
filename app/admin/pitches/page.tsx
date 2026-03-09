@@ -1,6 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
+import { useAdminAuth } from "@/components/admin/auth-provider"
+
+interface PitchComment {
+  id: string
+  text: string
+  authorEmail: string
+  authorName: string
+  createdAt: string
+}
 
 interface Pitch {
   id: string
@@ -23,6 +32,8 @@ interface Pitch {
   reviewedAt?: string
   reviewedBy?: string
   reviewNotes?: string
+  logoUrl?: string
+  comments?: PitchComment[]
 }
 
 const STATUSES = [
@@ -34,6 +45,7 @@ const STATUSES = [
 ]
 
 export default function PitchesPage() {
+  const { user } = useAdminAuth()
   const [pitches, setPitches] = useState<Pitch[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [status, setStatus] = useState("")
@@ -250,25 +262,45 @@ export default function PitchesPage() {
             <div
               key={pitch.id}
               onClick={() => setSelectedPitch(pitch)}
-              className="bg-white border border-neutral-200 p-6 cursor-pointer hover:border-neutral-300 transition-colors"
+              className="bg-white border border-neutral-200 p-6 cursor-pointer hover:border-neutral-300 hover:shadow-sm transition-all group"
             >
               <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-semibold text-black truncate">
-                      {pitch.companyName}
-                    </h3>
-                    <StatusBadge status={pitch.status} />
+                <div className="flex items-start gap-4 flex-1 min-w-0">
+                  {/* Logo or placeholder */}
+                  <div className="w-10 h-10 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center shrink-0 overflow-hidden">
+                    {pitch.logoUrl ? (
+                      <img src={pitch.logoUrl} alt="" className="w-full h-full object-cover rounded-lg" />
+                    ) : (
+                      <span className="text-sm font-bold text-neutral-400">
+                        {pitch.companyName?.charAt(0)?.toUpperCase()}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-sm text-neutral-600 mb-1">
-                    {pitch.founderName} · {pitch.email}
-                  </p>
-                  <p className="text-sm text-neutral-500">
-                    {pitch.industry} · {pitch.stage}
-                  </p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1.5">
+                      <h3 className="text-base font-bold text-black truncate leading-tight">
+                        {pitch.companyName}
+                      </h3>
+                      <StatusBadge status={pitch.status} />
+                    </div>
+                    <p className="text-sm text-neutral-600 leading-relaxed">
+                      {pitch.founderName} · <span className="text-neutral-400">{pitch.email}</span>
+                    </p>
+                    <p className="text-[13px] text-neutral-400 mt-0.5 leading-relaxed">
+                      {pitch.industry} · {pitch.stage}
+                      {pitch.comments && pitch.comments.length > 0 && (
+                        <span className="ml-2 inline-flex items-center gap-1 text-neutral-500">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                          </svg>
+                          {pitch.comments.length}
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 </div>
                 <div className="text-right shrink-0 flex flex-col items-end gap-2">
-                  <p className="text-xs text-neutral-400">
+                  <p className="text-xs text-neutral-400 leading-5">
                     {pitch.submittedAt
                       ? new Date(pitch.submittedAt).toLocaleDateString()
                       : "—"}
@@ -278,7 +310,7 @@ export default function PitchesPage() {
                       e.stopPropagation()
                       deletePitch(pitch.id)
                     }}
-                    className="p-1.5 text-neutral-400 hover:text-red-600 transition-colors"
+                    className="p-1.5 text-neutral-300 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
                     title="Delete pitch"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,7 +319,7 @@ export default function PitchesPage() {
                   </button>
                 </div>
               </div>
-              <p className="mt-4 text-sm text-neutral-600 line-clamp-2 leading-relaxed">
+              <p className="mt-3 text-sm text-neutral-500 line-clamp-2 leading-relaxed">
                 {pitch.pitch}
               </p>
             </div>
@@ -299,8 +331,10 @@ export default function PitchesPage() {
       {selectedPitch && (
         <PitchDetailModal
           pitch={selectedPitch}
+          adminUser={user}
           onClose={() => setSelectedPitch(null)}
           onUpdateStatus={updatePitchStatus}
+          onRefresh={fetchPitches}
         />
       )}
     </div>
@@ -328,15 +362,26 @@ function StatusBadge({ status }: { status: string }) {
 
 function PitchDetailModal({
   pitch,
+  adminUser,
   onClose,
   onUpdateStatus,
+  onRefresh,
 }: {
   pitch: Pitch
+  adminUser: { email: string; name: string } | null
   onClose: () => void
   onUpdateStatus: (id: string, status: string, notes?: string) => void
+  onRefresh: () => void
 }) {
   const [reviewNotes, setReviewNotes] = useState(pitch.reviewNotes || "")
   const [isUpdating, setIsUpdating] = useState(false)
+  const [comments, setComments] = useState<PitchComment[]>(pitch.comments || [])
+  const [newComment, setNewComment] = useState("")
+  const [isAddingComment, setIsAddingComment] = useState(false)
+  const [logoUrl, setLogoUrl] = useState(pitch.logoUrl || "")
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const commentsEndRef = useRef<HTMLDivElement>(null)
 
   const handleStatusUpdate = async (newStatus: string) => {
     setIsUpdating(true)
@@ -344,37 +389,174 @@ function PitchDetailModal({
     setIsUpdating(false)
   }
 
+  const handleAddComment = async () => {
+    if (!newComment.trim() || isAddingComment) return
+    setIsAddingComment(true)
+    try {
+      const res = await fetch("/api/admin/data/pitches", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: pitch.id, action: "addComment", text: newComment }),
+        credentials: "include",
+      })
+      const data = await res.json()
+      if (res.ok && data.comment) {
+        setComments((prev) => [...prev, data.comment])
+        setNewComment("")
+        setTimeout(() => commentsEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100)
+      }
+    } catch {
+      console.error("Failed to add comment")
+    } finally {
+      setIsAddingComment(false)
+    }
+  }
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      const res = await fetch("/api/admin/data/pitches", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: pitch.id, action: "deleteComment", commentId }),
+        credentials: "include",
+      })
+      if (res.ok) {
+        setComments((prev) => prev.filter((c) => c.id !== commentId))
+      }
+    } catch {
+      console.error("Failed to delete comment")
+    }
+  }
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setIsUploadingLogo(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("folder", "pitch-logos")
+
+      const uploadRes = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      })
+      const uploadData = await uploadRes.json()
+
+      if (!uploadRes.ok) {
+        console.error("Upload failed:", uploadData.error)
+        return
+      }
+
+      // Save to pitch document
+      const patchRes = await fetch("/api/admin/data/pitches", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: pitch.id, action: "updateLogo", logoUrl: uploadData.url }),
+        credentials: "include",
+      })
+
+      if (patchRes.ok) {
+        setLogoUrl(uploadData.url)
+        onRefresh()
+      }
+    } catch {
+      console.error("Failed to upload logo")
+    } finally {
+      setIsUploadingLogo(false)
+    }
+  }
+
+  const handleRemoveLogo = async () => {
+    try {
+      const res = await fetch("/api/admin/data/pitches", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: pitch.id, action: "updateLogo", logoUrl: "" }),
+        credentials: "include",
+      })
+      if (res.ok) {
+        setLogoUrl("")
+        onRefresh()
+      }
+    } catch {
+      console.error("Failed to remove logo")
+    }
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-neutral-200 flex items-center justify-between sticky top-0 bg-white">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-1">
-              Pitch Application
-            </p>
-            <h2 className="text-lg font-semibold text-black">
-              {pitch.companyName}
-            </h2>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg shadow-2xl">
+        {/* Header */}
+        <div className="p-6 border-b border-neutral-200 flex items-start justify-between sticky top-0 bg-white rounded-t-lg z-10">
+          <div className="flex items-start gap-4">
+            {/* Logo area */}
+            <div className="relative group/logo">
+              <div className="w-12 h-12 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center overflow-hidden">
+                {logoUrl ? (
+                  <img src={logoUrl} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-lg font-bold text-neutral-300">
+                    {pitch.companyName?.charAt(0)?.toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => logoUrl ? handleRemoveLogo() : fileInputRef.current?.click()}
+                className="absolute -bottom-1 -right-1 w-5 h-5 bg-white border border-neutral-200 rounded-full flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity shadow-sm hover:bg-neutral-50"
+                title={logoUrl ? "Remove logo" : "Upload logo"}
+              >
+                {isUploadingLogo ? (
+                  <div className="w-3 h-3 border border-neutral-300 border-t-black rounded-full animate-spin" />
+                ) : logoUrl ? (
+                  <svg className="w-3 h-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                )}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                className="hidden"
+                onChange={handleLogoUpload}
+              />
+            </div>
+            <div>
+              <div className="flex items-center gap-2.5 mb-1">
+                <h2 className="text-lg font-bold text-black leading-tight">
+                  {pitch.companyName}
+                </h2>
+                <StatusBadge status={pitch.status} />
+              </div>
+              <p className="text-sm text-neutral-500 leading-relaxed">
+                {pitch.founderName} · {pitch.email}
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-neutral-100 transition-colors"
+            className="p-2 hover:bg-neutral-100 rounded-md transition-colors"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-8">
           {/* Company Info */}
           <section>
-            <h3 className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-4">
               Company Information
             </h3>
-            <div className="space-y-2">
-              <DetailRow label="Founder" value={pitch.founderName} />
-              <DetailRow label="Email" value={pitch.email} />
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
               <DetailRow label="Website" value={pitch.website || "—"} link />
               <DetailRow label="Industry" value={pitch.industry} />
               <DetailRow label="Stage" value={pitch.stage} />
@@ -382,91 +564,207 @@ function PitchDetailModal({
             </div>
           </section>
 
-          {/* Pitch Details */}
+          {/* Pitch Narrative */}
           <section>
-            <h3 className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-4">
               Pitch
             </h3>
-            <p className="text-sm text-neutral-700 leading-relaxed">{pitch.pitch}</p>
+            <p className="text-sm text-neutral-700 leading-7">{pitch.pitch}</p>
           </section>
 
-          <section>
-            <h3 className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3">
-              Problem
-            </h3>
-            <p className="text-sm text-neutral-700 leading-relaxed">{pitch.problem}</p>
-          </section>
-
-          <section>
-            <h3 className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3">
-              Solution
-            </h3>
-            <p className="text-sm text-neutral-700 leading-relaxed">{pitch.solution}</p>
-          </section>
+            <section>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3">
+                Problem
+              </h3>
+              <p className="text-sm text-neutral-700 leading-7">{pitch.problem}</p>
+            </section>
+            <section>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3">
+                Solution
+              </h3>
+              <p className="text-sm text-neutral-700 leading-7">{pitch.solution}</p>
+            </section>
 
           {pitch.traction && (
             <section>
-              <h3 className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3">
                 Traction
               </h3>
-              <p className="text-sm text-neutral-700 leading-relaxed">{pitch.traction}</p>
+              <p className="text-sm text-neutral-700 leading-7">{pitch.traction}</p>
             </section>
           )}
 
           {/* Funding */}
           <section>
-            <h3 className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-4">
               Funding
             </h3>
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
               <DetailRow label="Raised" value={pitch.fundingRaised || "—"} />
               <DetailRow label="Goal" value={pitch.fundingGoal || "—"} />
-              {pitch.deckUrl && (
-                <DetailRow label="Deck" value="View Deck" link href={pitch.deckUrl} />
-              )}
+            </div>
+            {pitch.deckUrl && (
+              <a
+                href={pitch.deckUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-black hover:text-neutral-600 underline underline-offset-2 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                View Pitch Deck
+              </a>
+            )}
+          </section>
+
+          {/* Divider */}
+          <div className="border-t border-neutral-100" />
+
+          {/* Comments Section */}
+          <section>
+            <div className="flex items-center gap-2 mb-4">
+              <svg className="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+                Team Comments
+                {comments.length > 0 && (
+                  <span className="ml-2 text-neutral-300 normal-case tracking-normal font-medium">
+                    ({comments.length})
+                  </span>
+                )}
+              </h3>
+            </div>
+
+            {/* Comment list */}
+            {comments.length > 0 ? (
+              <div className="space-y-3 mb-4">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="group/comment flex gap-3">
+                    <div className="w-7 h-7 rounded-full bg-neutral-100 flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="text-xs font-bold text-neutral-400">
+                        {comment.authorName?.charAt(0)?.toUpperCase() || "?"}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-sm font-semibold text-black leading-tight">
+                          {comment.authorName}
+                        </span>
+                        <span className="text-xs text-neutral-300 leading-tight">
+                          {new Date(comment.createdAt).toLocaleDateString(undefined, {
+                            month: "short",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                        {comment.authorEmail === adminUser?.email && (
+                          <button
+                            onClick={() => handleDeleteComment(comment.id)}
+                            className="text-xs text-neutral-300 hover:text-red-500 transition-colors opacity-0 group-hover/comment:opacity-100"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-sm text-neutral-600 leading-relaxed mt-0.5">
+                        {comment.text}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                <div ref={commentsEndRef} />
+              </div>
+            ) : (
+              <p className="text-sm text-neutral-300 italic mb-4 leading-relaxed">
+                No comments yet. Be the first to share feedback.
+              </p>
+            )}
+
+            {/* Add comment */}
+            <div className="flex gap-2">
+              <div className="w-7 h-7 rounded-full bg-black flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs font-bold text-white">
+                  {adminUser?.name?.charAt(0)?.toUpperCase() || "?"}
+                </span>
+              </div>
+              <div className="flex-1">
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a comment..."
+                  rows={2}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                      handleAddComment()
+                    }
+                  }}
+                  className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm text-black placeholder:text-neutral-300 focus:outline-none focus:border-black focus:bg-white rounded-md resize-none leading-relaxed transition-colors"
+                />
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-xs text-neutral-300">
+                    {"\u2318"}+Enter to submit
+                  </p>
+                  <button
+                    onClick={handleAddComment}
+                    disabled={!newComment.trim() || isAddingComment}
+                    className="px-3 py-1.5 text-xs font-semibold bg-black text-white rounded-md hover:bg-neutral-800 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isAddingComment ? "Posting..." : "Comment"}
+                  </button>
+                </div>
+              </div>
             </div>
           </section>
 
-          {/* Review Notes */}
-          <section>
-            <h3 className="text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3">
-              Review Notes
-            </h3>
-            <textarea
-              value={reviewNotes}
-              onChange={(e) => setReviewNotes(e.target.value)}
-              placeholder="Add internal notes about this application..."
-              rows={3}
-              className="w-full px-3 py-2 bg-white border border-neutral-200 text-sm text-black placeholder:text-neutral-400 focus:outline-none focus:border-black resize-none"
-            />
-          </section>
+          {/* Legacy review notes (hidden if empty, read-only) */}
+          {reviewNotes && (
+            <section>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3">
+                Review Notes (Legacy)
+              </h3>
+              <p className="text-sm text-neutral-500 leading-relaxed bg-neutral-50 border border-neutral-100 p-3 rounded-md">
+                {reviewNotes}
+              </p>
+            </section>
+          )}
         </div>
 
         {/* Actions */}
-        <div className="p-6 border-t border-neutral-200 sticky bottom-0 bg-white">
+        <div className="p-6 border-t border-neutral-200 sticky bottom-0 bg-white rounded-b-lg">
           <div className="flex gap-3">
             <button
               onClick={() => handleStatusUpdate("accepted")}
               disabled={isUpdating || pitch.status === "accepted"}
-              className="flex-1 py-2 text-sm font-medium bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 py-2.5 text-sm font-bold bg-black text-white rounded-md hover:bg-neutral-800 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors leading-tight"
             >
               Accept
             </button>
             <button
               onClick={() => handleStatusUpdate("reviewing")}
               disabled={isUpdating || pitch.status === "reviewing"}
-              className="flex-1 py-2 text-sm font-medium bg-neutral-200 text-black hover:bg-neutral-300 disabled:bg-neutral-100 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 py-2.5 text-sm font-bold bg-neutral-100 text-black rounded-md hover:bg-neutral-200 disabled:text-neutral-300 disabled:cursor-not-allowed transition-colors leading-tight"
             >
-              Mark Reviewing
+              Reviewing
             </button>
             <button
               onClick={() => handleStatusUpdate("rejected")}
               disabled={isUpdating || pitch.status === "rejected"}
-              className="flex-1 py-2 text-sm font-medium border border-neutral-200 text-neutral-600 hover:bg-neutral-50 disabled:text-neutral-300 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 py-2.5 text-sm font-bold border border-neutral-200 text-neutral-500 rounded-md hover:bg-neutral-50 disabled:text-neutral-300 disabled:cursor-not-allowed transition-colors leading-tight"
             >
               Reject
             </button>
           </div>
+          {pitch.reviewedBy && (
+            <p className="text-xs text-neutral-400 mt-3 text-center leading-relaxed">
+              Last reviewed by <span className="font-medium text-neutral-500">{pitch.reviewedBy}</span>
+              {pitch.reviewedAt && (
+                <> on {new Date(pitch.reviewedAt).toLocaleDateString()}</>
+              )}
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -485,19 +783,19 @@ function DetailRow({
   href?: string
 }) {
   return (
-    <div className="flex justify-between items-start gap-4">
-      <dt className="text-sm text-neutral-500 shrink-0">{label}</dt>
+    <div>
+      <dt className="text-xs font-medium text-neutral-400 mb-0.5 leading-relaxed">{label}</dt>
       {link && (href || value.startsWith("http")) ? (
         <a
           href={href || value}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-black underline hover:no-underline"
+          className="text-sm font-medium text-black underline underline-offset-2 hover:no-underline leading-relaxed"
         >
           {value}
         </a>
       ) : (
-        <dd className="text-sm text-black text-right">{value}</dd>
+        <dd className="text-sm font-medium text-black leading-relaxed">{value}</dd>
       )}
     </div>
   )

@@ -608,3 +608,406 @@ export async function sendSponsorInquiryConfirmation(
     return { success: false, error }
   }
 }
+
+// Zoom meeting details per date
+const ZOOM_MEETINGS: Record<string, { url: string; meetingId: string; passcode: string }> = {
+  "2026-04-02": {
+    url: "https://us06web.zoom.us/j/84733840136?pwd=WfCT50nnaUvgGV9PwWe3zgAeM1nt5Y.1",
+    meetingId: "847 3384 0136",
+    passcode: "Techbloc",
+  },
+  "2026-04-03": {
+    url: "https://us06web.zoom.us/j/81595831528?pwd=HnDxWd4sU0RoKezdGsZEaGS7Ajqmif.1",
+    meetingId: "815 9583 1528",
+    passcode: "Techbloc",
+  },
+}
+
+// Build a Google Calendar link for the judging session
+function buildCalendarLink(date: string, timeSlot: string, zoomUrl: string): string {
+  // Parse the time slot: "9:00 AM - 10:30 AM"
+  const [startStr, endStr] = timeSlot.split(" - ")
+  const dateStr = date // "2026-04-02"
+
+  function parseTime(dateBase: string, time: string): string {
+    const match = time.match(/(\d+):(\d+)\s*(AM|PM)/i)
+    if (!match) return ""
+    let hours = parseInt(match[1])
+    const minutes = match[2]
+    const period = match[3].toUpperCase()
+    if (period === "PM" && hours !== 12) hours += 12
+    if (period === "AM" && hours === 12) hours = 0
+    // Format: 20260402T090000 (no timezone for simplicity, use CDT)
+    return `${dateBase.replace(/-/g, "")}T${String(hours).padStart(2, "0")}${minutes}00`
+  }
+
+  const start = parseTime(dateStr, startStr)
+  const end = parseTime(dateStr, endStr)
+  const title = encodeURIComponent("Tech Fuel 2026 Semi-Finals Judging")
+  const details = encodeURIComponent(`Join via Zoom: ${zoomUrl}\n\nYou are scheduled to judge Tech Fuel semi-finalist pitches.`)
+  const location = encodeURIComponent("Zoom (link in description)")
+
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`
+}
+
+// Judge scheduling confirmation email
+export async function sendJudgeSchedulingConfirmation(
+  email: string,
+  judgeName: string,
+  date: string,
+  timeSlot: string
+) {
+  const zoom = ZOOM_MEETINGS[date]
+  const dateLabel = date === "2026-04-02" ? "Thursday, April 2, 2026" : "Friday, April 3, 2026"
+  const calendarLink = buildCalendarLink(date, timeSlot, zoom.url)
+
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      You're Confirmed, ${judgeName}! 🎓
+    </h2>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Thank you for volunteering to judge the <strong>Tech Fuel 2026 Semi-Finals</strong>. Your session details are below.
+    </p>
+    
+    <!-- Session Card -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 30px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">
+            ${DOWN_ARROW_SVG}
+          </div>
+          
+          <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+            Semi-Finals Judging Session
+          </p>
+          
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top: 15px;">
+            <tr>
+              <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Date</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${dateLabel}</p>
+              </td>
+              <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Time</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${timeSlot}</p>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" style="vertical-align: top;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Judge</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${judgeName}</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Zoom Details -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background-color: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 15px; color: #1e40af; font-size: 16px; font-weight: 600;">
+            📹 Zoom Meeting Details
+          </h3>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="padding-bottom: 10px;">
+                <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
+                <p style="margin: 0;">
+                  <a href="${zoom.url}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
+                    Click here to join Zoom meeting
+                  </a>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table role="presentation" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td style="padding-right: 30px;">
+                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
+                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.meetingId}</p>
+                    </td>
+                    <td>
+                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
+                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.passcode}</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Add to Calendar -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
+      <tr>
+        <td align="center">
+          <a href="${calendarLink}" target="_blank" style="display: inline-block; padding: 14px 32px; background-color: #0a0a0a; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 4px; letter-spacing: 0.5px;">
+            📅 ADD TO GOOGLE CALENDAR
+          </a>
+        </td>
+      </tr>
+    </table>
+    
+    <h3 style="margin: 30px 0 15px; color: #0a0a0a; font-size: 18px; font-weight: 600;">
+      Session Format
+    </h3>
+    
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">1</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Judge Prep (5 min)</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Brief orientation and scoring criteria review</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">2</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Startup Pitches (10 min)</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Each startup presents for ~10 minutes followed by Q&A</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 0;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">3</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Deliberation (15 min)</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Discuss startups and submit final scores</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+      Questions? Reply to this email or reach out to the Tech Bloc team.
+    </p>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: `Tech Fuel Judging Confirmed — ${dateLabel} at ${timeSlot} 🎓`,
+      html: getEmailTemplate(content, "Save this email — it contains your Zoom details for judging day"),
+    })
+
+    console.log(`Judge scheduling confirmation sent to ${email}:`, result)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send judge scheduling confirmation to ${email}:`, error)
+    return { success: false, error }
+  }
+}
+
+// Pitch scheduling confirmation email
+export async function sendPitchSchedulingConfirmation(
+  email: string,
+  companyName: string,
+  founderName: string,
+  date: string,
+  pitchSlot: string,
+  judgeBlock: string
+) {
+  const zoom = ZOOM_MEETINGS[date]
+  const dateLabel = date === "2026-04-02" ? "Thursday, April 2, 2026" : "Friday, April 3, 2026"
+  const calendarLink = buildCalendarLink(date, pitchSlot, zoom.url)
+
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      You're Scheduled, ${founderName}! 🚀
+    </h2>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Your pitch time for the <strong>Tech Fuel 2026 Semi-Finals</strong> has been confirmed for <strong>${companyName}</strong>. Your session details are below.
+    </p>
+    
+    <!-- Session Card -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 30px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">
+            ${DOWN_ARROW_SVG}
+          </div>
+          
+          <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+            Semi-Finals Pitch Session
+          </p>
+          
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top: 15px;">
+            <tr>
+              <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Date</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${dateLabel}</p>
+              </td>
+              <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Pitch Time</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${pitchSlot}</p>
+              </td>
+            </tr>
+            <tr>
+              <td width="50%" style="vertical-align: top;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Company</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${companyName}</p>
+              </td>
+              <td width="50%" style="vertical-align: top;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Judge Block</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${judgeBlock}</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Zoom Details -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background-color: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 15px; color: #1e40af; font-size: 16px; font-weight: 600;">
+            📹 Zoom Meeting Details
+          </h3>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="padding-bottom: 10px;">
+                <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
+                <p style="margin: 0;">
+                  <a href="${zoom.url}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
+                    Click here to join Zoom meeting
+                  </a>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table role="presentation" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td style="padding-right: 30px;">
+                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
+                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.meetingId}</p>
+                    </td>
+                    <td>
+                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
+                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.passcode}</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Add to Calendar -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
+      <tr>
+        <td align="center">
+          <a href="${calendarLink}" target="_blank" style="display: inline-block; padding: 14px 32px; background-color: #0a0a0a; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 4px; letter-spacing: 0.5px;">
+            📅 ADD TO GOOGLE CALENDAR
+          </a>
+        </td>
+      </tr>
+    </table>
+    
+    <h3 style="margin: 30px 0 15px; color: #0a0a0a; font-size: 18px; font-weight: 600;">
+      What to Expect
+    </h3>
+    
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">1</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Join Zoom Early</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Log in 2–3 minutes before your pitch time</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">2</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Pitch (5 min)</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Present your startup to the judging panel</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 0;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 40px; vertical-align: top;">
+                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">3</span>
+              </td>
+              <td style="vertical-align: top;">
+                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Q&A (5 min)</p>
+                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Judges ask follow-up questions about your startup</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+      Questions? Reply to this email or reach out to the Tech Bloc team.
+    </p>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: `Pitch Time Confirmed — ${companyName} on ${dateLabel} at ${pitchSlot} 🚀`,
+      html: getEmailTemplate(content, "Save this email — it contains your Zoom details and pitch time"),
+    })
+
+    console.log(`Pitch scheduling confirmation sent to ${email}:`, result)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send pitch scheduling confirmation to ${email}:`, error)
+    return { success: false, error }
+  }
+}

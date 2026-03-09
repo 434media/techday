@@ -129,31 +129,57 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mb-16"
           >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-              {sponsors.sponsors.map((sponsor) => (
-                <a
-                  key={sponsor.id}
-                  href={sponsor.website || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative p-6 md:p-8 border rounded-xl transition-all hover:shadow-lg group border-border hover:border-primary/40 flex items-center justify-center"
-                >
-                  {sponsor.logoUrl ? (
-                    <img
-                      src={sponsor.logoUrl}
-                      alt={sponsor.name}
-                      className={`w-auto opacity-80 group-hover:opacity-100 transition-opacity ${
-                        sponsor.logoSize === "large" ? "h-20 md:h-28" : "h-12 md:h-16"
-                      }`}
-                    />
-                  ) : (
-                    <div className="h-12 md:h-16 flex items-center justify-center text-lg md:text-xl font-bold text-foreground">
-                      {sponsor.name}
-                    </div>
-                  )}
-                </a>
-              ))}
-            </div>
+            {event === "techfuel" ? (
+              <div className="flex justify-center">
+                {sponsors.sponsors.map((sponsor) => (
+                  <a
+                    key={sponsor.id}
+                    href={sponsor.website || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative p-10 md:p-14 border rounded-xl transition-all hover:shadow-lg group border-border hover:border-primary/40 flex items-center justify-center"
+                  >
+                    {sponsor.logoUrl ? (
+                      <img
+                        src={sponsor.logoUrl}
+                        alt={sponsor.name}
+                        className="w-auto h-28 md:h-40 lg:h-48 opacity-80 group-hover:opacity-100 transition-opacity"
+                      />
+                    ) : (
+                      <div className="h-28 md:h-40 lg:h-48 flex items-center justify-center text-3xl md:text-4xl font-bold text-foreground">
+                        {sponsor.name}
+                      </div>
+                    )}
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+                {sponsors.sponsors.map((sponsor) => (
+                  <a
+                    key={sponsor.id}
+                    href={sponsor.website || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative p-6 md:p-8 border rounded-xl transition-all hover:shadow-lg group border-border hover:border-primary/40 flex items-center justify-center"
+                  >
+                    {sponsor.logoUrl ? (
+                      <img
+                        src={sponsor.logoUrl}
+                        alt={sponsor.name}
+                        className={`w-auto opacity-80 group-hover:opacity-100 transition-opacity ${
+                          sponsor.logoSize === "large" ? "h-20 md:h-28" : "h-12 md:h-16"
+                        }`}
+                      />
+                    ) : (
+                      <div className="h-12 md:h-16 flex items-center justify-center text-lg md:text-xl font-bold text-foreground">
+                        {sponsor.name}
+                      </div>
+                    )}
+                  </a>
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
 

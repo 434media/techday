@@ -10,6 +10,8 @@ export const COLLECTIONS = {
   CONTENT: "content",
   SITE_TEXT: "siteText",  // Inline editable text blocks
   SITE_TEXT_HISTORY: "siteTextHistory",  // Version history for text blocks
+  JUDGE_SCHEDULING: "judgeScheduling",  // Tech Fuel semi-finals judge scheduling
+  PITCH_SCHEDULING: "pitchScheduling",  // Tech Fuel semi-finals pitch time selection
   // Note: Admin users are managed through Firebase Authentication, not Firestore
 } as const
 
@@ -81,6 +83,16 @@ export interface PitchSubmissionDocument {
   reviewedAt?: Date
   reviewedBy?: string
   reviewNotes?: string
+  logoUrl?: string
+  comments?: PitchComment[]
+}
+
+export interface PitchComment {
+  id: string
+  text: string
+  authorEmail: string
+  authorName: string
+  createdAt: Date | string
 }
 
 // Sponsor contact/inquiry document structure
@@ -93,6 +105,29 @@ export interface SponsorContactDocument {
   phone: string
   message: string
   status: "new" | "contacted" | "closed"
+  submittedAt: Date
+}
+
+// Pitch scheduling document structure (semi-finals pitch time selection)
+export interface PitchSchedulingDocument {
+  id?: string
+  companyName: string
+  founderName: string
+  email: string
+  date: "2026-04-02" | "2026-04-03"
+  judgeBlock: string     // e.g. "9:00 AM - 10:30 AM"
+  pitchSlot: string      // e.g. "9:05 AM - 9:15 AM"
+  submittedAt: Date
+}
+
+// Judge scheduling document structure
+export interface JudgeSchedulingDocument {
+  id?: string
+  judgeName: string
+  email: string
+  isCustomName: boolean
+  date: "2026-04-02" | "2026-04-03"
+  timeSlot: string
   submittedAt: Date
 }
 

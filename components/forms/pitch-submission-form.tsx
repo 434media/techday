@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { motion } from "motion/react"
 
 interface PitchFormData {
@@ -21,6 +21,7 @@ interface PitchFormData {
   fundingRaised: string
   fundingGoal: string
   deckUrl: string
+  logoUrl: string
   agreeToRules: boolean
 }
 
@@ -56,10 +57,14 @@ export function PitchSubmissionForm() {
     fundingRaised: "",
     fundingGoal: "",
     deckUrl: "",
+    logoUrl: "",
     agreeToRules: false,
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false)
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
@@ -70,6 +75,57 @@ export function PitchSubmissionForm() {
   }
 
   const [error, setError] = useState<string | null>(null)
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Client-side validation
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/svg+xml"]
+    if (!allowedTypes.includes(file.type)) {
+      setError("Logo must be JPEG, PNG, WebP, or SVG")
+      return
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setError("Logo must be under 2MB")
+      return
+    }
+
+    setError(null)
+    setIsUploadingLogo(true)
+
+    // Show preview immediately
+    const reader = new FileReader()
+    reader.onload = (ev) => setLogoPreview(ev.target?.result as string)
+    reader.readAsDataURL(file)
+
+    try {
+      const fd = new FormData()
+      fd.append("file", file)
+
+      const res = await fetch("/api/pitch/upload", { method: "POST", body: fd })
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || "Failed to upload logo")
+        setLogoPreview(null)
+        return
+      }
+
+      setFormData((prev) => ({ ...prev, logoUrl: data.url }))
+    } catch {
+      setError("Failed to upload logo. Please try again.")
+      setLogoPreview(null)
+    } finally {
+      setIsUploadingLogo(false)
+    }
+  }
+
+  const handleRemoveLogo = () => {
+    setFormData((prev) => ({ ...prev, logoUrl: "" }))
+    setLogoPreview(null)
+    if (logoInputRef.current) logoInputRef.current.value = ""
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -200,6 +256,60 @@ export function PitchSubmissionForm() {
                 </option>
               ))}
             </select>
+          </div>
+        </div>
+
+        {/* Logo Upload */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Company Logo
+          </label>
+          <div className="flex items-start gap-4">
+            <div className="w-20 h-20 rounded-lg border-2 border-dashed border-border bg-background flex items-center justify-center overflow-hidden shrink-0">
+              {(logoPreview || formData.logoUrl) ? (
+                <img
+                  src={logoPreview || formData.logoUrl}
+                  alt="Logo preview"
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              ) : (
+                <svg className="w-8 h-8 text-muted-foreground/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              )}
+            </div>
+            <div className="flex-1">
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                onChange={handleLogoUpload}
+                className="hidden"
+                id="logoUpload"
+              />
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={isUploadingLogo}
+                  className="px-4 py-2 text-sm font-medium bg-background border border-border rounded-md text-foreground hover:bg-muted transition-colors disabled:opacity-50"
+                >
+                  {isUploadingLogo ? "Uploading..." : formData.logoUrl ? "Change Logo" : "Upload Logo"}
+                </button>
+                {formData.logoUrl && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveLogo}
+                    className="px-3 py-2 text-sm text-muted-foreground hover:text-red-500 transition-colors"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                JPEG, PNG, WebP, or SVG. Max 2MB.
+              </p>
+            </div>
           </div>
         </div>
       </div>
