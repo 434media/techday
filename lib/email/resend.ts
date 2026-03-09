@@ -1293,3 +1293,95 @@ export async function sendPitchSemifinalsNotification(
     return { success: false, error }
   }
 }
+
+// Ecosystem Tours notification email — one-time email to early registrants (Feb 5-23)
+export async function sendEcosystemToursNotification(
+  email: string,
+  firstName: string,
+  events: string[]
+) {
+  const eventType = getEventType(events)
+
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      New Addition to Tech Fuel, ${firstName}! 🚌
+    </h2>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Since you registered, we've added something new to <strong>Tech Fuel 2026</strong> — <strong>Ecosystem Tours</strong>, running throughout the day on April 20th at UTSA SP1.
+    </p>
+    
+    <!-- Tour Info Card -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); border-radius: 8px; padding: 30px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.08; transform: rotate(45deg);">
+            ${DOWN_ARROW_SVG}
+          </div>
+          
+          <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+            Ecosystem Tours
+          </p>
+          <p style="margin: 0 0 20px; color: #ffffff; font-size: 20px; font-weight: 600;">
+            Go behind the scenes
+          </p>
+          <p style="margin: 0 0 15px; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.7;">
+            This year, we're placing attendees directly inside the facilities shaping San Antonio's most strategic industry clusters. Our tours visit two landmark sites:
+          </p>
+          
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top: 15px;">
+            <tr>
+              <td style="padding-bottom: 20px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Stop 1</p>
+                <p style="margin: 0 0 5px; color: #ffffff; font-size: 15px; font-weight: 600;">Port San Antonio</p>
+                <p style="margin: 0; color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.5;">1,900-acre campus — cyber, aerospace & advanced manufacturing</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom: 5px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Stop 2</p>
+                <p style="margin: 0 0 5px; color: #ffffff; font-size: 15px; font-weight: 600;">VelocityTX</p>
+                <p style="margin: 0; color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.5;">Bioscience innovation campus — translational research & commercialization</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Ecosystem tours are <strong>included with your Tech Fuel registration</strong> — you just need to opt in. It takes 30 seconds.
+    </p>
+    
+    <!-- CTA Button -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
+      <tr>
+        <td align="center">
+          <a href="https://sanantoniotechday.com/ecosystem-tours" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
+            Add Ecosystem Tours
+          </a>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+      Already opted in? No action needed. Questions? Reply to this email or reach out to the Tech Bloc team.
+    </p>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: `New: Ecosystem Tours added to Tech Fuel 2026 🚌`,
+      html: getEventEmailTemplate(content, eventType, "Ecosystem tours are included with your Tech Fuel registration"),
+    })
+
+    console.log(`Ecosystem tours notification sent to ${email}:`, result)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send ecosystem tours notification to ${email}:`, error)
+    return { success: false, error }
+  }
+}

@@ -67,9 +67,16 @@ export default function RegistrationsPage() {
   const [eventFilter, setEventFilter] = useState("")
   const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null)
   const [isDeletingAll, setIsDeletingAll] = useState(false)
+  const [isSendingEcoNotify, setIsSendingEcoNotify] = useState(false)
+  const [ecoNotifyMeta, setEcoNotifyMeta] = useState<{
+    lastSentAt: string | null
+    sentBy?: string
+    sentCount?: number
+  }>({ lastSentAt: null })
 
   useEffect(() => {
     fetchRegistrations()
+    fetchEcoNotifyMeta()
   }, [category, status, eventFilter])
 
   async function fetchRegistrations() {
@@ -194,6 +201,50 @@ export default function RegistrationsPage() {
     }
   }
 
+  async function fetchEcoNotifyMeta() {
+    try {
+      const response = await fetch(
+        "/api/admin/data/registrations/notify-ecosystem-tours",
+        { credentials: "include" }
+      )
+      if (response.ok) {
+        const data = await response.json()
+        setEcoNotifyMeta(data)
+      }
+    } catch (error) {
+      console.error("Failed to fetch eco tours notify meta:", error)
+    }
+  }
+
+  async function handleEcoToursNotify() {
+    if (
+      !confirm(
+        "This will send a one-time email to all Tech Fuel registrants from Feb 5–23 who haven't opted into ecosystem tours. Continue?"
+      )
+    )
+      return
+
+    setIsSendingEcoNotify(true)
+    try {
+      const response = await fetch(
+        "/api/admin/data/registrations/notify-ecosystem-tours",
+        { method: "POST", credentials: "include" }
+      )
+      const data = await response.json()
+      if (response.ok) {
+        alert(`Sent ${data.sent} emails (${data.failed} failed)`)
+        fetchEcoNotifyMeta()
+      } else {
+        alert(data.error || "Failed to send notifications")
+      }
+    } catch (error) {
+      console.error("Failed to send eco tours notifications:", error)
+      alert("Failed to send notifications")
+    } finally {
+      setIsSendingEcoNotify(false)
+    }
+  }
+
   return (
     <div className="p-6 lg:p-8">
       {/* Header */}
@@ -207,6 +258,21 @@ export default function RegistrationsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={handleEcoToursNotify}
+            disabled={isSendingEcoNotify}
+            className="px-3 py-1.5 text-xs font-medium border border-amber-200 text-amber-700 hover:bg-amber-50 hover:border-amber-300 disabled:opacity-50 transition-colors flex items-center gap-1.5"
+            title={
+              ecoNotifyMeta.lastSentAt
+                ? `Last sent: ${new Date(ecoNotifyMeta.lastSentAt).toLocaleString()} (${ecoNotifyMeta.sentCount} emails)`
+                : "Never sent"
+            }
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+            {isSendingEcoNotify ? "Sending..." : "Notify Eco Tours"}
+          </button>
           {registrations.length > 0 && (
             <button
               onClick={deleteAllRegistrations}
@@ -231,6 +297,13 @@ export default function RegistrationsPage() {
           </button>
         </div>
       </div>
+
+      {/* Eco Tours Notify Status */}
+      {ecoNotifyMeta.lastSentAt && (
+        <p className="text-[10px] text-amber-600 mb-3 font-medium">
+          Eco Tours email sent {new Date(ecoNotifyMeta.lastSentAt).toLocaleString()} — {ecoNotifyMeta.sentCount} emails by {ecoNotifyMeta.sentBy}
+        </p>
+      )}
 
       {/* Stats Cards */}
       {stats && (
