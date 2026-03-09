@@ -143,7 +143,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
                       <img
                         src={sponsor.logoUrl}
                         alt={sponsor.name}
-                        className="w-auto h-28 md:h-40 lg:h-48 opacity-80 group-hover:opacity-100 transition-opacity"
+                        className={`w-auto opacity-80 group-hover:opacity-100 transition-opacity ${sponsor.logoSize === "large" ? "h-28 md:h-40 lg:h-48" : "h-16 md:h-24"}`}
                       />
                     ) : (
                       <div className="h-28 md:h-40 lg:h-48 flex items-center justify-center text-3xl md:text-4xl font-bold text-foreground">
@@ -229,7 +229,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="relative rounded-2xl overflow-hidden shadow-xl bg-white border-2 border-primary/20"
+          className="relative rounded-2xl overflow-hidden shadow-xl bg-white border-2 border-primary/20 max-w-2xl mx-auto"
         >
           <div className="bg-linear-to-r from-primary to-primary/80 px-6 py-4">
             <Editable 
