@@ -51,6 +51,9 @@ export default function TechDayPage() {
             >
               April 21, 2026 • Tech Port
             </Editable>
+            <p className="font-mono text-sm text-white/50 mb-6 tracking-widest uppercase font-medium leading-none">
+              8:00 AM – 4:00 PM
+            </p>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-[0.95] tracking-tight">
               <Editable 
                 id="techday.hero.title" 
