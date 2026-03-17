@@ -18,14 +18,26 @@ interface Sponsor {
 export function Hero() {
   const [apiSponsors, setApiSponsors] = useState<Sponsor[]>([])
   
-  // Fetch sponsors from CMS (e.g. Port SA)
+  // Fetch sponsors from CMS (techday + techfuel)
   useEffect(() => {
     async function fetchSponsors() {
       try {
-        const response = await fetch("/api/content/sponsors?event=techday")
-        const data = await response.json()
-        const sponsorsData = data.sponsors || { sponsors: [], community: [] }
-        setApiSponsors(sponsorsData.sponsors || [])
+        const [techdayRes, techfuelRes] = await Promise.all([
+          fetch("/api/content/sponsors?event=techday"),
+          fetch("/api/content/sponsors?event=techfuel"),
+        ])
+        const techdayData = await techdayRes.json()
+        const techfuelData = await techfuelRes.json()
+        const techdaySponsors = techdayData.sponsors?.sponsors || []
+        const techfuelSponsors = techfuelData.sponsors?.sponsors || []
+        // Combine and deduplicate by id
+        const combined = [...techdaySponsors]
+        for (const s of techfuelSponsors) {
+          if (!combined.some((existing: Sponsor) => existing.id === s.id)) {
+            combined.push(s)
+          }
+        }
+        setApiSponsors(combined)
       } catch (error) {
         console.error("Failed to fetch sponsors:", error)
       }
@@ -243,33 +255,35 @@ export function Hero() {
         transition={{ duration: 0.5, delay: 0.3 }}
       >
         <div className="max-w-5xl mx-auto px-4 py-4 md:py-5">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-            <p className="text-[#0a0a0a]/50 text-xs font-mono uppercase tracking-widest">Sponsored by</p>
-            <div className="flex items-center gap-6 md:gap-8">
-              {/* CMS Sponsors (e.g. Port SA) */}
-              {apiSponsors.slice(0, 3).map((sponsor) => (
-                <a
-                  key={sponsor.id}
-                  href={sponsor.website || "#"}
-                  target={sponsor.website ? "_blank" : undefined}
-                  rel={sponsor.website ? "noopener noreferrer" : undefined}
-                  className="opacity-60 hover:opacity-100 transition-opacity"
-                >
-                  <Image
-                    src={sponsor.logoUrl}
-                    alt={sponsor.name}
-                    width={sponsor.logoSize === "large" ? 140 : 80}
-                    height={sponsor.logoSize === "large" ? 56 : 32}
-                    className={`w-auto grayscale hover:grayscale-0 transition-all ${
-                      sponsor.logoSize === "large" ? "h-10 md:h-14" : "h-6 md:h-8"
-                    }`}
-                  />
-                </a>
-              ))}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <p className="text-[#0a0a0a]/50 text-xs font-mono uppercase tracking-widest whitespace-nowrap shrink-0">Sponsored by</p>
+            <div className="overflow-hidden w-60 sm:w-70 md:w-80 shrink-0 mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+              <div className="flex items-center gap-6 md:gap-8 w-max animate-scroll-sponsors">
+                {/* Double the sponsors for seamless loop */}
+                {[...apiSponsors, ...apiSponsors].map((sponsor, i) => (
+                  <a
+                    key={`${sponsor.id}-${i}`}
+                    href={sponsor.website || "#"}
+                    target={sponsor.website ? "_blank" : undefined}
+                    rel={sponsor.website ? "noopener noreferrer" : undefined}
+                    className="opacity-60 hover:opacity-100 transition-opacity shrink-0"
+                  >
+                    <Image
+                      src={sponsor.logoUrl}
+                      alt={sponsor.name}
+                      width={sponsor.logoSize === "large" ? 140 : 80}
+                      height={sponsor.logoSize === "large" ? 56 : 32}
+                      className={`w-auto grayscale hover:grayscale-0 transition-all ${
+                        sponsor.logoSize === "large" ? "h-10 md:h-14" : "h-6 md:h-8"
+                      }`}
+                    />
+                  </a>
+                ))}
+              </div>
             </div>
             <Link 
               href="/sponsor" 
-              className="inline-flex items-center gap-1 text-[#dc2626] text-xs font-semibold hover:underline underline-offset-2"
+              className="inline-flex items-center gap-1 text-[#dc2626] text-xs font-semibold hover:underline underline-offset-2 whitespace-nowrap shrink-0"
             >
               Become a Sponsor
               <ArrowRight className="w-3 h-3" />

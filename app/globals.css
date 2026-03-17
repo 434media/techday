@@ -113,6 +113,31 @@
   }
 }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes scroll-sponsors {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-sponsors {
+  animation: scroll-sponsors 20s linear infinite;
+}
+
+.animate-scroll-sponsors:hover {
+  animation-play-state: paused;
+}
+
 /* ============================================
    CONFERENCE DESIGN PATTERNS
    Inspired by event tickets, lanyards, badges
