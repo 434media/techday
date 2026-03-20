@@ -16,6 +16,7 @@ interface Pitch {
   companyName: string
   founderName: string
   email: string
+  phone: string
   website: string
   stage: string
   industry: string
@@ -136,48 +137,56 @@ export default function PitchesPage() {
       "Company Name",
       "Founder Name",
       "Email",
+      "Phone",
       "Website",
       "Industry",
       "Stage",
       "Team Size",
       "Funding Raised",
       "Funding Goal",
+      "Deck URL",
       "Status",
       "Submitted Date",
       "Pitch Summary",
       "Problem",
       "Solution",
+      "Traction",
     ]
     const rows = pitches.map((pitch) => [
       pitch.companyName || "",
       pitch.founderName || "",
       pitch.email || "",
+      pitch.phone || "",
       pitch.website || "",
       pitch.industry || "",
       pitch.stage || "",
       pitch.teamSize || "",
       pitch.fundingRaised || "",
       pitch.fundingGoal || "",
+      pitch.deckUrl || "",
       pitch.status || "",
       pitch.submittedAt ? new Date(pitch.submittedAt).toLocaleDateString() : "",
       pitch.pitch || "",
       pitch.problem || "",
       pitch.solution || "",
+      pitch.traction || "",
     ])
 
-    // Escape CSV values that contain commas, quotes, or newlines
+    // Escape CSV values — collapse newlines for cleaner spreadsheet rows
     const escapeCSV = (value: string) => {
-      if (value.includes(",") || value.includes('"') || value.includes("\n")) {
-        return `"${value.replace(/"/g, '""')}"`
+      const cleaned = value.replace(/\r\n/g, " ").replace(/\n/g, " ").replace(/\r/g, " ")
+      if (cleaned.includes(",") || cleaned.includes('"') || cleaned.includes("\n")) {
+        return `"${cleaned.replace(/"/g, '""')}"`
       }
-      return value
+      return cleaned
     }
 
     const csv = [headers, ...rows]
       .map((row) => row.map(escapeCSV).join(","))
       .join("\n")
 
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
+    // BOM for proper UTF-8 in Excel/Numbers
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
@@ -537,6 +546,7 @@ function PitchDetailModal({
               </div>
               <p className="text-sm text-neutral-500 leading-relaxed">
                 {pitch.founderName} · {pitch.email}
+                {pitch.phone && <> · {pitch.phone}</>}
               </p>
             </div>
           </div>
