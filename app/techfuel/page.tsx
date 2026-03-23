@@ -617,9 +617,15 @@ export default function TechFuelPage() {
             >
               April 20, 2026 • UTSA SP1
             </Editable>
-            <p className="font-mono text-sm text-muted-foreground mb-6 tracking-widest uppercase font-medium leading-none">
+            <Editable 
+              id="techfuel.hero.time" 
+              as="p" 
+              className="font-mono text-sm text-muted-foreground mb-6 tracking-widest uppercase font-medium leading-none"
+              page="techfuel"
+              section="hero"
+            >
               2:00 PM – 6:00 PM
-            </p>
+            </Editable>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground mb-4 leading-[0.95] tracking-tight">
               <Editable 
                 id="techfuel.hero.title" 
