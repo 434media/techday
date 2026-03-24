@@ -50,7 +50,7 @@ function getEmailTemplate(content: string, footerText: string = "") {
                 TECH FUEL • TECH DAY <span style="color: #c73030;">2026</span>
               </h1>
               <p style="margin: 10px 0 0; color: rgba(255,255,255,0.7); font-size: 14px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
-                April 20-21, 2026 • UTSA SP1 • Tech Port
+                April 20-21, 2026 • UTSA SP1 • Boeing Center at Tech Port
               </p>
               <p style="margin: 6px 0 0; color: rgba(255,255,255,0.5); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">
                 Tech Fuel 2–6 PM • Tech Day 1–4 PM (Doors Open 12:30 PM)
@@ -120,9 +120,9 @@ function getEmailDates(eventType: "techfuel" | "techday" | "both"): string {
     case "techfuel":
       return "April 20, 2026 • 2:00–6:00 PM • UTSA SP1"
     case "techday":
-      return "April 21, 2026 • 1:00–4:00 PM • Tech Port"
+      return "April 21, 2026 • 1:00–4:00 PM • Boeing Center at Tech Port"
     case "both":
-      return "April 20-21, 2026 • UTSA SP1 • Tech Port"
+      return "April 20-21, 2026 • UTSA SP1 • Boeing Center at Tech Port"
   }
 }
 
@@ -210,9 +210,9 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
     case "techday":
       return {
         greeting: `You're In, ${firstName}! 🎉`,
-        description: "Your registration for <strong>Tech Day 2026</strong> is confirmed. We can't wait to see you at Tech Port on April 21st!",
+        description: "Your registration for <strong>Tech Day 2026</strong> is confirmed. We can't wait to see you at Boeing Center at Tech Port on April 21st!",
         dateInfo: "<strong>April 21, 2026 • 1:00–4:00 PM</strong><br/>Doors Open at 12:30 PM",
-        locationInfo: "<strong>Tech Port</strong>, San Antonio",
+        locationInfo: "<strong>Boeing Center at Tech Port</strong>, San Antonio",
         scheduleLink: "https://sanantoniotechday.com/techday"
       }
     case "both":
@@ -220,7 +220,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
         greeting: `You're In, ${firstName}! 🎉`,
         description: "Your registration for <strong>Tech Fuel & Tech Day 2026</strong> is confirmed. Join us for two incredible days of innovation, pitches, and networking!",
         dateInfo: "<strong>April 20-21, 2026</strong><br/>Tech Fuel: 2:00–6:00 PM • Tech Day: 1:00–4:00 PM (Doors 12:30 PM)",
-        locationInfo: "<strong>UTSA SP1</strong> (April 20) & <strong>Tech Port</strong> (April 21), San Antonio",
+        locationInfo: "<strong>UTSA SP1</strong> (April 20) & <strong>Boeing Center at Tech Port</strong> (April 21), San Antonio",
         scheduleLink: "https://sanantoniotechday.com/"
       }
   }

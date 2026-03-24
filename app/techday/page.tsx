@@ -49,7 +49,7 @@ export default function TechDayPage() {
               page="techday"
               section="hero"
             >
-              April 21, 2026 • Tech Port
+              April 21, 2026 • Boeing Center at Tech Port
             </Editable>
             <Editable 
               id="techday.hero.doorsopen" 

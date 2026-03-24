@@ -83,7 +83,7 @@ export function TicketBadge({
           {/* Event info */}
           <div className="space-y-1 text-sm text-muted-foreground">
             <p className="font-mono font-semibold text-primary">TECH DAY 2026</p>
-            <p>April 21, 2026 • Tech Port</p>
+            <p>April 21, 2026 • Boeing Center at Tech Port</p>
           </div>
 
           {/* Barcode */}
@@ -163,7 +163,7 @@ export function EventTicket({ className = "", variant = "horizontal" }: EventTic
 
             <div>
               <p className="font-mono text-[10px] text-muted-foreground tracking-wider">VENUE</p>
-              <p className="font-bold text-foreground">Tech Port</p>
+              <p className="font-bold text-foreground">Boeing Center at Tech Port</p>
               <p className="text-sm text-muted-foreground">San Antonio, Texas</p>
             </div>
 
@@ -239,7 +239,7 @@ export function EventTicket({ className = "", variant = "horizontal" }: EventTic
 
             <div className="mt-4">
               <p className="font-mono text-[10px] text-muted-foreground tracking-wider">VENUE</p>
-              <p className="font-bold text-foreground">Tech Port</p>
+              <p className="font-bold text-foreground">Boeing Center at Tech Port</p>
             </div>
           </div>
         </div>

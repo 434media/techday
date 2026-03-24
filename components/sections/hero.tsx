@@ -217,7 +217,7 @@ export function Hero() {
               page="home"
               section="hero"
             >
-              Tech Port
+              Boeing Center at Tech Port
             </Editable>
           </div>
         </motion.div>

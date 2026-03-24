@@ -48,7 +48,7 @@ export default function RegisterPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <span className="font-medium">Tech Port &amp; UTSA SP1</span>
+                  <span className="font-medium">Boeing Center at Tech Port &amp; UTSA SP1</span>
                 </div>
                 <div className="inline-flex items-center gap-2 text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
                   <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,7 +146,7 @@ export default function RegisterPage() {
               {
                 id: "faq-2",
                 q: "When and where are the events?",
-                a: "Tech Fuel is on April 20, 2026 at UTSA SP1 in San Antonio. Tech Day, our conference, is on April 21, 2026 at Tech Port. Full address and parking details will be sent in your confirmation email.",
+                a: "Tech Fuel is on April 20, 2026 at UTSA SP1 in San Antonio. Tech Day, our conference, is on April 21, 2026 at Boeing Center at Tech Port. Full address and parking details will be sent in your confirmation email.",
               },
               {
                 id: "faq-3",

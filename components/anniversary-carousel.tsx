@@ -351,7 +351,7 @@ export function AnniversaryCarousel() {
             <span className="text-primary">Tech Revolution</span>
           </h2>
           <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Join us at Tech Port and UTSA SP1 as we celebrate 10 years of building the future together.
+            Join us at Boeing Center at Tech Port and UTSA SP1 as we celebrate 10 years of building the future together.
           </p>
         </motion.div>
       </div>
