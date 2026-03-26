@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Sponsors } from "@/components/sections/sponsors"
 import { PixelArrow } from "@/components/pixel-arrow"
 import { Editable } from "@/components/editable"
 import { motion, AnimatePresence } from "motion/react"
 import Link from "next/link"
-import { PitchSubmissionForm } from "@/components/forms/pitch-submission-form"
+
 
 const qualifications = [
   {
@@ -168,159 +168,7 @@ const timeline = [
   { date: "Apr 20", event: "Tech Fuel Event @ UTSA SP1" },
 ]
 
-function PitchCountdown({ targetDate }: { targetDate: string }) {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-  const [isOpen, setIsOpen] = useState(false)
-  const [showForm, setShowForm] = useState(false)
 
-  useEffect(() => {
-    const target = new Date(targetDate).getTime()
-
-    function update() {
-      const now = Date.now()
-      const diff = target - now
-
-      if (diff <= 0) {
-        setIsOpen(true)
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-        return
-      }
-
-      setTimeLeft({
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-      })
-    }
-
-    update()
-    const interval = setInterval(update, 1000)
-    return () => clearInterval(interval)
-  }, [targetDate])
-
-  if (isOpen) {
-    return (
-      <div className="space-y-8">
-        <AnimatePresence mode="wait">
-          {!showForm ? (
-            <motion.div
-              key="cta"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="text-center p-8 sm:p-12 bg-white border border-primary/30 rounded-2xl shadow-lg"
-            >
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/20 flex items-center justify-center">
-                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-foreground mb-3">Applications Are Open!</h3>
-              <p className="text-muted-foreground mb-6">Submit your pitch now. Applications close March 22, 2026.</p>
-              <button
-                onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
-              >
-                Apply Now
-              </button>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-            >
-              <div className="bg-white border border-border rounded-2xl p-6 sm:p-10 shadow-lg">
-                <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-2xl font-bold text-foreground">Pitch Application</h3>
-                  <button
-                    onClick={() => setShowForm(false)}
-                    className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-lg hover:bg-muted"
-                    aria-label="Close form"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-                <PitchSubmissionForm />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    )
-  }
-
-  const units = [
-    { label: "Days", value: timeLeft.days },
-    { label: "Hours", value: timeLeft.hours },
-    { label: "Minutes", value: timeLeft.minutes },
-    { label: "Seconds", value: timeLeft.seconds },
-  ]
-
-  return (
-    <div className="space-y-8">
-      {/* Countdown Grid */}
-      <div className="grid grid-cols-4 gap-3 sm:gap-4 max-w-lg mx-auto">
-        {units.map((unit) => (
-          <motion.div
-            key={unit.label}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            <div className="bg-white border border-border rounded-xl p-4 sm:p-6 text-center shadow-sm">
-              <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground tabular-nums leading-none">
-                {String(unit.value).padStart(2, "0")}
-              </span>
-              <p className="font-mono text-[10px] sm:text-xs text-muted-foreground tracking-widest uppercase mt-2">
-                {unit.label}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Red Arrow Divider */}
-      <div className="flex items-center justify-center gap-4">
-        <div className="flex-1 h-px bg-border" />
-        <div className="relative w-8 h-8">
-          <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8 text-primary animate-bounce">
-            <path d="M12 4v16m0 0l-6-6m6 6l6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        <div className="flex-1 h-px bg-border" />
-      </div>
-
-      {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="bg-white border border-border rounded-2xl p-6 sm:p-8 text-center shadow-sm"
-      >
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-mono text-xs tracking-wider uppercase mb-4">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-          </span>
-          February 16, 2026
-        </div>
-        <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2 tracking-tight">
-          Applications Open Soon
-        </h3>
-        <p className="text-muted-foreground leading-relaxed max-w-md mx-auto">
-          Pitch registration opens on February 16th. Prepare your 5-minute pitch deck and get ready to compete for $100K in non-dilutive cash prizes.
-        </p>
-      </motion.div>
-    </div>
-  )
-}
 
 function QualificationsAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
@@ -657,15 +505,9 @@ export default function TechFuelPage() {
               Greater San Antonio's largest cash prize pitch competition with $100,000 in non-dilutive cash prizes along with resources and support, sponsored by Bexar County.
             </Editable>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="#submit"
-                className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
-              >
-                Submit Your Pitch
-              </a>
               <Link
                 href="/register"
-                className="px-10 py-5 bg-transparent border-2 border-foreground/30 text-foreground font-semibold rounded-md hover:bg-foreground hover:text-white transition-all text-lg"
+                className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
               >
                 Attend as Spectator
               </Link>
@@ -1074,7 +916,7 @@ export default function TechFuelPage() {
               page="techfuel"
               section="submit"
             >
-              Ready to Compete?
+              Applications Closed
             </Editable>
             <Editable
               id="techfuel.submit.title"
@@ -1083,7 +925,7 @@ export default function TechFuelPage() {
               page="techfuel"
               section="submit"
             >
-              Submit Your Pitch
+              Thank You for Applying
             </Editable>
             <Editable
               id="techfuel.submit.description"
@@ -1092,7 +934,7 @@ export default function TechFuelPage() {
               page="techfuel"
               section="submit"
             >
-              Applications open February 16, 2026. Get ready to pitch your startup.
+              The Tech Fuel 2026 submission window has closed. Thank you to all the startups who applied — semi-finalists will be announced on March 27.
             </Editable>
           </motion.div>
 
@@ -1102,7 +944,23 @@ export default function TechFuelPage() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <PitchCountdown targetDate="2026-02-16T00:00:00" />
+            <div className="text-center p-8 sm:p-12 bg-white border border-primary/30 rounded-2xl shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/20 flex items-center justify-center">
+                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-3">Submissions Closed</h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                Thank you to everyone who submitted a pitch. Stay tuned for semi-finalist announcements and join us on April 20 at UTSA SP1 to watch the finalists compete live.
+              </p>
+              <Link
+                href="/register"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
+              >
+                Register to Attend
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
