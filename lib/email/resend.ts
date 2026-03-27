@@ -871,11 +871,15 @@ export async function sendPitchSchedulingConfirmation(
 
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      You're Scheduled, ${founderName}! 🚀
+      Congratulations, ${founderName}! 🎉
     </h2>
     
+    <p style="margin: 0 0 15px; color: #525252; font-size: 16px; line-height: 1.6;">
+      We're excited to share that <strong>${companyName}</strong> has been selected as a <strong>Semi-Finalist</strong> for the Tech Fuel 2026 Startup Pitch Competition! Out of many impressive applications, your pitch stood out to our review panel.
+    </p>
+    
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      Your pitch time for the <strong>Tech Fuel 2026 Semi-Finals</strong> has been confirmed for <strong>${companyName}</strong>. Your session details are below.
+      Your semi-finals pitch session has been confirmed. Here are your details:
     </p>
     
     <!-- Session Card -->
@@ -1028,7 +1032,7 @@ export async function sendPitchSchedulingConfirmation(
       from: FROM_EMAIL,
       to: email,
       replyTo: REPLY_TO,
-      subject: `Pitch Time Confirmed — ${companyName} on ${dateLabel} at ${pitchSlot} 🚀`,
+      subject: `Congratulations — ${companyName} is a Tech Fuel Semi-Finalist! 🎉 Pitch on ${dateLabel} at ${pitchSlot}`,
       html: getEmailTemplate(content, "Save this email — it contains your Zoom details and pitch time"),
     })
 

@@ -13,6 +13,13 @@ interface PitchEntry {
   submittedAt: string
 }
 
+interface AcceptedPitch {
+  id: string
+  companyName: string
+  founderName: string
+  email: string
+}
+
 const ZOOM_LINKS: Record<string, { url: string; meetingId: string; passcode: string }> = {
   "2026-04-02": {
     url: "https://us06web.zoom.us/j/84733840136?pwd=WfCT50nnaUvgGV9PwWe3zgAeM1nt5Y.1",
@@ -72,8 +79,12 @@ export default function AdminPitchSchedulingPage() {
   const [removingId, setRemovingId] = useState<string | null>(null)
   const [sendingEmailId, setSendingEmailId] = useState<string | null>(null)
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null)
-  const [isBulkSending, setIsBulkSending] = useState(false)
-  const [bulkNotifyMeta, setBulkNotifyMeta] = useState<{ lastSentAt: string | null; sentBy?: string; sentCount?: number }>({ lastSentAt: null })
+  const [acceptedPitches, setAcceptedPitches] = useState<AcceptedPitch[]>([])
+  const [emailPromptPitch, setEmailPromptPitch] = useState<PitchEntry | null>(null)
+  const [isSendingCongrats, setIsSendingCongrats] = useState(false)
+  const [companySearch, setCompanySearch] = useState("")
+  const [showCompanyDropdown, setShowCompanyDropdown] = useState(false)
+  const [previewEmailPitch, setPreviewEmailPitch] = useState<PitchEntry | null>(null)
 
   function showToast(message: string, type: "success" | "error" = "success") {
     setToast({ message, type })
@@ -97,42 +108,25 @@ export default function AdminPitchSchedulingPage() {
     }
   }
 
-  async function fetchBulkNotifyMeta() {
+  async function fetchAcceptedPitches() {
     try {
-      const res = await fetch("/api/admin/data/semifinals-pitches/notify", { credentials: "include" })
-      if (res.ok) {
-        const data = await res.json()
-        setBulkNotifyMeta(data)
-      }
-    } catch {
-      // ignore
-    }
-  }
-
-  async function handleBulkNotify() {
-    if (!confirm("Send notification emails to all accepted semi-finalist pitches? This will direct them to schedule their pitch slot.")) return
-
-    setIsBulkSending(true)
-    try {
-      const res = await fetch("/api/admin/data/semifinals-pitches/notify", {
-        method: "POST",
-        credentials: "include",
-      })
+      const res = await fetch("/api/admin/data/pitches", { credentials: "include" })
+      if (!res.ok) return
       const data = await res.json()
-      if (!res.ok) {
-        showToast(data.error || "Failed to send notifications", "error")
-        return
-      }
-      showToast(`Notification sent to ${data.sent} founder${data.sent !== 1 ? "s" : ""}${data.failed ? ` (${data.failed} failed)` : ""}`)
-      setBulkNotifyMeta({ lastSentAt: data.lastSentAt, sentCount: data.sent })
+      setAcceptedPitches(
+        (data.pitches || []).map((p: Record<string, string>) => ({
+          id: p.id,
+          companyName: p.companyName,
+          founderName: p.founderName,
+          email: p.email,
+        }))
+      )
     } catch {
-      showToast("Failed to send notifications", "error")
-    } finally {
-      setIsBulkSending(false)
+      console.error("Failed to fetch pitch submissions")
     }
   }
 
-  useEffect(() => { fetchPitches(); fetchBulkNotifyMeta() }, [])
+  useEffect(() => { fetchPitches(); fetchAcceptedPitches() }, [])
 
   async function handleAddPitch(e: React.FormEvent) {
     e.preventDefault()
@@ -160,6 +154,9 @@ export default function AdminPitchSchedulingPage() {
       setShowAddModal(false)
       setAddForm({ companyName: "", founderName: "", email: "", date: "", judgeBlock: "", pitchSlot: "" })
       showToast(`${data.pitch.companyName} added successfully`)
+      if (data.pitch.email) {
+        setEmailPromptPitch(data.pitch)
+      }
     } catch {
       setAddError("Failed to add pitch")
     } finally {
@@ -267,7 +264,7 @@ export default function AdminPitchSchedulingPage() {
             {totalPitches} pitch{totalPitches !== 1 ? "es" : ""} scheduled across {ALL_DATES.length} days
           </p>
         </div>
-        {/* <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2.5 bg-black text-white text-sm font-semibold rounded-md hover:bg-neutral-800 transition-colors leading-5"
@@ -275,49 +272,130 @@ export default function AdminPitchSchedulingPage() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Add Pitch
-          </button>
-        </div> */}
-      </div>
-
-      {/* Bulk Notification */}
-      <div className="mb-10 bg-neutral-50 border border-neutral-200 rounded-md p-5">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <h3 className="text-sm font-bold text-black leading-5">Notify All Semi-Finalists</h3>
-            <p className="text-[13px] text-neutral-500 mt-1 leading-5">
-              Send a notification email to all accepted pitches congratulating them and directing them to schedule their pitch slot.
-            </p>
-            <p className="text-[12px] text-neutral-400 mt-1.5 leading-4 font-mono">
-              {bulkNotifyMeta.lastSentAt
-                ? `Last sent: ${new Date(bulkNotifyMeta.lastSentAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}${bulkNotifyMeta.sentCount ? ` — ${bulkNotifyMeta.sentCount} email${bulkNotifyMeta.sentCount !== 1 ? "s" : ""}` : ""}`
-                : "Never sent"}
-            </p>
-          </div>
-          <button
-            onClick={handleBulkNotify}
-            disabled={isBulkSending}
-            className="flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed leading-5 shrink-0"
-          >
-            {isBulkSending ? (
-              <>
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Sending...
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                Notify All Semi-Finalists
-              </>
-            )}
+            Add Semifinalist
           </button>
         </div>
       </div>
+
+      {/* Email Preview for Selected Semifinalist */}
+      {previewEmailPitch && (() => {
+        const zoom = ZOOM_LINKS[previewEmailPitch.date]
+        return (
+          <div className="mb-10 bg-white border border-neutral-200 rounded-md overflow-hidden">
+            <div className="flex items-center justify-between p-5 border-b border-neutral-100">
+              <div>
+                <h3 className="text-sm font-bold text-black leading-5">Email Preview — {previewEmailPitch.companyName}</h3>
+                <p className="text-[12px] text-neutral-400 mt-0.5 leading-4">
+                  To: {previewEmailPitch.email || "No email on file"} • {previewEmailPitch.founderName}
+                </p>
+              </div>
+              <button
+                onClick={() => setPreviewEmailPitch(null)}
+                className="p-1.5 text-neutral-400 hover:text-black transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            {/* Simulated email */}
+            <div className="bg-neutral-50 p-5">
+              <div className="bg-white rounded-md border border-neutral-200 max-w-lg mx-auto overflow-hidden shadow-sm">
+                {/* Email header */}
+                <div className="bg-[#0a0a0a] p-6 text-center">
+                  <p className="text-white font-bold text-lg">TECH FUEL • TECH DAY <span className="text-[#c73030]">2026</span></p>
+                  <p className="text-white/60 text-[11px] font-mono mt-1 tracking-wider">April 20-21, 2026 • UTSA SP1 • Boeing Center at Tech Port</p>
+                </div>
+                {/* Email body */}
+                <div className="p-6 space-y-4">
+                  <h2 className="text-xl font-semibold text-[#0a0a0a]">Congratulations, {previewEmailPitch.founderName}! 🎉</h2>
+                  <p className="text-[14px] text-neutral-600 leading-relaxed">
+                    We&apos;re excited to share that <strong>{previewEmailPitch.companyName}</strong> has been selected as a <strong>Semi-Finalist</strong> for the Tech Fuel 2026 Startup Pitch Competition!
+                  </p>
+                  {/* Session card */}
+                  <div className="bg-[#0a0a0a] rounded-lg p-5 text-white">
+                    <p className="text-[#c73030] text-[10px] font-mono tracking-widest uppercase mb-3">Semi-Finals Pitch Session</p>
+                    <div className="grid grid-cols-2 gap-3 text-[13px]">
+                      <div>
+                        <p className="text-white/50 text-[10px] uppercase tracking-wide">Date</p>
+                        <p className="font-medium">{DATE_LABELS[previewEmailPitch.date]}</p>
+                      </div>
+                      <div>
+                        <p className="text-white/50 text-[10px] uppercase tracking-wide">Pitch Time</p>
+                        <p className="font-mono font-medium">{previewEmailPitch.pitchSlot}</p>
+                      </div>
+                      <div>
+                        <p className="text-white/50 text-[10px] uppercase tracking-wide">Company</p>
+                        <p className="font-medium">{previewEmailPitch.companyName}</p>
+                      </div>
+                      <div>
+                        <p className="text-white/50 text-[10px] uppercase tracking-wide">Judge Block</p>
+                        <p className="font-mono font-medium">{previewEmailPitch.judgeBlock}</p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Zoom details */}
+                  {zoom && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <p className="font-semibold text-blue-900 text-[13px] mb-2">📹 Zoom Meeting Details</p>
+                      <p className="text-[13px] text-blue-800 break-all">{zoom.url}</p>
+                      <p className="text-[12px] text-blue-700 mt-2">
+                        Meeting ID: <span className="font-mono font-semibold">{zoom.meetingId}</span>
+                        {" "} | Passcode: <span className="font-mono font-semibold">{zoom.passcode}</span>
+                      </p>
+                    </div>
+                  )}
+                  {/* Steps */}
+                  <div className="text-[13px] text-neutral-600 space-y-1.5">
+                    <p className="font-semibold text-black text-[14px]">What to Expect</p>
+                    <p>1. Join Zoom 2–3 minutes early</p>
+                    <p>2. Pitch (5 min) to the judging panel</p>
+                    <p>3. Q&A (5 min) follow-up questions</p>
+                  </div>
+                </div>
+                {/* Email footer */}
+                <div className="bg-[#0a0a0a] p-4 text-center">
+                  <p className="text-white/40 text-[11px]">© 2026 Tech Bloc & 434 MEDIA • San Antonio, TX</p>
+                </div>
+              </div>
+            </div>
+            {/* Send button */}
+            <div className="p-5 border-t border-neutral-100 flex items-center justify-between gap-3">
+              <p className="text-[12px] text-neutral-400">
+                Subject: Congratulations — {previewEmailPitch.companyName} is a Tech Fuel Semi-Finalist!
+              </p>
+              <button
+                onClick={() => {
+                  if (previewEmailPitch.email) {
+                    handleSendEmail(previewEmailPitch)
+                  } else {
+                    showToast("No email address for this pitch", "error")
+                  }
+                }}
+                disabled={sendingEmailId === previewEmailPitch.id || !previewEmailPitch.email}
+                className="flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed leading-5 shrink-0"
+              >
+                {sendingEmailId === previewEmailPitch.id ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Send Email
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )
+      })()}
 
       {isLoading ? (
         <div className="space-y-4">
@@ -398,7 +476,23 @@ export default function AdminPitchSchedulingPage() {
                             return (
                               <div
                                 key={slot}
-                                className="py-3 flex items-center justify-between gap-3"
+                                className={`py-3 flex items-center justify-between gap-3 ${
+                                  !pitch ? "cursor-pointer hover:bg-neutral-50 -mx-2 px-2 rounded-md transition-colors" : ""
+                                }`}
+                                onClick={() => {
+                                  if (!pitch) {
+                                    setAddForm({
+                                      companyName: "",
+                                      founderName: "",
+                                      email: "",
+                                      date,
+                                      judgeBlock: block,
+                                      pitchSlot: slot,
+                                    })
+                                    setAddError("")
+                                    setShowAddModal(true)
+                                  }
+                                }}
                               >
                                 <div className="flex items-center gap-4 min-w-0 flex-1">
                                   <p className="font-mono text-[13px] font-semibold text-neutral-500 leading-5 shrink-0 w-35">
@@ -414,37 +508,33 @@ export default function AdminPitchSchedulingPage() {
                                       </p>
                                     </div>
                                   ) : (
-                                    <p className="text-[13px] text-neutral-300 italic leading-5">
-                                      Open
+                                    <p className="text-[13px] text-neutral-300 italic leading-5 flex items-center gap-1.5">
+                                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                      </svg>
+                                      Click to add semifinalist
                                     </p>
                                   )}
                                 </div>
 
                                 {pitch && (
                                   <div className="flex items-center gap-1.5 shrink-0">
-                                    {/* Send Email */}
+                                    {/* Preview Email */}
                                     <button
-                                      onClick={() => handleSendEmail(pitch)}
-                                      disabled={sendingEmailId === pitch.id || !pitch.email}
-                                      title={pitch.email ? `Send confirmation to ${pitch.email}` : "No email address"}
+                                      onClick={(e) => { e.stopPropagation(); setPreviewEmailPitch(pitch) }}
+                                      disabled={!pitch.email}
+                                      title={pitch.email ? `Preview email for ${pitch.companyName}` : "No email address"}
                                       className={`p-2 rounded-md transition-colors ${
                                         !pitch.email
                                           ? "text-neutral-300 cursor-not-allowed"
-                                          : sendingEmailId === pitch.id
-                                            ? "text-blue-400 bg-blue-50"
+                                          : previewEmailPitch?.id === pitch.id
+                                            ? "text-blue-600 bg-blue-50"
                                             : "text-neutral-400 hover:text-blue-600 hover:bg-blue-50"
                                       }`}
                                     >
-                                      {sendingEmailId === pitch.id ? (
-                                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                                        </svg>
-                                      ) : (
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
-                                      )}
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                      </svg>
                                     </button>
 
                                     {/* Remove */}
@@ -485,12 +575,12 @@ export default function AdminPitchSchedulingPage() {
         </div>
       )}
 
-      {/* Add Pitch Modal */}
+      {/* Add Semifinalist Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-neutral-200">
-              <h3 className="text-lg font-bold text-black leading-tight">Add Pitch</h3>
+              <h3 className="text-lg font-bold text-black leading-tight">Add Semifinalist to Schedule</h3>
               <button
                 onClick={() => { setShowAddModal(false); setAddError("") }}
                 className="p-1 text-neutral-400 hover:text-black transition-colors"
@@ -502,47 +592,95 @@ export default function AdminPitchSchedulingPage() {
             </div>
 
             <form onSubmit={handleAddPitch} className="p-6 space-y-5">
-              <div>
+              {/* Company Search Dropdown */}
+              <div className="relative">
                 <label className="block text-[13px] font-semibold text-neutral-700 mb-1.5 leading-5">
-                  Company Name <span className="text-red-500">*</span>
+                  Select Pitch Company <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  value={addForm.companyName}
-                  onChange={(e) => setAddForm((f) => ({ ...f, companyName: e.target.value }))}
-                  placeholder="Company name"
-                  className="w-full px-3.5 py-2.5 border border-neutral-300 rounded-md text-[14px] leading-5 text-black focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  required
+                  value={addForm.companyName ? `${addForm.companyName}` : companySearch}
+                  onChange={(e) => {
+                    setCompanySearch(e.target.value)
+                    setAddForm((f) => ({ ...f, companyName: "", founderName: "", email: "" }))
+                    setShowCompanyDropdown(true)
+                  }}
+                  onFocus={() => setShowCompanyDropdown(true)}
+                  placeholder="Search companies..."
+                  className="w-full px-3.5 py-2.5 border border-neutral-300 rounded-md text-[14px] leading-5 text-black focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white"
+                  autoComplete="off"
                 />
+                {addForm.companyName && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAddForm((f) => ({ ...f, companyName: "", founderName: "", email: "" }))
+                      setCompanySearch("")
+                      setShowCompanyDropdown(true)
+                    }}
+                    className="absolute right-3 top-[34px] p-0.5 text-neutral-400 hover:text-black"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+                {showCompanyDropdown && !addForm.companyName && (() => {
+                  const available = acceptedPitches
+                    .filter((ap) => !pitches.some((p) => p.companyName === ap.companyName))
+                    .filter((ap) =>
+                      !companySearch ||
+                      ap.companyName.toLowerCase().includes(companySearch.toLowerCase()) ||
+                      ap.founderName.toLowerCase().includes(companySearch.toLowerCase())
+                    )
+                    .sort((a, b) => a.companyName.localeCompare(b.companyName))
+                  return (
+                    <div className="absolute z-10 left-0 right-0 mt-1 bg-white border border-neutral-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                      {available.length === 0 ? (
+                        <p className="px-3.5 py-3 text-[13px] text-neutral-400 italic">No matching companies</p>
+                      ) : (
+                        available.map((p) => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => {
+                              setAddForm((f) => ({
+                                ...f,
+                                companyName: p.companyName,
+                                founderName: p.founderName,
+                                email: p.email || "",
+                              }))
+                              setCompanySearch("")
+                              setShowCompanyDropdown(false)
+                            }}
+                            className="w-full text-left px-3.5 py-2.5 hover:bg-neutral-50 transition-colors border-b border-neutral-50 last:border-0"
+                          >
+                            <p className="text-[13px] font-semibold text-black leading-5 truncate">{p.companyName}</p>
+                            <p className="text-[11px] text-neutral-400 leading-4 truncate">{p.founderName}{p.email ? ` — ${p.email}` : ""}</p>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )
+                })()}
+                <p className="text-[11px] text-neutral-400 mt-1 leading-4">
+                  {acceptedPitches.filter((ap) => !pitches.some((p) => p.companyName === ap.companyName)).length} of {acceptedPitches.length} pitch submissions available
+                </p>
               </div>
 
-              <div>
-                <label className="block text-[13px] font-semibold text-neutral-700 mb-1.5 leading-5">
-                  Founder Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={addForm.founderName}
-                  onChange={(e) => setAddForm((f) => ({ ...f, founderName: e.target.value }))}
-                  placeholder="Founder name"
-                  className="w-full px-3.5 py-2.5 border border-neutral-300 rounded-md text-[14px] leading-5 text-black focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-[13px] font-semibold text-neutral-700 mb-1.5 leading-5">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={addForm.email}
-                  onChange={(e) => setAddForm((f) => ({ ...f, email: e.target.value }))}
-                  placeholder="founder@company.com"
-                  className="w-full px-3.5 py-2.5 border border-neutral-300 rounded-md text-[14px] leading-5 text-black focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-                <p className="text-[11px] text-neutral-400 mt-1 leading-4">Required to send confirmation email</p>
-              </div>
+              {/* Auto-filled details */}
+              {addForm.companyName && (
+                <div className="bg-neutral-50 border border-neutral-200 rounded-md p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[12px] font-semibold text-neutral-500 uppercase tracking-wide w-20">Founder</span>
+                    <span className="text-[14px] text-black font-medium">{addForm.founderName || "—"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[12px] font-semibold text-neutral-500 uppercase tracking-wide w-20">Email</span>
+                    <span className="text-[14px] text-black font-medium">{addForm.email || <span className="text-neutral-400 italic">No email on file</span>}</span>
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-[13px] font-semibold text-neutral-700 mb-1.5 leading-5">
@@ -623,10 +761,109 @@ export default function AdminPitchSchedulingPage() {
                   disabled={isAdding}
                   className="flex-1 py-2.5 bg-black text-white rounded-md text-sm font-semibold hover:bg-neutral-800 transition-colors disabled:opacity-50 leading-5"
                 >
-                  {isAdding ? "Adding..." : "Add Pitch"}
+                  {isAdding ? "Adding..." : "Add to Schedule"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Send Congrats Email Prompt */}
+      {emailPromptPitch && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-black leading-tight">
+                    {emailPromptPitch.companyName} Scheduled
+                  </h3>
+                  <p className="text-[13px] text-neutral-500 mt-0.5 leading-5">
+                    {DATE_LABELS[emailPromptPitch.date]} at {emailPromptPitch.pitchSlot}
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-5">
+                <p className="text-[13px] text-blue-900 leading-5">
+                  <strong>Send a congratulations email</strong> to <strong>{emailPromptPitch.founderName}</strong> at{" "}
+                  <span className="font-mono">{emailPromptPitch.email}</span> with their scheduled time and Zoom meeting details?
+                </p>
+              </div>
+
+              {/* Preview of email content */}
+              <div className="bg-neutral-50 border border-neutral-200 rounded-md p-4 mb-5 text-[12px] text-neutral-600 space-y-1.5">
+                <p className="font-semibold text-neutral-700 text-[13px]">Email will include:</p>
+                <p>Congratulations on making the Semi-Finals</p>
+                <p>Pitch time: <span className="font-mono font-semibold text-black">{emailPromptPitch.pitchSlot}</span></p>
+                <p>Date: <span className="font-semibold text-black">{DATE_LABELS[emailPromptPitch.date]}</span></p>
+                <p>Zoom link, Meeting ID &amp; Passcode for {DATE_LABELS[emailPromptPitch.date]}</p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setEmailPromptPitch(null)}
+                  className="flex-1 py-2.5 border border-neutral-300 rounded-md text-sm font-semibold text-neutral-600 hover:bg-neutral-50 transition-colors leading-5"
+                >
+                  Skip
+                </button>
+                <button
+                  onClick={async () => {
+                    setIsSendingCongrats(true)
+                    try {
+                      const res = await fetch("/api/admin/data/semifinals-pitches", {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({
+                          email: emailPromptPitch.email,
+                          companyName: emailPromptPitch.companyName,
+                          founderName: emailPromptPitch.founderName,
+                          date: emailPromptPitch.date,
+                          pitchSlot: emailPromptPitch.pitchSlot,
+                          judgeBlock: emailPromptPitch.judgeBlock,
+                        }),
+                      })
+                      if (!res.ok) {
+                        showToast("Failed to send email", "error")
+                      } else {
+                        showToast(`Congrats email sent to ${emailPromptPitch.email}`)
+                      }
+                    } catch {
+                      showToast("Failed to send email", "error")
+                    } finally {
+                      setIsSendingCongrats(false)
+                      setEmailPromptPitch(null)
+                    }
+                  }}
+                  disabled={isSendingCongrats}
+                  className="flex-1 py-2.5 bg-red-600 text-white rounded-md text-sm font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 leading-5 flex items-center justify-center gap-2"
+                >
+                  {isSendingCongrats ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      Send Congrats Email
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
