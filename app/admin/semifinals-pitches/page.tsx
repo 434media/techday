@@ -153,7 +153,11 @@ export default function AdminPitchSchedulingPage() {
       setPitches((prev) => [...prev, data.pitch])
       setShowAddModal(false)
       setAddForm({ companyName: "", founderName: "", email: "", date: "", judgeBlock: "", pitchSlot: "" })
-      showToast(`${data.pitch.companyName} added successfully`)
+      if (data.emailSent) {
+        showToast(`${data.pitch.companyName} added — notification email sent to ${data.pitch.email}`)
+      } else {
+        showToast(`${data.pitch.companyName} added successfully`)
+      }
       if (data.pitch.email) {
         setEmailPromptPitch(data.pitch)
       }
@@ -286,6 +290,9 @@ export default function AdminPitchSchedulingPage() {
               <div>
                 <h3 className="text-sm font-bold text-black leading-5">Email Preview — {previewEmailPitch.companyName}</h3>
                 <p className="text-[12px] text-neutral-400 mt-0.5 leading-4">
+                  From: Beto Altamirano &lt;ceo@send.satechbloc.com&gt; • Reply-To: ceo@satechbloc.com
+                </p>
+                <p className="text-[12px] text-neutral-400 mt-0.5 leading-4">
                   To: {previewEmailPitch.email || "No email on file"} • {previewEmailPitch.founderName}
                 </p>
               </div>
@@ -303,18 +310,24 @@ export default function AdminPitchSchedulingPage() {
               <div className="bg-white rounded-md border border-neutral-200 max-w-lg mx-auto overflow-hidden shadow-sm">
                 {/* Email header */}
                 <div className="bg-[#0a0a0a] p-6 text-center">
-                  <p className="text-white font-bold text-lg">TECH FUEL • TECH DAY <span className="text-[#c73030]">2026</span></p>
-                  <p className="text-white/60 text-[11px] font-mono mt-1 tracking-wider">April 20-21, 2026 • UTSA SP1 • Boeing Center at Tech Port</p>
+                  <p className="text-white font-bold text-lg">TECH FUEL <span className="text-[#c73030]">2026</span></p>
+                  <p className="text-white/60 text-[11px] font-mono mt-1 tracking-wider">April 20, 2026 • 2:00–6:00 PM • UTSA SP1</p>
                 </div>
                 {/* Email body */}
                 <div className="p-6 space-y-4">
-                  <h2 className="text-xl font-semibold text-[#0a0a0a]">Congratulations, {previewEmailPitch.founderName}! 🎉</h2>
+                  <h2 className="text-xl font-semibold text-[#0a0a0a]">Hey {previewEmailPitch.founderName},</h2>
                   <p className="text-[14px] text-neutral-600 leading-relaxed">
-                    We&apos;re excited to share that <strong>{previewEmailPitch.companyName}</strong> has been selected as a <strong>Semi-Finalist</strong> for the Tech Fuel 2026 Startup Pitch Competition!
+                    <strong>{previewEmailPitch.companyName}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
+                  </p>
+                  <p className="text-[14px] text-neutral-600 leading-relaxed">
+                    We reviewed a strong pool of applicants, and your company stood out. We&apos;re looking forward to learning more about what you&apos;re building.
+                  </p>
+                  <p className="text-[14px] text-neutral-600 leading-relaxed">
+                    As part of the next round, you&apos;ll pitch live via Zoom to a panel of five judges. The format will be a <strong>5-minute pitch</strong> followed by a <strong>5-minute Q&A</strong>.
                   </p>
                   {/* Session card */}
                   <div className="bg-[#0a0a0a] rounded-lg p-5 text-white">
-                    <p className="text-[#c73030] text-[10px] font-mono tracking-widest uppercase mb-3">Semi-Finals Pitch Session</p>
+                    <p className="text-[#c73030] text-[10px] font-mono tracking-widest uppercase mb-3">Your Semi-Finals Interview</p>
                     <div className="grid grid-cols-2 gap-3 text-[13px]">
                       <div>
                         <p className="text-white/50 text-[10px] uppercase tracking-wide">Date</p>
@@ -329,8 +342,8 @@ export default function AdminPitchSchedulingPage() {
                         <p className="font-medium">{previewEmailPitch.companyName}</p>
                       </div>
                       <div>
-                        <p className="text-white/50 text-[10px] uppercase tracking-wide">Judge Block</p>
-                        <p className="font-mono font-medium">{previewEmailPitch.judgeBlock}</p>
+                        <p className="text-white/50 text-[10px] uppercase tracking-wide">Format</p>
+                        <p className="font-medium">5 min pitch + 5 min Q&A</p>
                       </div>
                     </div>
                   </div>
@@ -345,12 +358,16 @@ export default function AdminPitchSchedulingPage() {
                       </p>
                     </div>
                   )}
-                  {/* Steps */}
-                  <div className="text-[13px] text-neutral-600 space-y-1.5">
-                    <p className="font-semibold text-black text-[14px]">What to Expect</p>
-                    <p>1. Join Zoom 2–3 minutes early</p>
-                    <p>2. Pitch (5 min) to the judging panel</p>
-                    <p>3. Q&A (5 min) follow-up questions</p>
+                  {/* Closing */}
+                  <p className="text-[14px] text-neutral-600 leading-relaxed">
+                    If you have any questions, feel free to reply directly to this email.
+                  </p>
+                  <p className="text-[14px] text-neutral-600">We look forward to your pitch.</p>
+                  <p className="text-[14px] text-neutral-600">Best,</p>
+                  {/* Signature */}
+                  <div className="pt-2">
+                    <p className="text-[15px] font-semibold text-[#0a0a0a]">Beto Altamirano</p>
+                    <p className="text-[13px] text-neutral-500">CEO, Tech Bloc</p>
                   </div>
                 </div>
                 {/* Email footer */}
@@ -362,7 +379,7 @@ export default function AdminPitchSchedulingPage() {
             {/* Send button */}
             <div className="p-5 border-t border-neutral-100 flex items-center justify-between gap-3">
               <p className="text-[12px] text-neutral-400">
-                Subject: Congratulations — {previewEmailPitch.companyName} is a Tech Fuel Semi-Finalist!
+                Subject: TechFuel 2026 Application Update
               </p>
               <button
                 onClick={() => {
@@ -618,7 +635,7 @@ export default function AdminPitchSchedulingPage() {
                       setCompanySearch("")
                       setShowCompanyDropdown(true)
                     }}
-                    className="absolute right-3 top-[34px] p-0.5 text-neutral-400 hover:text-black"
+                    className="absolute right-3 top-8.5 p-0.5 text-neutral-400 hover:text-black"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -792,18 +809,20 @@ export default function AdminPitchSchedulingPage() {
 
               <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-5">
                 <p className="text-[13px] text-blue-900 leading-5">
-                  <strong>Send a congratulations email</strong> to <strong>{emailPromptPitch.founderName}</strong> at{" "}
-                  <span className="font-mono">{emailPromptPitch.email}</span> with their scheduled time and Zoom meeting details?
+                  <strong>Semi-finalist notification was auto-sent</strong> to <strong>{emailPromptPitch.founderName}</strong> at{" "}
+                  <span className="font-mono">{emailPromptPitch.email}</span> with their assigned pitch time, Zoom details, and Beto&apos;s signature.
                 </p>
               </div>
 
               {/* Preview of email content */}
               <div className="bg-neutral-50 border border-neutral-200 rounded-md p-4 mb-5 text-[12px] text-neutral-600 space-y-1.5">
-                <p className="font-semibold text-neutral-700 text-[13px]">Email will include:</p>
-                <p>Congratulations on making the Semi-Finals</p>
+                <p className="font-semibold text-neutral-700 text-[13px]">Email included:</p>
+                <p>Subject: TechFuel 2026 Application Update</p>
+                <p>Semi-finalist selection notification</p>
                 <p>Pitch time: <span className="font-mono font-semibold text-black">{emailPromptPitch.pitchSlot}</span></p>
                 <p>Date: <span className="font-semibold text-black">{DATE_LABELS[emailPromptPitch.date]}</span></p>
-                <p>Zoom link, Meeting ID &amp; Passcode for {DATE_LABELS[emailPromptPitch.date]}</p>
+                <p>Zoom link, Meeting ID &amp; Passcode</p>
+                <p>Signed by Beto Altamirano, CEO, Tech Bloc</p>
               </div>
 
               <div className="flex gap-3">

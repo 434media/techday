@@ -6,7 +6,7 @@ import { sendPitchSemifinalsNotification } from "@/lib/email/resend"
 
 export const dynamic = "force-dynamic"
 
-// Admin: send semifinals notification to all accepted pitches
+// Admin: send semifinals notification to all scheduled pitches
 export async function POST() {
   const session = await verifyAdminSession()
   if (!session) {
@@ -18,21 +18,25 @@ export async function POST() {
   }
 
   try {
-    // Get all accepted pitch submissions
+    // Get all scheduled pitch entries (these have date/time assigned)
     const snapshot = await adminDb
-      .collection(COLLECTIONS.PITCH_SUBMISSIONS)
-      .where("status", "==", "accepted")
+      .collection(COLLECTIONS.PITCH_SCHEDULING)
       .get()
 
-    const pitches = snapshot.docs.map((doc) => {
-      const data = doc.data()
-      return {
-        id: doc.id,
-        email: data.email as string | undefined,
-        founderName: data.founderName as string,
-        companyName: data.companyName as string,
-      }
-    })
+    const pitches = snapshot.docs
+      .filter((doc) => doc.id !== "_bulk_notify_meta")
+      .map((doc) => {
+        const data = doc.data()
+        return {
+          id: doc.id,
+          email: data.email as string | undefined,
+          founderName: data.founderName as string,
+          companyName: data.companyName as string,
+          date: data.date as string,
+          pitchSlot: data.pitchSlot as string,
+          judgeBlock: data.judgeBlock as string,
+        }
+      })
 
     const pitchesWithEmail = pitches.filter(
       (p) => p.email && p.email.trim()
@@ -44,7 +48,7 @@ export async function POST() {
 
     // Deduplicate by email
     const seen = new Set<string>()
-    const uniquePitches: { email: string; founderName: string; companyName: string }[] = []
+    const uniquePitches: { email: string; founderName: string; companyName: string; date: string; pitchSlot: string; judgeBlock: string }[] = []
     for (const pitch of pitchesWithEmail) {
       const email = pitch.email!.toLowerCase().trim()
       if (!seen.has(email)) {
@@ -53,6 +57,9 @@ export async function POST() {
           email,
           founderName: pitch.founderName,
           companyName: pitch.companyName,
+          date: pitch.date,
+          pitchSlot: pitch.pitchSlot,
+          judgeBlock: pitch.judgeBlock,
         })
       }
     }
@@ -67,7 +74,7 @@ export async function POST() {
       const batch = uniquePitches.slice(i, i + BATCH_SIZE)
       const results = await Promise.allSettled(
         batch.map((pitch) =>
-          sendPitchSemifinalsNotification(pitch.email, pitch.founderName, pitch.companyName)
+          sendPitchSemifinalsNotification(pitch.email, pitch.founderName, pitch.companyName, pitch.date, pitch.pitchSlot, pitch.judgeBlock)
         )
       )
       for (const r of results) {

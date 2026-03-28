@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type PitchSchedulingDocument } from "@/lib/firebase/collections"
 import { verifyAdminSession } from "@/lib/admin/session"
-import { sendPitchSchedulingConfirmation } from "@/lib/email/resend"
+import { sendPitchSemifinalsNotification } from "@/lib/email/resend"
 
 export const dynamic = "force-dynamic"
 
@@ -72,8 +72,26 @@ export async function POST(request: Request) {
       .collection(COLLECTIONS.PITCH_SCHEDULING)
       .add(doc)
 
+    // Auto-send semi-finalist notification email when admin adds a pitch
+    let emailSent = false
+    if (doc.email) {
+      const emailResult = await sendPitchSemifinalsNotification(
+        doc.email,
+        doc.founderName,
+        doc.companyName,
+        doc.date,
+        doc.pitchSlot,
+        doc.judgeBlock
+      )
+      emailSent = emailResult.success
+      if (!emailSent) {
+        console.error(`Failed to auto-send semi-finalist email to ${doc.email}`)
+      }
+    }
+
     return NextResponse.json({
       success: true,
+      emailSent,
       pitch: {
         id: docRef.id,
         ...doc,
@@ -131,10 +149,10 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 })
     }
 
-    const result = await sendPitchSchedulingConfirmation(
+    const result = await sendPitchSemifinalsNotification(
       data.email,
-      data.companyName,
       data.founderName,
+      data.companyName,
       data.date,
       data.pitchSlot,
       data.judgeBlock

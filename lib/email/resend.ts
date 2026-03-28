@@ -4,8 +4,8 @@ import { Resend } from "resend"
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Email configuration
-const FROM_EMAIL = "San Antonio Tech Day <noreply@send.devsa.community>"
-const REPLY_TO = "build@434media.com"
+const FROM_EMAIL = "Beto Altamirano <ceo@send.satechbloc.com>"
+const REPLY_TO = "ceo@satechbloc.com"
 
 // Down arrow SVG for email styling (base64 encoded for email compatibility)
 const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.15;">
@@ -24,7 +24,12 @@ const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns=
 </svg>`
 
 // Base email template with Tech Day branding
-function getEmailTemplate(content: string, footerText: string = "") {
+function getEmailTemplate(content: string, footerText: string = "", eventType: "techfuel" | "techday" | "both" = "both") {
+  const header = getEmailHeader(eventType)
+  const dates = getEmailDates(eventType)
+  const subtextLine = eventType === "both"
+    ? `<p style="margin: 6px 0 0; color: rgba(255,255,255,0.5); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">Tech Fuel 2–6 PM • Tech Day 1–4 PM (Doors Open 12:30 PM)</p>`
+    : `<p style="margin: 6px 0 0;"><a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">sanantoniotechday.com</a></p>`
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -47,14 +52,12 @@ function getEmailTemplate(content: string, footerText: string = "") {
                 ${DOWN_ARROW_SVG}
               </div>
               <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
-                TECH FUEL • TECH DAY <span style="color: #c73030;">2026</span>
+                ${header}
               </h1>
               <p style="margin: 10px 0 0; color: rgba(255,255,255,0.7); font-size: 14px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
-                April 20-21, 2026 • UTSA SP1 • Boeing Center at Tech Port
+                ${dates}
               </p>
-              <p style="margin: 6px 0 0; color: rgba(255,255,255,0.5); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">
-                Tech Fuel 2–6 PM • Tech Day 1–4 PM (Doors Open 12:30 PM)
-              </p>
+              ${subtextLine}
             </td>
           </tr>
           
@@ -1178,26 +1181,41 @@ export async function sendJudgeInvitationEmail(
   }
 }
 
+// Beto Altamirano signature image URL (hosted on Firebase Storage)
+// To update: upload new signature PNG to Firebase Storage and update this URL
+const BETO_SIGNATURE_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
+
 // Pitch semifinals notification email — notifies accepted pitches they're moving to semifinals
+// Now includes admin-assigned date/time and Beto's signature
 export async function sendPitchSemifinalsNotification(
   email: string,
   founderName: string,
-  companyName: string
+  companyName: string,
+  date: string,
+  pitchSlot: string,
+  judgeBlock: string
 ) {
+  const zoom = ZOOM_MEETINGS[date]
+  const dateLabel = date === "2026-04-02" ? "Thursday, April 2, 2026" : "Friday, April 3, 2026"
+
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Congratulations, ${founderName}! 🚀
+      Hey ${founderName},
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      We're thrilled to let you know that <strong>${companyName}</strong> has been selected to advance to the <strong>Tech Fuel 2026 Semi-Finals</strong>!
+      <strong>${companyName}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
     </p>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      The semi-finals will take place via <strong>Zoom</strong> on <strong>April 2–3, 2026</strong>. You'll have a 5-minute pitch slot followed by 5 minutes of Q&A with a panel of judges.
+      We reviewed a strong pool of applicants, and your company stood out. We're looking forward to learning more about what you're building.
     </p>
     
-    <!-- Celebration Card -->
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      As part of the next round, you'll pitch live via Zoom to a panel of five judges. The format will be a <strong>5-minute pitch</strong> followed by a <strong>5-minute Q&A</strong>.
+    </p>
+    
+    <!-- Session Card -->
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
       <tr>
         <td style="background-color: #0a0a0a; border-radius: 8px; padding: 30px; position: relative; overflow: hidden;">
@@ -1205,29 +1223,29 @@ export async function sendPitchSemifinalsNotification(
             ${DOWN_ARROW_SVG}
           </div>
           
-          <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
-            Semi-Finals Selection
+          <p style="margin: 0 0 15px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+            Your Semi-Finals Interview
           </p>
           
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top: 15px;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
             <tr>
               <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Date</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${dateLabel}</p>
+              </td>
+              <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Pitch Time</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${pitchSlot}</p>
+              </td>
+            </tr>
+            <tr>
+              <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Company</p>
                 <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${companyName}</p>
               </td>
-              <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
-                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Status</p>
-                <p style="margin: 0; color: #22c55e; font-size: 15px; font-weight: 700;">SEMI-FINALIST ✓</p>
-              </td>
-            </tr>
-            <tr>
-              <td width="50%" style="vertical-align: top;">
-                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Dates</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">April 2–3, 2026</p>
-              </td>
               <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Format</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">Zoom (Virtual)</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">5 min pitch + 5 min Q&A</p>
               </td>
             </tr>
           </table>
@@ -1235,76 +1253,38 @@ export async function sendPitchSemifinalsNotification(
       </tr>
     </table>
     
-    <!-- Next Step -->
+    <!-- Zoom Details -->
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
       <tr>
-        <td style="background-color: #fef9c3; border: 1px solid #fde047; border-radius: 8px; padding: 20px;">
-          <p style="margin: 0; color: #854d0e; font-size: 14px; font-weight: 600;">
-            ⚡ Next Step: Schedule Your Pitch Time
-          </p>
-          <p style="margin: 8px 0 0; color: #a16207; font-size: 14px; line-height: 1.5;">
-            Click the button below to select your preferred pitch slot. Slots are first-come, first-served — once you pick a time, it's locked in.
-          </p>
-        </td>
-      </tr>
-    </table>
-    
-    <!-- Schedule Button -->
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
-      <tr>
-        <td align="center">
-          <a href="https://sanantoniotechday.com/semifinals-pitches" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
-            Schedule Your Pitch Slot
-          </a>
-        </td>
-      </tr>
-    </table>
-    
-    <h3 style="margin: 30px 0 15px; color: #0a0a0a; font-size: 18px; font-weight: 600;">
-      What to Expect
-    </h3>
-    
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-      <tr>
-        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
-          <table role="presentation" cellspacing="0" cellpadding="0">
+        <td style="background-color: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 15px; color: #1e40af; font-size: 16px; font-weight: 600;">
+            📹 Zoom Meeting Details
+          </h3>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
             <tr>
-              <td style="width: 40px; vertical-align: top;">
-                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">1</span>
-              </td>
-              <td style="vertical-align: top;">
-                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Pick Your Pitch Slot</p>
-                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">Choose a 10-minute slot on April 2 or 3</p>
+              <td style="padding-bottom: 10px;">
+                <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
+                <p style="margin: 0;">
+                  <a href="${zoom.url}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
+                    Click here to join Zoom meeting
+                  </a>
+                </p>
               </td>
             </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
-          <table role="presentation" cellspacing="0" cellpadding="0">
             <tr>
-              <td style="width: 40px; vertical-align: top;">
-                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">2</span>
-              </td>
-              <td style="vertical-align: top;">
-                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Receive Confirmation</p>
-                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">You'll get a follow-up email with Zoom details and calendar invite</p>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding: 12px 0;">
-          <table role="presentation" cellspacing="0" cellpadding="0">
-            <tr>
-              <td style="width: 40px; vertical-align: top;">
-                <span style="display: inline-block; width: 28px; height: 28px; background-color: #c73030; border-radius: 50%; text-align: center; line-height: 28px; color: #ffffff; font-size: 14px; font-weight: 600;">3</span>
-              </td>
-              <td style="vertical-align: top;">
-                <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 500;">Pitch Day</p>
-                <p style="margin: 5px 0 0; color: #737373; font-size: 14px;">5-minute pitch + 5-minute Q&A with judges via Zoom</p>
+              <td>
+                <table role="presentation" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td style="padding-right: 30px;">
+                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
+                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.meetingId}</p>
+                    </td>
+                    <td>
+                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
+                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.passcode}</p>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
           </table>
@@ -1312,9 +1292,32 @@ export async function sendPitchSemifinalsNotification(
       </tr>
     </table>
     
-    <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-      Questions? Reply to this email or reach out to the Tech Bloc team.
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      If you have any questions, feel free to reply directly to this email.
     </p>
+    
+    <p style="margin: 0 0 10px; color: #525252; font-size: 16px; line-height: 1.6;">
+      We look forward to your pitch.
+    </p>
+    
+    <p style="margin: 0 0 5px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Best,
+    </p>
+    
+    <!-- Beto Signature -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 20px 0 0;">
+      <tr>
+        <td>
+          <img src="${BETO_SIGNATURE_URL}" alt="Beto Altamirano signature" width="180" style="display: block; max-width: 180px; height: auto;" />
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 10px;">
+          <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 600;">Beto Altamirano</p>
+          <p style="margin: 3px 0 0; color: #737373; font-size: 14px;">CEO, Tech Bloc</p>
+        </td>
+      </tr>
+    </table>
   `
 
   try {
@@ -1322,8 +1325,8 @@ export async function sendPitchSemifinalsNotification(
       from: FROM_EMAIL,
       to: email,
       replyTo: REPLY_TO,
-      subject: `${companyName} is a Tech Fuel 2026 Semi-Finalist! 🎉`,
-      html: getEmailTemplate(content, "Schedule your pitch slot as soon as possible — slots are first-come, first-served"),
+      subject: `TechFuel 2026 Application Update`,
+      html: getEmailTemplate(content, "Save this email — it contains your Zoom details and pitch time", "techfuel"),
     })
 
     if (result.error) {
@@ -1430,6 +1433,89 @@ export async function sendEcosystemToursNotification(
     return { success: true, data: result }
   } catch (error) {
     console.error(`Failed to send ecosystem tours notification to ${email}:`, error)
+    return { success: false, error }
+  }
+}
+
+// Pitch non-select notification email — notifies pitch applicants they were not selected for semifinals
+export async function sendPitchNonSelectNotification(
+  email: string,
+  founderName: string,
+  companyName: string
+) {
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      Hey ${founderName},
+    </h2>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Thank you for taking the time to apply and engage with us for Tech Fuel 2026. We truly appreciate the effort that goes into building and sharing what you're working on.
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      After a highly competitive review process, <strong>${companyName}</strong> was not selected to advance to the next stage this year. This was not an easy decision. We received a strong pool of applications and, with limited spots, had to make difficult choices across a range of factors.
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      This outcome does not diminish the quality of what you're building or the potential ahead. Many of the founders in our ecosystem have applied more than once, and we've seen firsthand the progress teams make between cycles. We encourage you to keep building, validating your assumptions, and gaining traction—and to consider applying again next year.
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      In the meantime, we'd love to stay connected. We hope you'll join us at the Tech Fuel Finals on April 20 at the UTSA School of Data Science. It will be a strong gathering of investors, founders, and community leaders. We're also hosting Tech Day on April 21, which is designed to bring the broader innovation ecosystem together.
+    </p>
+    
+    <!-- Register CTA -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td align="center">
+          <a href="https://sanantoniotechday.com/register" style="display: inline-block; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 6px; letter-spacing: 0.5px;">
+            Get Your Tickets
+          </a>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Thank you again for considering Tech Fuel and for the work you're doing. We're rooting for your continued progress and hope to stay in touch.
+    </p>
+    
+    <p style="margin: 0 0 5px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Best,
+    </p>
+    
+    <!-- Beto Signature -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 20px 0 0;">
+      <tr>
+        <td>
+          <img src="${BETO_SIGNATURE_URL}" alt="Beto Altamirano signature" width="180" style="display: block; max-width: 180px; height: auto;" />
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 10px;">
+          <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 600;">Beto Altamirano</p>
+          <p style="margin: 3px 0 0; color: #737373; font-size: 14px;">CEO, Tech Bloc</p>
+        </td>
+      </tr>
+    </table>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: `TechFuel 2026 Application Update`,
+      html: getEmailTemplate(content, "", "techfuel"),
+    })
+
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
+    console.log(`Pitch non-select notification sent to ${email}:`, result)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send pitch non-select notification to ${email}:`, error)
     return { success: false, error }
   }
 }
