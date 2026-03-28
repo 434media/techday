@@ -1,7 +1,17 @@
 import { NextResponse } from "next/server"
 import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
-import { COLLECTIONS } from "@/lib/firebase/collections"
+import { COLLECTIONS, ECOSYSTEM_TOURS_LIMIT } from "@/lib/firebase/collections"
+
+// Helper to count current ecosystem tours registrations
+async function getEcosystemToursCount(): Promise<number> {
+  const snapshot = await adminDb
+    .collection(COLLECTIONS.REGISTRATIONS)
+    .where("ecosystemTours", "==", true)
+    .where("status", "in", ["confirmed", "pending", "checked-in"])
+    .get()
+  return snapshot.size
+}
 
 export async function POST(request: Request) {
   try {
@@ -40,6 +50,37 @@ export async function POST(request: Request) {
     const firstName = data.firstName.trim()
     const lastName = data.lastName.trim()
 
+    // Handle waitlist signup
+    if (data.waitlist === true) {
+      // Check if already on waitlist
+      const existingWaitlist = await adminDb
+        .collection(COLLECTIONS.ECOSYSTEM_TOURS_WAITLIST)
+        .where("email", "==", email)
+        .get()
+
+      if (!existingWaitlist.empty) {
+        return NextResponse.json(
+          { error: "You're already on the ecosystem tours waitlist!" },
+          { status: 409 }
+        )
+      }
+
+      await adminDb.collection(COLLECTIONS.ECOSYSTEM_TOURS_WAITLIST).add({
+        firstName,
+        lastName,
+        email,
+        createdAt: new Date(),
+      })
+
+      console.log(`Ecosystem tours waitlist signup for ${email}`)
+
+      return NextResponse.json({
+        success: true,
+        waitlisted: true,
+        message: "You've been added to the ecosystem tours waitlist! We'll notify you if spots open up.",
+      })
+    }
+
     // Look up existing registration by email
     const snapshot = await adminDb
       .collection(COLLECTIONS.REGISTRATIONS)
@@ -75,6 +116,15 @@ export async function POST(request: Request) {
       )
     }
 
+    // Check ecosystem tours capacity
+    const currentCount = await getEcosystemToursCount()
+    if (currentCount >= ECOSYSTEM_TOURS_LIMIT) {
+      return NextResponse.json(
+        { error: "Ecosystem tours have reached capacity. Please join the waitlist to be notified if spots open up.", isFull: true },
+        { status: 409 }
+      )
+    }
+
     // Update the registration
     await adminDb
       .collection(COLLECTIONS.REGISTRATIONS)
@@ -95,6 +145,34 @@ export async function POST(request: Request) {
     console.error("Ecosystem tours opt-in error:", error)
     return NextResponse.json(
       { error: "Failed to process request" },
+      { status: 500 }
+    )
+  }
+}
+
+// GET endpoint to check ecosystem tours capacity
+export async function GET() {
+  try {
+    if (!isFirebaseConfigured()) {
+      return NextResponse.json(
+        { error: "Firebase is not configured." },
+        { status: 503 }
+      )
+    }
+
+    const count = await getEcosystemToursCount()
+    return NextResponse.json({
+      ecosystemTours: {
+        count,
+        limit: ECOSYSTEM_TOURS_LIMIT,
+        remaining: Math.max(0, ECOSYSTEM_TOURS_LIMIT - count),
+        isFull: count >= ECOSYSTEM_TOURS_LIMIT,
+      },
+    })
+  } catch (error) {
+    console.error("Ecosystem tours capacity check error:", error)
+    return NextResponse.json(
+      { error: "Failed to check capacity" },
       { status: 500 }
     )
   }

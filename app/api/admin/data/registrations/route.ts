@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
-import { COLLECTIONS } from "@/lib/firebase/collections"
+import { COLLECTIONS, ECOSYSTEM_TOURS_LIMIT } from "@/lib/firebase/collections"
 import { verifyAdminSession, sessionHasPermission } from "@/lib/admin/session"
 
 export const dynamic = "force-dynamic"
@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic"
 const REGISTRATION_LIMITS: Record<string, number> = {
   techfuel: 200,
   techday: 300,
+  ecosystemTours: ECOSYSTEM_TOURS_LIMIT,
 }
 
 // Determine which events a registration covers (handles legacy "2day" entries)

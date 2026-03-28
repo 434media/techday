@@ -251,7 +251,13 @@ export default function RegistrationsPage() {
           <StatCard label="Both Days" value={stats.bothDays} accent="blue" />
           <StatCard label="TD Only" value={stats.techdayOnly} accent="green" />
           <StatCard label="TF Only" value={stats.techfuelOnly} accent="purple" />
-          <StatCard label="Eco Tours" value={stats.ecosystemTours} accent="amber" />
+          <StatCard
+            label="Eco Tours"
+            value={stats.ecosystemTours}
+            sublabel={`${stats.ecosystemTours} / ${stats.limits.ecosystemTours || 50}`}
+            progress={(stats.ecosystemTours / (stats.limits.ecosystemTours || 50)) * 100}
+            accent="amber"
+          />
         </div>
       )}
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
-import { COLLECTIONS, type RegistrationDocument } from "@/lib/firebase/collections"
+import { COLLECTIONS, type RegistrationDocument, ECOSYSTEM_TOURS_LIMIT } from "@/lib/firebase/collections"
 import { sendRegistrationConfirmation } from "@/lib/email/resend"
 import crypto from "crypto"
 
@@ -108,6 +108,19 @@ export async function POST(request: Request) {
       }
     }
 
+    // Check ecosystem tours capacity if requested
+    if (data.ecosystemTours === true) {
+      const ecoSnapshot = await adminDb
+        .collection(COLLECTIONS.REGISTRATIONS)
+        .where("ecosystemTours", "==", true)
+        .where("status", "in", ["confirmed", "pending", "checked-in"])
+        .get()
+      if (ecoSnapshot.size >= ECOSYSTEM_TOURS_LIMIT) {
+        // Silently disable ecosystem tours - registration continues without it
+        data.ecosystemTours = false
+      }
+    }
+
     // Generate unique ticket ID
     const ticketId = `TD26-${crypto.randomBytes(3).toString("hex").toUpperCase()}`
 
@@ -181,10 +194,17 @@ export async function GET(request: Request) {
     // Capacity check endpoint
     if (searchParams.get("capacity") === "true") {
       const counts = await getEventCounts()
+      const ecoSnapshot = await adminDb
+        .collection(COLLECTIONS.REGISTRATIONS)
+        .where("ecosystemTours", "==", true)
+        .where("status", "in", ["confirmed", "pending", "checked-in"])
+        .get()
+      const ecoCount = ecoSnapshot.size
       return NextResponse.json({
         capacity: {
           techday: { count: counts.techday, limit: REGISTRATION_LIMITS.techday },
           techfuel: { count: counts.techfuel, limit: REGISTRATION_LIMITS.techfuel },
+          ecosystemTours: { count: ecoCount, limit: ECOSYSTEM_TOURS_LIMIT },
         },
       })
     }

@@ -12,8 +12,12 @@ export const COLLECTIONS = {
   SITE_TEXT_HISTORY: "siteTextHistory",  // Version history for text blocks
   JUDGE_SCHEDULING: "judgeScheduling",  // Tech Fuel semi-finals judge scheduling
   PITCH_SCHEDULING: "pitchScheduling",  // Tech Fuel semi-finals pitch time selection
+  ECOSYSTEM_TOURS_WAITLIST: "ecosystemToursWaitlist",  // Waitlist for ecosystem tours
   // Note: Admin users are managed through Firebase Authentication, not Firestore
 } as const
+
+// Ecosystem tours capacity limit
+export const ECOSYSTEM_TOURS_LIMIT = 50
 
 // User roles for admin access
 export type UserRole = "admin" | "editor" | "viewer"
@@ -106,6 +110,15 @@ export interface SponsorContactDocument {
   message: string
   status: "new" | "contacted" | "closed"
   submittedAt: Date
+}
+
+// Ecosystem tours waitlist document structure
+export interface EcosystemToursWaitlistDocument {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  createdAt: Date
 }
 
 // Pitch scheduling document structure (semi-finals pitch time selection)

@@ -65,6 +65,10 @@ export function RegistrationForm() {
       .catch(() => {})
   })
 
+  const ecoToursCap = capacityInfo?.ecosystemTours
+  const ecoToursRemaining = ecoToursCap ? ecoToursCap.limit - ecoToursCap.count : null
+  const ecoToursFull = ecoToursRemaining !== null && ecoToursRemaining <= 0
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
     setFormData((prev) => ({
@@ -320,10 +324,8 @@ export function RegistrationForm() {
                   </div>
                   <div className="text-right shrink-0">
                     <span className="font-mono text-sm text-primary">{event.price}</span>
-                    {remaining !== null && (
-                      <p className={`text-xs mt-1 ${isFull ? "text-red-500 font-medium" : "text-muted-foreground"}`}>
-                        {isFull ? "SOLD OUT" : `${remaining} spots left`}
-                      </p>
+                    {isFull && (
+                      <p className="text-xs mt-1 text-red-500 font-medium">SOLD OUT</p>
                     )}
                   </div>
                 </label>
@@ -340,22 +342,48 @@ export function RegistrationForm() {
                     className="overflow-hidden"
                   >
                     <div className="border border-t-0 border-primary/30 bg-primary/5 rounded-b-lg px-3 py-3 sm:px-5 sm:py-4">
-                      <label className="flex items-start gap-3 cursor-pointer group">
+                      <label className={`flex items-start gap-3 ${ecoToursFull ? "cursor-default" : "cursor-pointer"} group`}>
                         <input
                           type="checkbox"
                           checked={formData.ecosystemTours}
-                          onChange={(e) =>
-                            setFormData((prev) => ({ ...prev, ecosystemTours: e.target.checked }))
-                          }
-                          className="mt-0.5 w-5 h-5 shrink-0 rounded border-border text-primary focus:ring-primary"
+                          onChange={(e) => {
+                            if (!ecoToursFull) {
+                              setFormData((prev) => ({ ...prev, ecosystemTours: e.target.checked }))
+                            }
+                          }}
+                          disabled={ecoToursFull}
+                          className="mt-0.5 w-5 h-5 shrink-0 rounded border-border text-primary focus:ring-primary disabled:opacity-50"
                         />
                         <div className="min-w-0">
-                          <p className="text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary transition-colors">
-                            Ecosystem Tours
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary transition-colors">
+                              Ecosystem Tours
+                            </p>
+                            {ecoToursFull && (
+                              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-red-500/10 text-red-500 rounded">
+                                Full
+                              </span>
+                            )}
+                          </div>
                           <p className="text-[13px] leading-relaxed text-muted-foreground mt-0.5">
-                            Included with your Tech Fuel registration &bull; Running throughout the day
+                            {ecoToursFull
+                              ? "Ecosystem tours have reached capacity (50 spots). Join the waitlist at the ecosystem tours page."
+                              : "Included with your Tech Fuel registration \u2022 Running throughout the day"
+                            }
                           </p>
+                          {!ecoToursFull && ecoToursRemaining !== null && (
+                            <p className="mt-2 text-xs font-semibold text-primary bg-primary/10 border border-primary/20 rounded px-2 py-1 inline-block">
+                              {ecoToursRemaining} of {ecoToursCap?.limit} spots remaining
+                            </p>
+                          )}
+                          {ecoToursFull && (
+                            <a
+                              href="/ecosystem-tours"
+                              className="inline-block mt-1.5 text-[13px] font-medium text-primary hover:underline"
+                            >
+                              Join the waitlist &rarr;
+                            </a>
+                          )}
                         </div>
                       </label>
 
