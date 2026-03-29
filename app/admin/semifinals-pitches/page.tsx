@@ -85,6 +85,10 @@ export default function AdminPitchSchedulingPage() {
   const [companySearch, setCompanySearch] = useState("")
   const [showCompanyDropdown, setShowCompanyDropdown] = useState(false)
   const [previewEmailPitch, setPreviewEmailPitch] = useState<PitchEntry | null>(null)
+  const [nonSelectStatus, setNonSelectStatus] = useState<{ nonSelectedCount: number; semifinalistCount: number; totalApplicants: number; lastSentAt: string | null; lastSentCount: number; alreadySent?: number; unsent?: number } | null>(null)
+  const [showNonSelectModal, setShowNonSelectModal] = useState(false)
+  const [isSendingNonSelect, setIsSendingNonSelect] = useState(false)
+  const [nonSelectResult, setNonSelectResult] = useState<{ sent: number; failed: number; total: number; failedEmails?: string[]; alreadySent?: number } | null>(null)
 
   function showToast(message: string, type: "success" | "error" = "success") {
     setToast({ message, type })
@@ -126,7 +130,43 @@ export default function AdminPitchSchedulingPage() {
     }
   }
 
-  useEffect(() => { fetchPitches(); fetchAcceptedPitches() }, [])
+  async function fetchNonSelectStatus() {
+    try {
+      const res = await fetch("/api/admin/data/pitches/notify-nonselect", { credentials: "include" })
+      if (!res.ok) return
+      const data = await res.json()
+      setNonSelectStatus(data)
+    } catch {
+      console.error("Failed to fetch non-select status")
+    }
+  }
+
+  async function handleSendNonSelectEmails(retryOnly = false) {
+    setIsSendingNonSelect(true)
+    setNonSelectResult(null)
+    try {
+      const res = await fetch("/api/admin/data/pitches/notify-nonselect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ retryOnly }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        showToast(data.error || "Failed to send non-select emails", "error")
+        return
+      }
+      setNonSelectResult({ sent: data.sent, failed: data.failed, total: data.total, failedEmails: data.failedEmails, alreadySent: data.alreadySent })
+      showToast(`Non-select emails sent: ${data.sent}/${data.total}`)
+      fetchNonSelectStatus()
+    } catch {
+      showToast("Failed to send non-select emails", "error")
+    } finally {
+      setIsSendingNonSelect(false)
+    }
+  }
+
+  useEffect(() => { fetchPitches(); fetchAcceptedPitches(); fetchNonSelectStatus() }, [])
 
   async function handleAddPitch(e: React.FormEvent) {
     e.preventDefault()
@@ -269,6 +309,20 @@ export default function AdminPitchSchedulingPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowNonSelectModal(true)}
+            className="flex items-center gap-2 px-4 py-2.5 border border-neutral-300 text-neutral-700 text-sm font-semibold rounded-md hover:bg-neutral-50 transition-colors leading-5"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Non-Select Emails
+            {nonSelectStatus && (
+              <span className="ml-1 text-[11px] bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded-full font-mono">
+                {nonSelectStatus.nonSelectedCount}
+              </span>
+            )}
+          </button>
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2.5 bg-black text-white text-sm font-semibold rounded-md hover:bg-neutral-800 transition-colors leading-5"
@@ -782,6 +836,182 @@ export default function AdminPitchSchedulingPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Non-Select Email Modal */}
+      {showNonSelectModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between p-6 border-b border-neutral-200">
+              <h3 className="text-lg font-bold text-black leading-tight">Send Non-Select Emails</h3>
+              <button
+                onClick={() => { setShowNonSelectModal(false); setNonSelectResult(null) }}
+                className="p-1 text-neutral-400 hover:text-black transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {nonSelectResult ? (
+                <>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${nonSelectResult.failed > 0 ? "bg-amber-100" : "bg-green-100"}`}>
+                      {nonSelectResult.failed > 0 ? (
+                        <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-[15px] font-semibold text-black leading-5">
+                        {nonSelectResult.failed > 0 ? "Partially Sent" : "Emails Sent"}
+                      </p>
+                      <p className="text-[13px] text-neutral-500 leading-5">
+                        {nonSelectResult.sent} of {nonSelectResult.total} sent successfully
+                        {nonSelectResult.failed > 0 && (
+                          <span className="text-red-600"> ({nonSelectResult.failed} failed)</span>
+                        )}
+                        {(nonSelectResult.alreadySent ?? 0) > 0 && (
+                          <span className="text-neutral-400"> • {nonSelectResult.alreadySent} previously sent</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  {nonSelectResult.failedEmails && nonSelectResult.failedEmails.length > 0 && (
+                    <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                      <p className="text-[13px] font-semibold text-red-800 mb-2">Failed emails (rate limited):</p>
+                      <div className="max-h-40 overflow-y-auto space-y-1">
+                        {nonSelectResult.failedEmails.map((email) => (
+                          <p key={email} className="text-[12px] font-mono text-red-700">{email}</p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => { setShowNonSelectModal(false); setNonSelectResult(null) }}
+                      className="flex-1 py-2.5 border border-neutral-300 rounded-md text-sm font-semibold text-neutral-600 hover:bg-neutral-50 transition-colors leading-5"
+                    >
+                      Done
+                    </button>
+                    {nonSelectResult.failed > 0 && (
+                      <button
+                        onClick={() => handleSendNonSelectEmails(true)}
+                        disabled={isSendingNonSelect}
+                        className="flex-1 py-2.5 bg-red-600 text-white rounded-md text-sm font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 leading-5 flex items-center justify-center gap-2"
+                      >
+                        {isSendingNonSelect ? (
+                          <>
+                            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                            </svg>
+                            Retrying...
+                          </>
+                        ) : (
+                          <>Retry {nonSelectResult.failed} Failed</>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {nonSelectStatus ? (
+                    <>
+                      <div className="bg-amber-50 border border-amber-200 rounded-md p-4">
+                        <p className="text-[13px] text-amber-900 leading-5 font-semibold mb-1">⚠️ This will send emails to applicants who were NOT selected as semi-finalists.</p>
+                        <p className="text-[12px] text-amber-800 leading-5">
+                          Semi-finalists ({nonSelectStatus.semifinalistCount}) will be excluded by cross-referencing email addresses in the scheduling system.
+                        </p>
+                      </div>
+
+                      <div className="bg-neutral-50 border border-neutral-200 rounded-md p-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[13px] text-neutral-600">Total applicants</span>
+                          <span className="text-[14px] font-semibold font-mono text-black">{nonSelectStatus.totalApplicants}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[13px] text-green-700">Semi-finalists (excluded)</span>
+                          <span className="text-[14px] font-semibold font-mono text-green-700">−{nonSelectStatus.semifinalistCount}</span>
+                        </div>
+                        <div className="border-t border-neutral-200 pt-2 flex items-center justify-between">
+                          <span className="text-[13px] font-semibold text-neutral-900">Non-selected total</span>
+                          <span className="text-[14px] font-bold font-mono text-neutral-900">{nonSelectStatus.nonSelectedCount}</span>
+                        </div>
+                        {(nonSelectStatus.alreadySent ?? 0) > 0 && (
+                          <>
+                            <div className="flex items-center justify-between">
+                              <span className="text-[13px] text-neutral-500">Already sent</span>
+                              <span className="text-[14px] font-semibold font-mono text-neutral-500">−{nonSelectStatus.alreadySent}</span>
+                            </div>
+                            <div className="border-t border-neutral-200 pt-2 flex items-center justify-between">
+                              <span className="text-[13px] font-semibold text-red-700">Still need to send</span>
+                              <span className="text-[14px] font-bold font-mono text-red-700">{nonSelectStatus.unsent ?? 0}</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      {nonSelectStatus.lastSentAt && (
+                        <p className="text-[12px] text-neutral-400 leading-5">
+                          Last sent: {new Date(nonSelectStatus.lastSentAt).toLocaleString()} ({nonSelectStatus.lastSentCount} emails)
+                        </p>
+                      )}
+
+                      <div className="flex gap-3 pt-2">
+                        <button
+                          onClick={() => setShowNonSelectModal(false)}
+                          className="flex-1 py-2.5 border border-neutral-300 rounded-md text-sm font-semibold text-neutral-600 hover:bg-neutral-50 transition-colors leading-5"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => handleSendNonSelectEmails(true)}
+                          disabled={isSendingNonSelect || (nonSelectStatus.unsent ?? nonSelectStatus.nonSelectedCount) === 0}
+                          className="flex-1 py-2.5 bg-red-600 text-white rounded-md text-sm font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 leading-5 flex items-center justify-center gap-2"
+                        >
+                          {isSendingNonSelect ? (
+                            <>
+                              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              </svg>
+                              Sending...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                              Send {nonSelectStatus.unsent ?? nonSelectStatus.nonSelectedCount} Emails
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-center py-8">
+                      <svg className="w-6 h-6 animate-spin text-neutral-400" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

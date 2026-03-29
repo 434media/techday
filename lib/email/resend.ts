@@ -1325,7 +1325,7 @@ export async function sendPitchSemifinalsNotification(
       from: FROM_EMAIL,
       to: email,
       replyTo: REPLY_TO,
-      subject: `TechFuel 2026 Application Update`,
+      subject: `TechFuel 2026: Update Regarding Your Application`,
       html: getEmailTemplate(content, "Save this email — it contains your Zoom details and pitch time", "techfuel"),
     })
 
@@ -1504,7 +1504,7 @@ export async function sendPitchNonSelectNotification(
       from: FROM_EMAIL,
       to: email,
       replyTo: REPLY_TO,
-      subject: `TechFuel 2026 Application Update`,
+      subject: `TechFuel 2026: Update Regarding Your Application`,
       html: getEmailTemplate(content, "", "techfuel"),
     })
 
