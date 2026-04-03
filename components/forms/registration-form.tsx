@@ -33,8 +33,8 @@ const events = [
 
 // Registration limits per event
 const REGISTRATION_LIMITS = {
-  techfuel: 200,
-  techday: 300,
+  techfuel: 300,
+  techday: 400,
 } as const
 
 export function RegistrationForm() {

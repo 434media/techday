@@ -7,8 +7,8 @@ export const dynamic = "force-dynamic"
 
 // Registration limits per event
 const REGISTRATION_LIMITS: Record<string, number> = {
-  techfuel: 200,
-  techday: 300,
+  techfuel: 300,
+  techday: 400,
   ecosystemTours: ECOSYSTEM_TOURS_LIMIT,
 }
 
