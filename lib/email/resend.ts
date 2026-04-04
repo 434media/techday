@@ -1519,3 +1519,296 @@ export async function sendPitchNonSelectNotification(
     return { success: false, error }
   }
 }
+
+// Send finalist notification email
+export async function sendFinalistNotification(
+  email: string,
+  founderName: string,
+  companyName: string
+) {
+  const firstName = founderName.split(" ")[0]
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      Hi ${firstName},
+    </h2>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Congratulations — <strong>${companyName}</strong> has advanced to the <strong>TechFuel 2026 FINALS!</strong>
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Out of more than 75 applicants, we selected 25 semifinalists, and from that group, you've earned a spot as one of the top 5 startups. That's a significant accomplishment and a reflection of the strength of what you're building. You should be proud of the work that got you here.
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      We were impressed by your pitch and are excited to have you present in person on April 20th. You've earned it.
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      &#128274; <strong>Please keep this confidential until Tuesday, April 7th.</strong>
+    </p>
+    
+    <p style="margin: 0 0 30px; color: #525252; font-size: 16px; line-height: 1.6;">
+      We'll be announcing all finalists across our social channels that day. Once live, we encourage you to share widely.
+    </p>
+    
+    <!-- What's Next Header -->
+    <h3 style="margin: 0 0 25px; color: #0a0a0a; font-size: 20px; font-weight: 700; border-bottom: 2px solid #c73030; padding-bottom: 10px;">
+      What's Next
+    </h3>
+    
+    <!-- Pitch Bootcamp Card -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 30px;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 30px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">
+            ${DOWN_ARROW_SVG}
+          </div>
+          
+          <p style="margin: 0 0 8px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
+            Tech Bloc &bull; Geekdom
+          </p>
+          <h3 style="margin: 0 0 15px; color: #ffffff; font-size: 18px; font-weight: 600;">
+            Pitch Bootcamp (April 10–12)
+          </h3>
+          
+          <p style="margin: 0 0 20px; color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.6;">
+            Please make arrangements to block this in your schedule. In partnership with Geekdom, all finalists will participate in a focused weekend to sharpen your pitch and prepare for the stage:
+          </p>
+          
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="padding-bottom: 12px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Friday (Evening)</p>
+                <p style="margin: 0; color: #ffffff; font-size: 14px;">Welcome dinner with finalists and key community stakeholders</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom: 12px;">
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Saturday (Workshop Day @ Geekdom)</p>
+                <p style="margin: 0; color: #ffffff; font-size: 14px;">Pitch practice, live feedback, storytelling and stage presence sessions, and 1:1 coaching with mentors</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Sunday (Brunch)</p>
+                <p style="margin: 0; color: #ffffff; font-size: 14px;">"Fuel Up" closing brunch with finalists, mentors, and ecosystem leaders, including quick pitches from each team</p>
+              </td>
+            </tr>
+          </table>
+          
+          <p style="margin: 15px 0 0; color: rgba(255,255,255,0.5); font-size: 13px; font-style: italic;">
+            More details to follow shortly.
+          </p>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Final Pitch Deck -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 30px;">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 12px; color: #0a0a0a; font-size: 16px; font-weight: 600;">
+            Final Pitch Deck
+          </h3>
+          <p style="margin: 0 0 8px; color: #525252; font-size: 15px; line-height: 1.6;">
+            Please submit your final pitch deck by <strong>April 16 at 11:00 PM</strong>. All decks will be compiled into a master presentation.
+          </p>
+          <p style="margin: 0; color: #525252; font-size: 15px; line-height: 1.6;">
+            Send your deck to <a href="mailto:ceo@satechbloc.com" style="color: #c73030; text-decoration: none; font-weight: 500;">ceo@satechbloc.com</a>
+          </p>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Day-of Details -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 30px;">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 12px; color: #0a0a0a; font-size: 16px; font-weight: 600;">
+            Day-of Details
+          </h3>
+          <p style="margin: 0; color: #525252; font-size: 15px; line-height: 1.6;">
+            Plan to arrive at the <strong>UTSA San Pedro I Weston Conference Center</strong> by <strong>[TIME]</strong> on April 20th for a walkthrough and AV check.
+          </p>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- Audience Vote -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 30px;">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 12px; color: #0a0a0a; font-size: 16px; font-weight: 600;">
+            Audience Vote
+          </h3>
+          <p style="margin: 0 0 8px; color: #525252; font-size: 15px; line-height: 1.6;">
+            3rd and 4th place may be determined by live audience vote. We encourage you to invite your network:
+          </p>
+          <p style="margin: 0;">
+            <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-weight: 500; font-size: 15px;">sanantoniotechday.com</a>
+          </p>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      We'll be in close touch with more details soon. In the meantime, don't hesitate to reach out with any questions.
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Congratulations again — see you at the finals.
+    </p>
+    
+    <p style="margin: 0 0 5px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Keep building,
+    </p>
+    
+    <!-- Beto Signature -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 20px 0 0;">
+      <tr>
+        <td>
+          <img src="${BETO_SIGNATURE_URL}" alt="Beto Altamirano signature" width="180" style="display: block; max-width: 180px; height: auto;" />
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 10px;">
+          <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 600;">Beto Altamirano</p>
+          <p style="margin: 3px 0 0; color: #737373; font-size: 14px;">CEO, Tech Bloc</p>
+        </td>
+      </tr>
+    </table>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: "TechFuel 2026: Semifinal Results",
+      html: getEmailTemplate(content, "", "techfuel"),
+    })
+
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
+    console.log(`Finalist notification sent to ${email}:`, result)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send finalist notification to ${email}:`, error)
+    return { success: false, error }
+  }
+}
+
+export async function sendNonFinalistNotification(
+  email: string,
+  founderName: string,
+  companyName: string
+) {
+  const firstName = founderName.split(" ")[0]
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      Hi ${firstName},
+    </h2>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Thank you for being part of TechFuel 2026. Out of more than 75 applicants, you advanced to the top 25 semifinalists. That is a meaningful accomplishment, and <strong>${companyName}</strong> made a strong impression on our judges.
+    </p>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      After careful deliberation, we've selected our finalists for the April 20th event. While <strong>${companyName}</strong> will not be moving forward this round, we hope the experience was valuable and energizing. We have no doubt you are building something meaningful, and this is just one step in a much longer journey.
+    </p>
+    
+    <p style="margin: 0 0 30px; color: #525252; font-size: 16px; line-height: 1.6;">
+      The San Antonio tech community is stronger because of founders like you who show up, pitch, and put their work out there. That takes courage, and we respect it.
+    </p>
+    
+    <!-- Keep in Mind Header -->
+    <h3 style="margin: 0 0 25px; color: #0a0a0a; font-size: 20px; font-weight: 700; border-bottom: 2px solid #c73030; padding-bottom: 10px;">
+      A few things to keep in mind
+    </h3>
+    
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 30px;">
+      <tr>
+        <td style="padding: 0 0 16px 0;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="vertical-align: top; padding-right: 12px; color: #c73030; font-size: 18px; font-weight: 700;">•</td>
+              <td style="color: #525252; font-size: 15px; line-height: 1.6;">
+                We would love to stay connected. Tech Fuel is more than a competition, and we hope this is just the beginning of your relationship with the community.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 0 0 16px 0;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="vertical-align: top; padding-right: 12px; color: #c73030; font-size: 18px; font-weight: 700;">•</td>
+              <td style="color: #525252; font-size: 15px; line-height: 1.6;">
+                We will be sharing feedback from our judges soon, and we are happy to pass along notes that may be helpful as you continue to grow.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 0;">
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="vertical-align: top; padding-right: 12px; color: #c73030; font-size: 18px; font-weight: 700;">•</td>
+              <td style="color: #525252; font-size: 15px; line-height: 1.6;">
+                We encourage you to stay engaged with Tech Bloc's programming. I competed in Tech Fuel in 2019 and did not make it to the finals, but staying connected to the community created opportunities and growth that extended far beyond the competition. I encourage you to do the same.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Thank you again for trusting us with your story.
+    </p>
+    
+    <p style="margin: 0 0 5px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Keep building,
+    </p>
+    
+    <!-- Beto Signature -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 20px 0 0;">
+      <tr>
+        <td>
+          <img src="${BETO_SIGNATURE_URL}" alt="Beto Altamirano signature" width="180" style="display: block; max-width: 180px; height: auto;" />
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 10px;">
+          <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 600;">Beto Altamirano</p>
+          <p style="margin: 3px 0 0; color: #737373; font-size: 14px;">CEO, Tech Bloc</p>
+        </td>
+      </tr>
+    </table>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: "TechFuel 2026: Semifinal Results",
+      html: getEmailTemplate(content, "", "techfuel"),
+    })
+
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
+    console.log(`Non-finalist notification sent to ${email}:`, result)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send non-finalist notification to ${email}:`, error)
+    return { success: false, error }
+  }
+}
