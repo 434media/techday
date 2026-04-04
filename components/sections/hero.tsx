@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion, useMotionValue, useTransform, useSpring } from "motion/react"
 import { useEffect, useState } from "react"
-import { ArrowRight, Zap } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { Editable } from "@/components/editable"
 
 interface Sponsor {
@@ -238,11 +238,11 @@ export function Hero() {
           </Link>
           
           <Link
-            href="/techfuel#submit"
+            href="/techday#schedule"
             className="group inline-flex items-center justify-center gap-2 bg-[#0a0a0a] text-white px-6 py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#dc2626] hover:scale-105 shadow-lg hover:shadow-xl"
           >
-            Submit a Pitch
-            <Zap className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            View Schedule
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
           </Link>
         </motion.div>
       </div>

@@ -1628,8 +1628,14 @@ export async function sendFinalistNotification(
           <h3 style="margin: 0 0 12px; color: #0a0a0a; font-size: 16px; font-weight: 600;">
             Day-of Details
           </h3>
+          <p style="margin: 0 0 15px; color: #525252; font-size: 15px; line-height: 1.6;">
+            Plan to arrive at the <strong>UTSA San Pedro I Weston Conference Center</strong> by <strong>1:00 PM on April 20</strong> for walkthrough and AV check.
+          </p>
+          <p style="margin: 0 0 15px; color: #525252; font-size: 15px; line-height: 1.6;">
+            Fiesta San Antonio will be in full swing, so please allow additional time for travel and parking to ensure an on-time arrival. Recommended parking options include the <strong>SP1 lot on Dolorosa</strong> or the <strong>City of San Antonio garage on Houston</strong>. Availability is not guaranteed, so please plan accordingly.
+          </p>
           <p style="margin: 0; color: #525252; font-size: 15px; line-height: 1.6;">
-            Plan to arrive at the <strong>UTSA San Pedro I Weston Conference Center</strong> by <strong>[TIME]</strong> on April 20th for a walkthrough and AV check.
+            A "Know Before You Go" will be sent at least 48 hours in advance. Please check your spam folder or follow up directly with <a href="mailto:nichole@434media.com" style="color: #c73030; text-decoration: none; font-weight: 500;">nichole@434media.com</a>.
           </p>
         </td>
       </tr>
