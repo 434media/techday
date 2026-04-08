@@ -30,10 +30,18 @@ export function Hero() {
         const techfuelData = await techfuelRes.json()
         const techdaySponsors = techdayData.sponsors?.sponsors || []
         const techfuelSponsors = techfuelData.sponsors?.sponsors || []
+        const techdayCommunity = techdayData.sponsors?.community || []
+        const techfuelCommunity = techfuelData.sponsors?.community || []
         // Combine and deduplicate by id
         const combined = [...techdaySponsors]
         for (const s of techfuelSponsors) {
           if (!combined.some((existing: Sponsor) => existing.id === s.id)) {
+            combined.push(s)
+          }
+        }
+        // Include Geekdom from community partners
+        for (const s of [...techdayCommunity, ...techfuelCommunity]) {
+          if (s.name?.toLowerCase() === "geekdom" && !combined.some((existing: Sponsor) => existing.id === s.id || existing.name?.toLowerCase() === "geekdom")) {
             combined.push(s)
           }
         }
@@ -261,7 +269,7 @@ export function Hero() {
 
       {/* Sponsors Bar - Bottom */}
       <motion.div
-        className="relative z-20 border-t border-[#0a0a0a]/10 bg-white/80 backdrop-blur-sm shrink-0"
+        className="relative z-20 border-t border-[#0a0a0a]/10 bg-white shrink-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
@@ -270,6 +278,7 @@ export function Hero() {
           <div className="flex items-center justify-center gap-3 sm:gap-6">
             <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest whitespace-nowrap shrink-0">Sponsored by</p>
             <div className="overflow-hidden flex-1 min-w-0 max-w-80 mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+              {apiSponsors.length > 0 && (
               <div className="flex items-center gap-6 md:gap-8 w-max animate-scroll-sponsors">
                 {/* Double the sponsors for seamless loop */}
                 {[...apiSponsors, ...apiSponsors].map((sponsor, i) => (
@@ -288,10 +297,13 @@ export function Hero() {
                       className={`w-auto grayscale hover:grayscale-0 transition-all ${
                         sponsor.logoSize === "large" ? "h-10 md:h-14" : "h-6 md:h-8"
                       }`}
+                      loading="eager"
+                      priority
                     />
                   </a>
                 ))}
               </div>
+              )}
             </div>
             <Link 
               href="/sponsor" 

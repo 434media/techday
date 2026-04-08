@@ -132,6 +132,7 @@
 
 .animate-scroll-sponsors {
   animation: scroll-sponsors 20s linear infinite;
+  will-change: transform;
 }
 
 .animate-scroll-sponsors:hover {
