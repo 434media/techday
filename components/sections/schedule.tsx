@@ -502,6 +502,11 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
         const speakersData = await speakersRes.json()
         setSessions(scheduleData.sessions || [])
         setSpeakers(speakersData.speakers || [])
+        // Default-open the Opening Remarks accordion
+        const opening = (scheduleData.sessions || []).find(
+          (s: Session) => s.title?.toLowerCase().includes("opening")
+        )
+        if (opening) setExpandedId(opening.id)
       } catch (error) {
         console.error("Failed to fetch data:", error)
       } finally {
