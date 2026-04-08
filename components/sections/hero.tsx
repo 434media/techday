@@ -262,9 +262,9 @@ export function Hero() {
       {/* Sponsors Bar - Bottom */}
       <motion.div
         className="relative z-20 border-t border-[#0a0a0a]/10 bg-white/80 backdrop-blur-sm shrink-0"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
       >
         <div className="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 md:py-5">
           <div className="flex items-center justify-center gap-3 sm:gap-6">
