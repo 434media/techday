@@ -57,7 +57,7 @@ export function PixelArrow({
     xl: "w-60 h-60 md:w-80 md:h-80 lg:w-96 lg:h-96",
   }
 
-  const opacityValue = variant === "light" ? 0.1 : 0.15
+  const opacityValue = variant === "light" ? 0.1 : 0.3
 
   // Fetch and parse the SVG to extract pixel data
   useEffect(() => {

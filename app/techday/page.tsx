@@ -54,7 +54,7 @@ export default function TechDayPage() {
             <Editable 
               id="techday.hero.doorsopen" 
               as="p" 
-              className="font-mono text-xs text-white/40 mb-2 tracking-widest uppercase"
+              className="font-mono text-xs text-white/60 mb-2 tracking-widest uppercase"
               page="techday"
               section="hero"
             >
@@ -63,7 +63,7 @@ export default function TechDayPage() {
             <Editable 
               id="techday.hero.time" 
               as="p" 
-              className="font-mono text-sm text-white/50 mb-6 tracking-widest uppercase font-medium leading-none"
+              className="font-mono text-sm text-white/70 mb-6 tracking-widest uppercase font-medium leading-normal"
               page="techday"
               section="hero"
             >
@@ -84,11 +84,11 @@ export default function TechDayPage() {
             <Editable 
               id="techday.hero.description" 
               as="p" 
-              className="text-lg sm:text-xl md:text-2xl text-white/70 max-w-3xl mx-auto mb-12 leading-relaxed font-normal"
+              className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-3xl mx-auto mb-12 leading-relaxed font-light"
               page="techday"
               section="hero"
             >
-              A full day celebrating San Antonio's tech community with three tracks of inspiring sessions, and networking opportunities.
+              Emerging Industries. Founders &amp; Investors. AI. Three tracks powering the future and growth of San Antonio.
             </Editable>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -98,15 +98,106 @@ export default function TechDayPage() {
                 Register Now
               </Link>
               <a
-                href="#schedule"
-                className="px-10 py-5 bg-transparent border-2 border-white/30 text-white font-semibold rounded-md hover:bg-white hover:text-foreground transition-all text-lg"
+                href="#speakers"
+                className="px-10 py-5 bg-transparent border-2 border-white/40 text-white font-semibold rounded-md hover:bg-white hover:text-foreground transition-all text-lg"
               >
-                View Schedule
+                View Speakers
               </a>
             </div>
           </motion.div>
         </div>
       </section>
+
+      {/* Speakers Section - Dark Theme */}
+      <section id="speakers" className="py-24 md:py-32 bg-foreground/95">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-20"
+          >
+            <Editable 
+              id="techday.speakers.label" 
+              as="p" 
+              className="font-mono text-sm text-primary mb-4 tracking-widest uppercase"
+              page="techday"
+              section="speakers"
+            >
+              Cyber &middot; Bio &middot; Aerospace &middot; AI &middot; Startups
+          </Editable>
+          <Editable 
+              id="techday.speakers.title" 
+              as="h2" 
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-[0.95] tracking-tight"
+              page="techday"
+              section="speakers"
+            >
+              Meet the Speakers
+            </Editable>
+            <Editable 
+              id="techday.speakers.description" 
+              as="p" 
+              className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed"
+              page="techday"
+              section="speakers"
+            >
+              Leaders from the industries shaping San Antonio&apos;s future — cybersecurity, life sciences, aerospace, and AI.
+            </Editable>
+          </motion.div>
+
+          {/* Loading State */}
+          {isLoadingSpeakers && (
+            <div className="text-center py-12">
+              <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-white/70">Loading speakers...</p>
+            </div>
+          )}
+
+          {/* No Speakers Message */}
+          {!isLoadingSpeakers && speakers.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-center p-12 border-2 border-dashed border-white/20 rounded-xl"
+            >
+              <p className="text-white/70 font-mono">Speakers to be announced...</p>
+            </motion.div>
+          )}
+
+          {/* Speakers Grid */}
+          {!isLoadingSpeakers && speakers.length > 0 && (
+            <>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+                {(showAllSpeakers ? speakers : speakers.slice(0, 8)).map((speaker, index) => (
+                  <SpeakerCard key={speaker.id} speaker={speaker} index={index} />
+                ))}
+              </div>
+              {speakers.length > 8 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  className="text-center mt-12"
+                >
+                  <button
+                    onClick={() => setShowAllSpeakers(!showAllSpeakers)}
+                    className="px-8 py-4 bg-transparent border-2 border-white/30 text-white font-semibold rounded-md hover:bg-white hover:text-foreground transition-all"
+                  >
+                    {showAllSpeakers ? "Show Less" : `View All Speakers`}
+                  </button>
+                </motion.div>
+              )}
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Schedule Section */}
+      <div id="schedule" className="bg-foreground">
+        <Schedule variant="dark" />
+      </div>
 
       {/* Tracks Overview - Dark Theme */}
       <section className="relative py-24 md:py-32 bg-foreground">
@@ -159,7 +250,7 @@ export default function TechDayPage() {
               <Editable 
                 id="techday.track.emerging.description" 
                 as="p" 
-                className="text-white/60 mb-8 leading-relaxed text-base"
+                className="text-white/70 mb-8 leading-relaxed text-base"
                 page="techday"
                 section="tracks"
               >
@@ -226,7 +317,7 @@ export default function TechDayPage() {
               <Editable 
                 id="techday.track.founders.description" 
                 as="p" 
-                className="text-white/60 mb-8 leading-relaxed text-base"
+                className="text-white/70 mb-8 leading-relaxed text-base"
                 page="techday"
                 section="tracks"
               >
@@ -292,7 +383,7 @@ export default function TechDayPage() {
               <Editable 
                 id="techday.track.ai.description" 
                 as="p" 
-                className="text-white/60 mb-8 leading-relaxed text-base"
+                className="text-white/70 mb-8 leading-relaxed text-base"
                 page="techday"
                 section="tracks"
               >
@@ -340,97 +431,6 @@ export default function TechDayPage() {
           </div>
         </div>
       </section>
-
-      {/* Speakers Section - Dark Theme */}
-      <section className="py-24 md:py-32 bg-foreground/95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <Editable 
-              id="techday.speakers.label" 
-              as="p" 
-              className="font-mono text-sm text-primary mb-4 tracking-widest uppercase"
-              page="techday"
-              section="speakers"
-            >
-              Meet the Speakers
-            </Editable>
-            <Editable 
-              id="techday.speakers.title" 
-              as="h2" 
-              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-[0.95] tracking-tight"
-              page="techday"
-              section="speakers"
-            >
-              Industry Leaders & Innovators
-            </Editable>
-            <Editable 
-              id="techday.speakers.description" 
-              as="p" 
-              className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed"
-              page="techday"
-              section="speakers"
-            >
-              Learn from the best minds in San Antonio's tech ecosystem and beyond.
-            </Editable>
-          </motion.div>
-
-          {/* Loading State */}
-          {isLoadingSpeakers && (
-            <div className="text-center py-12">
-              <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-              <p className="text-white/60">Loading speakers...</p>
-            </div>
-          )}
-
-          {/* No Speakers Message */}
-          {!isLoadingSpeakers && speakers.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="text-center p-12 border-2 border-dashed border-white/20 rounded-xl"
-            >
-              <p className="text-white/60 font-mono">Speakers to be announced...</p>
-            </motion.div>
-          )}
-
-          {/* Speakers Grid */}
-          {!isLoadingSpeakers && speakers.length > 0 && (
-            <>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
-                {(showAllSpeakers ? speakers : speakers.slice(0, 8)).map((speaker, index) => (
-                  <SpeakerCard key={speaker.id} speaker={speaker} index={index} />
-                ))}
-              </div>
-              {speakers.length > 8 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  className="text-center mt-12"
-                >
-                  <button
-                    onClick={() => setShowAllSpeakers(!showAllSpeakers)}
-                    className="px-8 py-4 bg-transparent border-2 border-white/30 text-white font-semibold rounded-md hover:bg-white hover:text-foreground transition-all"
-                  >
-                    {showAllSpeakers ? "Show Less" : `View All Speakers`}
-                  </button>
-                </motion.div>
-              )}
-            </>
-          )}
-        </div>
-      </section>
-
-      {/* Schedule Section */}
-      <div id="schedule" className="bg-foreground">
-        <Schedule variant="dark" />
-      </div>
 
       {/* Sponsors */}
       <Sponsors
