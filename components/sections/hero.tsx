@@ -168,82 +168,76 @@ export function Hero() {
           </Editable>
         </motion.div>
 
-        {/* Date & Location - Compact */}
+        {/* Date & CTA — paired columns */}
         <motion.div
-          className="mt-6 md:mt-8 flex items-center gap-6 sm:gap-8"
+          className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.15 }}
         >
-          <div className="text-center">
-            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Fuel</p>
-            <Editable 
-              id="hero.techfuel.date" 
-              as="p" 
-              className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight"
-              page="home"
-              section="hero"
+          {/* Tech Fuel column */}
+          <div className="flex flex-col items-center gap-4 sm:pr-8 sm:border-r sm:border-[#0a0a0a]/10">
+            <div className="text-center">
+              <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Fuel</p>
+              <Editable 
+                id="hero.techfuel.date" 
+                as="p" 
+                className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight"
+                page="home"
+                section="hero"
+              >
+                April 20
+              </Editable>
+              <Editable 
+                id="hero.techfuel.venue" 
+                as="p" 
+                className="text-[#0a0a0a]/60 text-xs sm:text-sm"
+                page="home"
+                section="hero"
+              >
+                UTSA SP1
+              </Editable>
+            </div>
+            <Link
+              href="/techfuel"
+              className="group inline-flex items-center justify-center gap-2 bg-[#dc2626] text-white px-6 py-3 rounded-md font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#0a0a0a] hover:scale-105 shadow-lg hover:shadow-xl"
             >
-              April 20
-            </Editable>
-            <Editable 
-              id="hero.techfuel.venue" 
-              as="p" 
-              className="text-[#0a0a0a]/60 text-xs sm:text-sm"
-              page="home"
-              section="hero"
-            >
-              UTSA SP1
-            </Editable>
+              Meet the Finalists
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </Link>
           </div>
-          
-          <div className="w-px h-12 bg-[#0a0a0a]/15" />
-          
-          <div className="text-center">
-            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Day</p>
-            <Editable 
-              id="hero.techday.date" 
-              as="p" 
-              className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight"
-              page="home"
-              section="hero"
-            >
-              April 21
-            </Editable>
-            <Editable 
-              id="hero.techday.venue" 
-              as="p" 
-              className="text-[#0a0a0a]/60 text-xs sm:text-sm"
-              page="home"
-              section="hero"
-            >
-              Boeing Center at Tech Port
-            </Editable>
-          </div>
-        </motion.div>
 
-        {/* CTA Buttons */}
-        <motion.div
-          className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center gap-3 sm:gap-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <Link
-            href="/register"
-            className="group inline-flex items-center justify-center gap-2 bg-[#dc2626] text-white px-6 py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#0a0a0a] hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            Register Now
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-          </Link>
-          
-          <Link
-            href="/techday#schedule"
-            className="group inline-flex items-center justify-center gap-2 bg-[#0a0a0a] text-white px-6 py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#dc2626] hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            View Schedule
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-          </Link>
+          {/* Tech Day column */}
+          <div className="flex flex-col items-center gap-4 sm:pl-8">
+            <div className="text-center">
+              <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Day</p>
+              <Editable 
+                id="hero.techday.date" 
+                as="p" 
+                className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight"
+                page="home"
+                section="hero"
+              >
+                April 21
+              </Editable>
+              <Editable 
+                id="hero.techday.venue" 
+                as="p" 
+                className="text-[#0a0a0a]/60 text-xs sm:text-sm"
+                page="home"
+                section="hero"
+              >
+                Boeing Center at Tech Port
+              </Editable>
+            </div>
+            <Link
+              href="/techday#schedule"
+              className="group inline-flex items-center justify-center gap-2 bg-[#0a0a0a] text-white px-6 py-3 rounded-md font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#dc2626] hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              View Schedule
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </Link>
+          </div>
         </motion.div>
       </div>
 
