@@ -85,14 +85,14 @@ export function Hero() {
         }}
       />
 
-      {/* Floating Blimp */}
+      {/* Floating Blimp — 10 Year Anniversary Banner */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
         <motion.div
           className="absolute"
           initial={{ x: "100vw", y: "5%" }}
           animate={{
             x: "-100%",
-            y: ["5%", "8%", "3%", "6%", "5%"],
+            y: ["5%", "7%", "3%", "6%", "5%"],
           }}
           transition={{
             x: {
@@ -109,10 +109,10 @@ export function Hero() {
         >
           <Image
             src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/TechBlocBlimp.png"
-            alt="Tech Bloc Blimp"
+            alt="Tech Bloc 10 Year Anniversary"
             width={300}
             height={150}
-            className="w-36 md:w-48 lg:w-56 h-auto mt-16 md:mt-20"
+            className="w-28 sm:w-36 md:w-48 lg:w-56 h-auto mt-14 sm:mt-16 md:mt-20"
             style={{
               filter: "drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15))",
             }}
@@ -122,7 +122,7 @@ export function Hero() {
       </div>
       
       {/* Main Content - Centered */}
-      <div className="relative z-20 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-16 pb-8">
+      <div className="relative z-20 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-12 pb-2">
         
         {/* Headlines */}
         <motion.div
@@ -133,7 +133,7 @@ export function Hero() {
         >
           {/* Main Headline - Bebas Neue with color sweep effect */}
           <motion.h1 
-            className="mt-4 md:mt-6 font-bold text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-none text-center uppercase"
+            className="mt-1 md:mt-3 font-bold text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-none text-center uppercase"
             style={{
               backgroundImage: "linear-gradient(90deg, #0a0a0a 0%, #0a0a0a 40%, #dc2626 50%, #0a0a0a 60%, #0a0a0a 100%)",
               backgroundSize: "200% 100%",
@@ -152,15 +152,27 @@ export function Hero() {
 
         {/* Tagline */}
         <motion.div
-          className="mt-3 md:mt-4 text-[#0a0a0a]/70 text-base sm:text-lg md:text-xl font-medium tracking-wide text-center"
+          className="mt-1 md:mt-3 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <Editable 
+            id="hero.subtitle" 
+            as="p" 
+            className="hidden sm:block text-[#0a0a0a]/60 text-base md:text-lg font-medium max-w-xl mx-auto leading-relaxed"
+            page="home"
+            section="hero"
+          >
+            San Antonio&apos;s startup pitch competition and tech conference — two days of founders, investors, and emerging industries.
+          </Editable>
+          <p className="sm:hidden text-[#0a0a0a]/60 text-sm font-medium max-w-xs mx-auto leading-relaxed">
+            Two days of founders, investors, and emerging industries shaping the future of San Antonio.
+          </p>
+          <Editable 
             id="hero.tagline" 
             as="span" 
-            className="text-[#dc2626] font-semibold"
+            className="text-[#dc2626] font-semibold text-xs sm:text-sm tracking-wide uppercase mt-2 inline-block"
             page="home"
             section="hero"
           >
@@ -170,13 +182,13 @@ export function Hero() {
 
         {/* Date & CTA — paired columns */}
         <motion.div
-          className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-0"
+          className="mt-3 md:mt-6 flex flex-col sm:flex-row items-center sm:items-stretch gap-3 sm:gap-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.15 }}
         >
           {/* Tech Fuel column */}
-          <div className="flex flex-col items-center gap-4 sm:pr-8 sm:border-r sm:border-[#0a0a0a]/10">
+          <div className="flex flex-col items-center gap-2 sm:gap-3 sm:pr-8 sm:border-r sm:border-[#0a0a0a]/10">
             <div className="text-center">
               <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Fuel</p>
               <Editable 
@@ -197,10 +209,13 @@ export function Hero() {
               >
                 UTSA SP1
               </Editable>
+              <p className="text-[#0a0a0a]/40 text-[10px] sm:text-xs font-mono mt-1 sm:mt-2 tracking-wide">
+                $100K Pitch Competition · 5 Finalists
+              </p>
             </div>
             <Link
               href="/techfuel"
-              className="group inline-flex items-center justify-center gap-2 bg-[#dc2626] text-white px-6 py-3 rounded-md font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#0a0a0a] hover:scale-105 shadow-lg hover:shadow-xl"
+              className="group inline-flex items-center justify-center gap-2 bg-[#dc2626] text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-md font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#0a0a0a] hover:scale-105 shadow-lg hover:shadow-xl"
             >
               Meet the Finalists
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
@@ -208,7 +223,7 @@ export function Hero() {
           </div>
 
           {/* Tech Day column */}
-          <div className="flex flex-col items-center gap-4 sm:pl-8">
+          <div className="flex flex-col items-center gap-2 sm:gap-3 sm:pl-8">
             <div className="text-center">
               <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Day</p>
               <Editable 
@@ -229,10 +244,13 @@ export function Hero() {
               >
                 Boeing Center at Tech Port
               </Editable>
+              <p className="text-[#0a0a0a]/40 text-[10px] sm:text-xs font-mono mt-1 sm:mt-2 tracking-wide">
+                3 Tracks · 30+ Speakers · Panels &amp; Demos
+              </p>
             </div>
             <Link
               href="/techday#schedule"
-              className="group inline-flex items-center justify-center gap-2 bg-[#0a0a0a] text-white px-6 py-3 rounded-md font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#dc2626] hover:scale-105 shadow-lg hover:shadow-xl"
+              className="group inline-flex items-center justify-center gap-2 bg-[#0a0a0a] text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-md font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#dc2626] hover:scale-105 shadow-lg hover:shadow-xl"
             >
               View Schedule
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
@@ -248,8 +266,8 @@ export function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        <div className="max-w-5xl mx-auto px-4 py-4 md:py-5">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+        <div className="max-w-5xl mx-auto px-4 py-3 md:py-5">
+          <div className="flex items-center justify-center gap-4 sm:gap-6">
             <p className="text-[#0a0a0a]/50 text-xs font-mono uppercase tracking-widest whitespace-nowrap shrink-0">Sponsored by</p>
             <div className="overflow-hidden w-60 sm:w-70 md:w-80 shrink-0 mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
               <div className="flex items-center gap-6 md:gap-8 w-max animate-scroll-sponsors">
