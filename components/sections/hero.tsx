@@ -261,15 +261,15 @@ export function Hero() {
 
       {/* Sponsors Bar - Bottom */}
       <motion.div
-        className="relative z-20 border-t border-[#0a0a0a]/10 bg-white/80 backdrop-blur-sm"
+        className="relative z-20 border-t border-[#0a0a0a]/10 bg-white/80 backdrop-blur-sm shrink-0"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        <div className="max-w-5xl mx-auto px-4 py-3 md:py-5">
-          <div className="flex items-center justify-center gap-4 sm:gap-6">
-            <p className="text-[#0a0a0a]/50 text-xs font-mono uppercase tracking-widest whitespace-nowrap shrink-0">Sponsored by</p>
-            <div className="overflow-hidden w-60 sm:w-70 md:w-80 shrink-0 mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 md:py-5">
+          <div className="flex items-center justify-center gap-3 sm:gap-6">
+            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest whitespace-nowrap shrink-0">Sponsored by</p>
+            <div className="overflow-hidden flex-1 min-w-0 max-w-80 mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
               <div className="flex items-center gap-6 md:gap-8 w-max animate-scroll-sponsors">
                 {/* Double the sponsors for seamless loop */}
                 {[...apiSponsors, ...apiSponsors].map((sponsor, i) => (
