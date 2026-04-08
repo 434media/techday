@@ -369,7 +369,7 @@ export function InteractiveLanyard({ className = "" }: InteractiveLanyardProps) 
                   <div>
                     <p className="text-white/40 font-mono tracking-wider uppercase mb-1">Tech Fuel</p>
                     <p className="text-white font-semibold leading-relaxed">April 20th</p>
-                    <p className="text-white/60 leading-relaxed">Weston Conference Center</p>
+                    <p className="text-white/60 leading-relaxed">UTSA SP1</p>
                   </div>
                   <div>
                     <p className="text-white/40 font-mono tracking-wider uppercase mb-1">Tech Day</p>
