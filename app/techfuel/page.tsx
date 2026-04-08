@@ -1,84 +1,65 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Sponsors } from "@/components/sections/sponsors"
 import { PixelArrow } from "@/components/pixel-arrow"
 import { Editable } from "@/components/editable"
 import { motion, AnimatePresence } from "motion/react"
 import Link from "next/link"
 
-
-const qualifications = [
+const finalists2026 = [
   {
-    title: "Live Product",
-    description:
-      "Have a product or service that has been live for more than 6 months with measurable performance metrics such as revenue and customers.",
+    name: "ComeBack Mobility",
+    description: "Rehabilitation, redefined. Using real-time biomechanical data to guide safer, faster recovery.",
+    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Fcomback.png?alt=media",
+    website: "https://www.comebackmobility.com",
   },
   {
-    title: "ARR",
-    description:
-      "Generate less than $2.0M in annualized recurring revenue.",
+    name: "Freyya",
+    description: "Advancing women's health with real-time, data-driven pelvic care.",
+    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ffreyya.png?alt=media",
+    website: "https://www.freyya.com",
   },
   {
-    title: "Funding",
-    description:
-      "Have received less than $1M from third-party investors.",
+    name: "Openlane",
+    description: "An open-source, AI-native platform helping companies get compliant faster.",
+    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Fopenlane.png?alt=media",
+    website: "https://www.theopenlane.io",
   },
   {
-    title: "Structure",
-    description:
-      "Be a properly registered C-corp in the United States.",
+    name: "Bytewhisper Security",
+    description: "Turning security policies into actionable intelligence — analyzed and improved in hours, not weeks.",
+    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Fbytewhisper.png?alt=media",
+    website: "https://www.bytewhispersecurity.com",
   },
   {
-    title: "Bexar County Presence",
-    description:
-      "Maintain a company presence (office or remote employee) within Bexar County for a minimum of 12 months after prize money award date.",
-  },
-]
-
-const screeningCriteria = [
-  {
-    title: "Leadership",
-    description: "Does the team have the ability to reach the next level of success?",
-  },
-  {
-    title: "Business Model",
-    description: "Is the revenue model realistic and sustainable?",
-  },
-  {
-    title: "Execution",
-    description: "Are there strong growth metrics or measurable traction?",
-  },
-  {
-    title: "Job Creation",
-    description: "Will the startup create more jobs in San Antonio?",
-  },
-  {
-    title: "Impact to San Antonio",
-    description: "What makes the startup standout from a San Antonio impact standpoint?",
+    name: "RentBamboo",
+    description: "Automating the leasing process — from first inquiry to signed lease — so teams can scale without added headcount.",
+    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Frentbamboo.png?alt=media",
+    website: "https://www.rentbamboo.com",
   },
 ]
 
 const processSteps = [
   {
     step: "01",
-    title: "Application Review",
-    description: "Screening committee reviews all applications based on leadership, business model, execution, job creation, and San Antonio impact.",
+    title: "75+ Applications",
+    description: "Startups across Bexar County submitted pitches showcasing innovative products with real traction and revenue.",
   },
   {
     step: "02",
-    title: "Semi-Finals",
-    description: "25 semi-finalists are randomly placed into 5 groups (A–E) for private Zoom pitch sessions with 4–5 judges. Each startup delivers a 5-minute pitch followed by 5-minute Q&A.",
+    title: "25 Semi-Finalists",
+    description: "Placed into 5 groups for private Zoom pitch sessions with 4–5 judges. Each delivered a 5-minute pitch followed by 5-minute Q&A.",
   },
   {
     step: "03",
-    title: "Finalist Selection",
-    description: "One finalist from each group advances to the final round, selected by their group's judging panel.",
+    title: "5 Finalists Selected",
+    description: "One finalist from each group was selected by their judging panel to advance to the final round.",
   },
   {
     step: "04",
-    title: "Final Competition",
-    description: "5 finalists compete in-person with 5-minute pitches and 10-minute Q&A sessions before a panel of 5 judges.",
+    title: "Finals — April 20",
+    description: "5 finalists compete in-person at UTSA SP1 with 5-minute pitches and 10-minute Q&A sessions before a panel of 5 judges.",
   },
 ]
 
@@ -159,178 +140,128 @@ const pastWinners = [
 ]
 
 const timeline = [
-  { date: "Feb 16", event: "Applications Open" },
-  { date: "Mar 22", event: "Applications Close" },
-  { date: "Mar 27", event: "Semi-Finalists Announced" },
-  { date: "Apr 2-3", event: "Semi-Finals Judging" },
-  { date: "Apr 3", event: "Finalists Announced" },
-  { date: "Apr 10-12", event: "Geekdom 3-Day Bootcamp" },
-  { date: "Apr 20", event: "Tech Fuel Event @ UTSA SP1" },
+  { date: "Feb 16", event: "Applications Open", completed: true },
+  { date: "Mar 22", event: "Applications Close", completed: true },
+  { date: "Mar 27", event: "Semi-Finalists Announced", completed: true },
+  { date: "Apr 2-3", event: "Semi-Finals Judging", completed: true },
+  { date: "Apr 3", event: "Finalists Announced", completed: true },
+  { date: "Apr 10-12", event: "Geekdom 3-Day Bootcamp", completed: false },
+  { date: "Apr 20", event: "Tech Fuel Finals @ UTSA SP1", completed: false },
 ]
 
 
 
-function QualificationsAccordion() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+function FinalistsSection() {
+  const marqueeRef = useRef<HTMLDivElement>(null)
+  // Duplicate array for seamless marquee loop
+  const marqueeItems = [...finalists2026, ...finalists2026]
+
+  const handleMouseEnter = () => {
+    const el = marqueeRef.current
+    if (!el) return
+    // Grab the current computed transform so we can freeze at this position
+    const computedStyle = window.getComputedStyle(el)
+    const transform = computedStyle.getPropertyValue("transform")
+    // Pause the CSS animation
+    el.style.animationPlayState = "paused"
+    // Apply the current transform as an inline style via a CSS transition for smooth deceleration
+    el.style.transform = transform
+    el.style.transition = "transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1)"
+  }
+
+  const handleMouseLeave = () => {
+    const el = marqueeRef.current
+    if (!el) return
+    // Clear inlines and let the CSS animation resume
+    el.style.transition = ""
+    el.style.transform = ""
+    el.style.animationPlayState = ""
+  }
 
   return (
-    <div className="space-y-3">
-      {qualifications.map((item, index) => (
-        <motion.div
-          key={item.title}
+    <section id="finalists" className="py-10 md:py-16 bg-black overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 md:mb-8">
+        <motion.p
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: index * 0.05 }}
+          className="text-center font-mono text-sm text-white/50 tracking-widest uppercase"
         >
-          <button
-            onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="w-full group"
-          >
-            <div className={`flex items-center justify-between p-5 bg-muted border rounded-xl transition-all duration-200 ${
-              openIndex === index 
-                ? "border-primary bg-primary/5" 
-                : "border-border hover:border-primary/50"
-            }`}>
-              <div className="flex items-center gap-4">
-                <span className={`font-mono text-sm font-semibold transition-colors ${
-                  openIndex === index ? "text-primary" : "text-muted-foreground"
-                }`}>
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <Editable
-                  id={`techfuel.qualifications.item.${index}.title`}
-                  as="span"
-                  className="text-base font-semibold text-foreground tracking-tight text-left"
-                  page="techfuel"
-                  section="qualifications"
-                >
-                  {item.title}
-                </Editable>
-              </div>
-              <motion.div
-                animate={{ rotate: openIndex === index ? 45 : 0 }}
-                transition={{ duration: 0.2 }}
-                className={`w-6 h-6 flex items-center justify-center rounded-full transition-colors ${
-                  openIndex === index 
-                    ? "bg-primary text-primary-foreground" 
-                    : "bg-border text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary"
-                }`}
+          5 Finalists &middot; $100K in Prizes &middot; Live on April 20
+        </motion.p>
+      </div>
+
+      {/* Marquee */}
+      <div
+        className="relative"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div ref={marqueeRef} className="flex gap-5 animate-scroll-finalists w-max">
+          {marqueeItems.map((finalist, index) => (
+            <div
+              key={`${finalist.name}-${index}`}
+              className="shrink-0 w-64 sm:w-72 md:w-80 group/card"
+            >
+              <a
+                href={finalist.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block relative aspect-4/5 rounded-xl overflow-hidden border border-white/10 hover:border-primary/50 transition-all duration-300 hover:shadow-xl"
               >
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="stroke-current">
-                  <path d="M6 2.5V9.5M2.5 6H9.5" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </motion.div>
-            </div>
-          </button>
-          <AnimatePresence>
-            {openIndex === index && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="overflow-hidden"
-              >
-                <div className="px-5 py-4 ml-9">
-                  <Editable
-                    id={`techfuel.qualifications.item.${index}.description`}
-                    as="p"
-                    className="text-muted-foreground leading-relaxed text-base"
-                    page="techfuel"
-                    section="qualifications"
-                  >
-                    {item.description}
-                  </Editable>
+                {/* Full-card image */}
+                <img
+                  src={finalist.image}
+                  alt={finalist.name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
+                />
+
+                {/* Default bottom gradient with name */}
+                <div className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300 group-hover/card:opacity-0" />
+                <div className="absolute bottom-0 left-0 right-0 p-5 transition-opacity duration-300 group-hover/card:opacity-0">
+                  <h3 className="text-lg font-bold text-white tracking-tight leading-none">
+                    {finalist.name}
+                  </h3>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      ))}
-    </div>
-  )
-}
 
-function ScreeningAccordion() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-black/80 opacity-0 group-hover/card:opacity-100 transition-all duration-300 flex flex-col justify-end p-5">
+                  <h3 className="text-lg font-bold text-white tracking-tight leading-none mb-3">
+                    {finalist.name}
+                  </h3>
+                  <p className="text-[13px] text-white/70 leading-relaxed mb-4">
+                    {finalist.description}
+                  </p>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary tracking-tight">
+                    Visit Website
+                    <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="stroke-current">
+                      <path d="M3.5 10.5L10.5 3.5M10.5 3.5H5.25M10.5 3.5V8.75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                </div>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
 
-  return (
-    <div className="space-y-3">
-      {screeningCriteria.map((item, index) => (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          key={item.title}
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: index * 0.05 }}
+          transition={{ delay: 0.3 }}
+          className="text-center mt-8 md:mt-10"
         >
-          <button
-            onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="w-full group"
+          <Link
+            href="/register"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
           >
-            <div className={`flex items-center justify-between p-5 bg-white border rounded-xl transition-all duration-200 ${
-              openIndex === index 
-                ? "border-primary bg-primary/5" 
-                : "border-border hover:border-primary/50"
-            }`}>
-              <div className="flex items-center gap-4">
-                <span className={`font-mono text-sm font-semibold transition-colors ${
-                  openIndex === index ? "text-primary" : "text-muted-foreground"
-                }`}>
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <Editable
-                  id={`techfuel.screening.item.${index}.title`}
-                  as="span"
-                  className="text-base font-semibold text-foreground tracking-tight text-left"
-                  page="techfuel"
-                  section="screening"
-                >
-                  {item.title}
-                </Editable>
-              </div>
-              <motion.div
-                animate={{ rotate: openIndex === index ? 45 : 0 }}
-                transition={{ duration: 0.2 }}
-                className={`w-6 h-6 flex items-center justify-center rounded-full transition-colors ${
-                  openIndex === index 
-                    ? "bg-primary text-primary-foreground" 
-                    : "bg-border text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary"
-                }`}
-              >
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="stroke-current">
-                  <path d="M6 2.5V9.5M2.5 6H9.5" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </motion.div>
-            </div>
-          </button>
-          <AnimatePresence>
-            {openIndex === index && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="overflow-hidden"
-              >
-                <div className="px-5 py-4 ml-9">
-                  <Editable
-                    id={`techfuel.screening.item.${index}.description`}
-                    as="p"
-                    className="text-muted-foreground leading-relaxed text-base"
-                    page="techfuel"
-                    section="screening"
-                  >
-                    {item.description}
-                  </Editable>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            Watch Them Compete Live
+          </Link>
         </motion.div>
-      ))}
-    </div>
+      </div>
+    </section>
   )
 }
 
@@ -445,9 +376,8 @@ function PastWinnersAccordion() {
 export default function TechFuelPage() {
   return (
     <main className="min-h-screen bg-white">
-      {/* Hero - Light Theme with dvh */}
+      {/* Hero */}
       <section className="relative min-h-dvh flex items-center justify-center px-4 bg-white overflow-hidden">
-        {/* Pixel Arrow - Top Right */}
         <PixelArrow position="top-right" size="xl" variant="light" type="anniversary" />
         
         <div className="max-w-5xl mx-auto text-center relative z-10">
@@ -502,21 +432,120 @@ export default function TechFuelPage() {
               page="techfuel"
               section="hero"
             >
-              Greater San Antonio's largest cash prize pitch competition with $100,000 in non-dilutive cash prizes along with resources and support, sponsored by Bexar County.
+              Greater San Antonio&apos;s largest cash prize pitch competition with $100,000 in non-dilutive cash prizes along with resources and support, sponsored by Bexar County.
             </Editable>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/register"
                 className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
               >
-                Attend as Spectator
+                Register to Attend
               </Link>
+              <a
+                href="#finalists"
+                className="px-10 py-5 bg-muted border border-border text-foreground font-semibold rounded-md hover:border-primary/50 transition-all text-lg"
+              >
+                Meet the Finalists
+              </a>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* What is Tech Fuel - Light Theme */}
+      {/* Meet the Finalists */}
+      <FinalistsSection />
+
+      {/* Sponsors — elevated placement */}
+      <Sponsors variant="light" event="techfuel" />
+
+      {/* How It Works — The Journey */}
+      <section className="py-24 md:py-32 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <Editable
+              id="techfuel.process.label"
+              as="p"
+              className="font-mono text-sm text-primary mb-4 tracking-widest uppercase"
+              page="techfuel"
+              section="process"
+            >
+              How It Works
+            </Editable>
+            <Editable
+              id="techfuel.process.title"
+              as="h2"
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-[0.95] tracking-tight"
+              page="techfuel"
+              section="process"
+            >
+              The Journey to the Stage
+            </Editable>
+            <Editable
+              id="techfuel.process.description"
+              as="p"
+              className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+              page="techfuel"
+              section="process"
+            >
+              From application to the final stage — here&apos;s how our 5 finalists earned their spot.
+            </Editable>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {processSteps.map((step, index) => (
+              <motion.div
+                key={step.step}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15 }}
+                className="relative"
+              >
+                <div className="p-8 bg-muted border border-border rounded-xl h-full">
+                  <Editable
+                    id={`techfuel.process.step.${index}.number`}
+                    as="span"
+                    className="font-mono text-5xl font-bold text-primary/20 mb-4 block leading-none"
+                    page="techfuel"
+                    section="process"
+                  >
+                    {step.step}
+                  </Editable>
+                  <Editable
+                    id={`techfuel.process.step.${index}.title`}
+                    as="h3"
+                    className="text-xl font-bold text-foreground mb-3 leading-tight tracking-tight"
+                    page="techfuel"
+                    section="process"
+                  >
+                    {step.title}
+                  </Editable>
+                  <Editable
+                    id={`techfuel.process.step.${index}.description`}
+                    as="p"
+                    className="text-muted-foreground leading-relaxed text-sm"
+                    page="techfuel"
+                    section="process"
+                  >
+                    {step.description}
+                  </Editable>
+                </div>
+                {index < processSteps.length - 1 && (
+                  <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-primary/20" />
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Tech Fuel + Timeline */}
       <section className="py-24 md:py-32 bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -537,7 +566,7 @@ export default function TechFuelPage() {
                 page="techfuel"
                 section="about"
               >
-                Fuel Your Growth
+                San Antonio&apos;s Largest Cash Prize Pitch Competition
               </Editable>
               <Editable 
                 id="techfuel.about.description" 
@@ -546,7 +575,7 @@ export default function TechFuelPage() {
                 page="techfuel"
                 section="about"
               >
-                TechFuel is greater San Antonio's largest cash prize pitch competition. With $100,000 available in non-dilutive cash prize money along with resources and support, this is your opportunity to showcase innovation to investors, gain exposure, and accelerate your startup's journey.
+                Tech Fuel awards $100,000 in non-dilutive cash prizes to early-stage startups building in Bexar County. No equity taken — just capital, resources, and exposure to accelerate growth.
               </Editable>
               <ul className="space-y-5">
                 <li className="flex items-start gap-4">
@@ -614,7 +643,7 @@ export default function TechFuelPage() {
                 page="techfuel"
                 section="about"
               >
-                Timeline
+                2026 Timeline
               </Editable>
               <div className="space-y-8">
                 {timeline.map((item, index) => (
@@ -623,7 +652,7 @@ export default function TechFuelPage() {
                       <Editable 
                         id={`techfuel.timeline.item.${index}.date`} 
                         as="span" 
-                        className="font-mono text-sm text-primary font-semibold"
+                        className={`font-mono text-sm font-semibold ${item.completed ? "text-muted-foreground" : "text-primary"}`}
                         page="techfuel"
                         section="about"
                       >
@@ -631,13 +660,25 @@ export default function TechFuelPage() {
                       </Editable>
                     </div>
                     <div className="relative flex items-center">
-                      <div className={`w-4 h-4 rounded-full border-2 ${index === timeline.length - 1 ? "bg-primary border-primary" : "bg-white border-primary/40"}`} />
+                      <div className={`w-4 h-4 rounded-full border-2 ${
+                        item.completed 
+                          ? "bg-primary border-primary" 
+                          : index === timeline.length - 1 
+                            ? "bg-white border-primary ring-4 ring-primary/10" 
+                            : "bg-white border-primary/40"
+                      }`}>
+                        {item.completed && (
+                          <svg className="w-2.5 h-2.5 text-primary-foreground absolute top-0.5 left-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
                       {index < timeline.length - 1 && <div className="absolute top-4 left-1.75 w-0.5 h-12 bg-primary/20" />}
                     </div>
                     <Editable 
                       id={`techfuel.timeline.item.${index}.event`} 
                       as="span" 
-                      className="text-foreground font-medium text-base"
+                      className={`font-medium text-base ${item.completed ? "text-muted-foreground" : "text-foreground"}`}
                       page="techfuel"
                       section="about"
                     >
@@ -651,178 +692,8 @@ export default function TechFuelPage() {
         </div>
       </section>
 
-      {/* Qualifications - Light Theme */}
-      <section className="relative py-24 md:py-32 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <Editable
-              id="techfuel.qualifications.label"
-              as="p"
-              className="font-mono text-sm text-primary mb-4 tracking-widest uppercase"
-              page="techfuel"
-              section="qualifications"
-            >
-              How It Works
-            </Editable>
-            <Editable
-              id="techfuel.qualifications.title"
-              as="h2"
-              className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-[0.95] tracking-tight"
-              page="techfuel"
-              section="qualifications"
-            >
-              Qualifications
-            </Editable>
-            <Editable
-              id="techfuel.qualifications.description"
-              as="p"
-              className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
-              page="techfuel"
-              section="qualifications"
-            >
-              Prospective startups should have a well-defined startup with innovative potential, showcasing the capacity to disrupt and reshape the tech landscape.
-            </Editable>
-          </motion.div>
-
-          <QualificationsAccordion />
-        </div>
-      </section>
-
-      {/* Screening Criteria - Light Theme */}
-      <section className="py-24 md:py-32 bg-muted">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <Editable
-              id="techfuel.screening.label"
-              as="p"
-              className="font-mono text-sm text-primary mb-4 tracking-widest uppercase"
-              page="techfuel"
-              section="screening"
-            >
-              Selection Criteria
-            </Editable>
-            <Editable
-              id="techfuel.screening.title"
-              as="h2"
-              className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-[0.95] tracking-tight"
-              page="techfuel"
-              section="screening"
-            >
-              How We Evaluate
-            </Editable>
-            <Editable
-              id="techfuel.screening.description"
-              as="p"
-              className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
-              page="techfuel"
-              section="screening"
-            >
-              The screening committee determines which applicants advance to the semi-final round based on these criteria.
-            </Editable>
-          </motion.div>
-
-          <ScreeningAccordion />
-        </div>
-      </section>
-
-      {/* Qualification Process - Light Theme */}
+      {/* Impact Section */}
       <section className="py-24 md:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <Editable
-              id="techfuel.process.label"
-              as="p"
-              className="font-mono text-sm text-primary mb-4 tracking-widest uppercase"
-              page="techfuel"
-              section="process"
-            >
-              The Journey
-            </Editable>
-            <Editable
-              id="techfuel.process.title"
-              as="h2"
-              className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-[0.95] tracking-tight"
-              page="techfuel"
-              section="process"
-            >
-              Qualification Process
-            </Editable>
-            <Editable
-              id="techfuel.process.description"
-              as="p"
-              className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
-              page="techfuel"
-              section="process"
-            >
-              From application to the final stage, here&apos;s how the competition unfolds.
-            </Editable>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {processSteps.map((step, index) => (
-              <motion.div
-                key={step.step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-                className="relative"
-              >
-                <div className="p-8 bg-muted border border-border rounded-xl h-full">
-                  <Editable
-                    id={`techfuel.process.step.${index}.number`}
-                    as="span"
-                    className="font-mono text-5xl font-bold text-primary/20 mb-4 block leading-none"
-                    page="techfuel"
-                    section="process"
-                  >
-                    {step.step}
-                  </Editable>
-                  <Editable
-                    id={`techfuel.process.step.${index}.title`}
-                    as="h3"
-                    className="text-xl font-bold text-foreground mb-3 leading-tight tracking-tight"
-                    page="techfuel"
-                    section="process"
-                  >
-                    {step.title}
-                  </Editable>
-                  <Editable
-                    id={`techfuel.process.step.${index}.description`}
-                    as="p"
-                    className="text-muted-foreground leading-relaxed text-sm"
-                    page="techfuel"
-                    section="process"
-                  >
-                    {step.description}
-                  </Editable>
-                </div>
-                {index < processSteps.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-primary/20" />
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Impact Section - Light Theme */}
-      <section className="py-24 md:py-32 bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -868,7 +739,7 @@ export default function TechFuelPage() {
               {impactStats.map((stat, index) => (
                 <div
                   key={stat.label}
-                  className="p-8 bg-white border border-border rounded-xl text-center"
+                  className="p-8 bg-muted border border-border rounded-xl text-center"
                 >
                   <Editable
                     id={`techfuel.impact.stat.${index}.value`}
@@ -895,78 +766,8 @@ export default function TechFuelPage() {
         </div>
       </section>
 
-      {/* Pitch Submission - Coming Soon with Countdown */}
-      <section id="submit" className="py-24 md:py-32 bg-muted relative overflow-hidden">
-        {/* Pixel Arrow Background */}
-        <div className="absolute top-8 right-8 md:top-12 md:right-12 opacity-[0.06] pointer-events-none">
-          <PixelArrow position="top-right" size="xl" variant="light" type="static" interactive={false} />
-        </div>
-
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <Editable
-              id="techfuel.submit.label"
-              as="p"
-              className="font-mono text-sm text-primary mb-4 tracking-widest uppercase"
-              page="techfuel"
-              section="submit"
-            >
-              Applications Closed
-            </Editable>
-            <Editable
-              id="techfuel.submit.title"
-              as="h2"
-              className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6 leading-[0.95] tracking-tight"
-              page="techfuel"
-              section="submit"
-            >
-              Thank You for Applying
-            </Editable>
-            <Editable
-              id="techfuel.submit.description"
-              as="p"
-              className="text-lg md:text-xl text-muted-foreground leading-relaxed"
-              page="techfuel"
-              section="submit"
-            >
-              The Tech Fuel 2026 submission window has closed. Thank you to all the startups who applied — semi-finalists will be announced on March 27.
-            </Editable>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="text-center p-8 sm:p-12 bg-white border border-primary/30 rounded-2xl shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/20 flex items-center justify-center">
-                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-foreground mb-3">Submissions Closed</h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                Thank you to everyone who submitted a pitch. Stay tuned for semi-finalist announcements and join us on April 20 at UTSA SP1 to watch the finalists compete live.
-              </p>
-              <Link
-                href="/register"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
-              >
-                Register to Attend
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Past Winners - Real Data */}
-      <section className="relative py-24 md:py-32 bg-white">
+      {/* Past Winners */}
+      <section className="relative py-24 md:py-32 bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1007,8 +808,54 @@ export default function TechFuelPage() {
         </div>
       </section>
 
-      {/* Sponsors */}
-      <Sponsors variant="light" event="techfuel" />
+      {/* Register CTA */}
+      <section className="py-24 md:py-32 bg-white relative overflow-hidden">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="text-center p-8 sm:p-12 bg-muted border border-primary/30 rounded-2xl">
+              <Editable
+                id="techfuel.cta.label"
+                as="p"
+                className="font-mono text-sm text-primary mb-4 tracking-widest uppercase"
+                page="techfuel"
+                section="cta"
+              >
+                April 20, 2026
+              </Editable>
+              <Editable
+                id="techfuel.cta.title"
+                as="h2"
+                className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-[0.95] tracking-tight"
+                page="techfuel"
+                section="cta"
+              >
+                Watch the Finals Live
+              </Editable>
+              <Editable
+                id="techfuel.cta.description"
+                as="p"
+                className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed"
+                page="techfuel"
+                section="cta"
+              >
+                Join us at UTSA SP1 to watch 5 finalists pitch for $100,000 in non-dilutive cash prizes. Free to attend.
+              </Editable>
+              <Link
+                href="/register"
+                className="inline-flex items-center gap-2 px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
+              >
+                Register to Attend
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+
+        <PixelArrow position="bottom-left" size="lg" variant="light" type="anniversary" />
+      </section>
     </main>
   )
 }

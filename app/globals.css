@@ -138,6 +138,19 @@
   animation-play-state: paused;
 }
 
+@keyframes scroll-finalists {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-finalists {
+  animation: scroll-finalists 30s linear infinite;
+}
+
 /* ============================================
    CONFERENCE DESIGN PATTERNS
    Inspired by event tickets, lanyards, badges

@@ -62,10 +62,6 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
 
   return (
     <section ref={ref} id="sponsors" className="relative py-24 md:py-32 bg-white">
-      {/* Pixel Arrow - Top Right */}
-      <PixelArrow position="top-right" size="xl" variant={variant} type="video" />
-      {/* Pixel Arrow - Bottom Left */}
-      <PixelArrow position="bottom-left" size="lg" variant={variant} type="anniversary" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -82,7 +78,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
             page="global"
             section="sponsors"
           >
-            Our Partners
+            From the Tech Day &amp; Tech Fuel Teams
           </Editable>
           <Editable 
             id="sponsors.title" 
@@ -91,7 +87,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
             page="global"
             section="sponsors"
           >
-            Sponsors
+            Thank You to Our Sponsors
           </Editable>
           <Editable 
             id="sponsors.description" 
@@ -192,7 +188,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
             className="mb-16"
           >
             <div className="flex justify-center mb-6">
-              <span className="px-4 py-1.5 bg-linear-to-r from-primary/60 to-primary/40 rounded-full text-white font-semibold text-xs tracking-wider uppercase">
+              <span className="px-4 py-1.5 bg-linear-to-r from-primary/60 to-primary/60 rounded-full text-white font-semibold text-xs tracking-wider uppercase">
                 Community Partners
               </span>
             </div>
@@ -209,7 +205,7 @@ export function Sponsors({ variant = "light", event = "techday", staticSponsors 
                     <img
                       src={sponsor.logoUrl}
                       alt={sponsor.name}
-                      className={`w-auto opacity-60 hover:opacity-100 transition-opacity ${
+                      className={`w-auto opacity-90 hover:opacity-100 transition-opacity ${
                         sponsor.logoSize === "large" ? "h-14 md:h-20" : "h-8"
                       }`}
                     />
