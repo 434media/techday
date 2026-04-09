@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
+import { createPortal } from "react-dom"
 import { motion, AnimatePresence } from "motion/react"
 import { ChevronDown, Calendar, Image as ImageIcon } from "lucide-react"
 import { Editable } from "@/components/editable"
@@ -70,8 +71,8 @@ const EVENT_LOCATION = "Boeing Center at Tech Port, San Antonio, TX"
 
 function toICSDate(date: string, time: string): string {
   const [hours, minutes] = time.split(":")
-  // CST = UTC-6, format: 20260421T130000Z
-  const utcHour = parseInt(hours) + 6
+  // CDT (April) = UTC-5, format: 20260421T130000Z
+  const utcHour = parseInt(hours) + 5
   return `${date.replace(/-/g, "")}T${String(utcHour).padStart(2, "0")}${minutes}00Z`
 }
 
@@ -119,6 +120,194 @@ function downloadICS(filename: string, content: string) {
   a.click()
   document.body.removeChild(a)
   URL.revokeObjectURL(url)
+}
+
+function googleCalendarUrl(events: { title: string; description: string; time: string; duration: number; room: string }[], trackLabel?: string): string {
+  if (events.length === 1) {
+    const e = events[0]
+    const dtStart = toICSDate(EVENT_DATE, e.time)
+    const dtEnd = toICSDate(EVENT_DATE, addMinutes(e.time, e.duration))
+    const params = new URLSearchParams({
+      action: "TEMPLATE",
+      text: e.title,
+      dates: `${dtStart}/${dtEnd}`,
+      details: e.description,
+      location: e.room ? `${e.room} - ${EVENT_LOCATION}` : EVENT_LOCATION,
+    })
+    return `https://calendar.google.com/calendar/render?${params.toString()}`
+  }
+  // Multiple events: create a single block spanning all sessions
+  const sorted = [...events].sort((a, b) => a.time.localeCompare(b.time))
+  const first = sorted[0]
+  const last = sorted[sorted.length - 1]
+  const dtStart = toICSDate(EVENT_DATE, first.time)
+  const dtEnd = toICSDate(EVENT_DATE, addMinutes(last.time, last.duration))
+  const details = sorted.map(e => `${e.time} — ${e.title}${e.room ? ` (${e.room})` : ""}`).join("\n")
+  const eventName = trackLabel ? `Tech Day 2026 — ${trackLabel}` : `Tech Day 2026 — All Sessions`
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: eventName,
+    dates: `${dtStart}/${dtEnd}`,
+    details,
+    location: EVENT_LOCATION,
+  })
+  return `https://calendar.google.com/calendar/render?${params.toString()}`
+}
+
+function outlookCalendarUrl(events: { title: string; description: string; time: string; duration: number; room: string }[], trackLabel?: string): string {
+  if (events.length === 1) {
+    const e = events[0]
+    const start = `${EVENT_DATE}T${e.time}:00`
+    const endTime = addMinutes(e.time, e.duration)
+    const end = `${EVENT_DATE}T${endTime}:00`
+    const params = new URLSearchParams({
+      path: "/calendar/action/compose",
+      rru: "addevent",
+      subject: e.title,
+      startdt: start,
+      enddt: end,
+      body: e.description,
+      location: e.room ? `${e.room} - ${EVENT_LOCATION}` : EVENT_LOCATION,
+    })
+    return `https://outlook.live.com/calendar/0/action/compose?${params.toString()}`
+  }
+  // Multiple events: create a single block spanning all sessions
+  const sorted = [...events].sort((a, b) => a.time.localeCompare(b.time))
+  const first = sorted[0]
+  const last = sorted[sorted.length - 1]
+  const start = `${EVENT_DATE}T${first.time}:00`
+  const end = `${EVENT_DATE}T${addMinutes(last.time, last.duration)}:00`
+  const body = sorted.map(e => `${e.time} — ${e.title}${e.room ? ` (${e.room})` : ""}`).join("\n")
+  const eventName = trackLabel ? `Tech Day 2026 — ${trackLabel}` : `Tech Day 2026 — All Sessions`
+  const params = new URLSearchParams({
+    path: "/calendar/action/compose",
+    rru: "addevent",
+    subject: eventName,
+    startdt: start,
+    enddt: end,
+    body,
+    location: EVENT_LOCATION,
+  })
+  return `https://outlook.live.com/calendar/0/action/compose?${params.toString()}`
+}
+
+const TRACK_LABELS: Record<string, string> = {
+  emerging: "Emerging Industries Sessions",
+  founders: "Founders & Investors Sessions",
+  ai: "AI Sessions",
+}
+
+function CalendarDropdown({
+  events,
+  filename,
+  isDark,
+  label,
+  portal = false,
+  trackFilter,
+}: {
+  events: { title: string; description: string; time: string; duration: number; room: string }[]
+  filename: string
+  isDark: boolean
+  label?: string
+  portal?: boolean
+  trackFilter?: string
+}) {
+  const [open, setOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const btnRef = useRef<HTMLButtonElement>(null)
+  const [pos, setPos] = useState<{ top: number; right: number } | null>(null)
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node) && 
+          btnRef.current && !btnRef.current.contains(e.target as Node)) setOpen(false)
+    }
+    if (open) document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [open])
+
+  const calTrackLabel = trackFilter && trackFilter !== "all" ? TRACK_LABELS[trackFilter] : undefined
+
+  const items = [
+    {
+      label: "Google Calendar",
+      onClick: () => {
+        window.open(googleCalendarUrl(events, calTrackLabel), "_blank", "noopener,noreferrer")
+        setOpen(false)
+      },
+    },
+    {
+      label: "Apple Calendar",
+      onClick: () => {
+        downloadICS(filename, generateICS(events))
+        setOpen(false)
+      },
+    },
+    {
+      label: "Outlook",
+      onClick: () => {
+        window.open(outlookCalendarUrl(events, calTrackLabel), "_blank", "noopener,noreferrer")
+        setOpen(false)
+      },
+    },
+  ]
+
+  function handleToggle(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!open && portal && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect()
+      setPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right })
+    }
+    setOpen(!open)
+  }
+
+  const dropdownMenu = (
+    <div
+      ref={dropdownRef}
+      className={`${portal ? "fixed" : "absolute right-0 top-full mt-1"} z-9999 min-w-45 rounded-lg border shadow-lg ${
+        isDark
+          ? "bg-foreground border-white/15 shadow-black/40"
+          : "bg-white border-border shadow-black/10"
+      }`}
+      style={portal && pos ? { top: pos.top, right: pos.right } : undefined}
+    >
+      {items.map((item) => (
+        <button
+          key={item.label}
+          onClick={(e) => {
+            e.stopPropagation()
+            item.onClick()
+          }}
+          className={`w-full flex items-center px-3 py-2.5 text-xs font-medium transition-colors first:rounded-t-lg last:rounded-b-lg ${
+            isDark
+              ? "text-white/70 hover:text-white hover:bg-white/8"
+              : "text-foreground/70 hover:text-foreground hover:bg-muted"
+          }`}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  )
+
+  return (
+    <div className="relative">
+      <button
+        ref={btnRef}
+        onClick={handleToggle}
+        className={`inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition-all ${
+          isDark
+            ? "text-white/50 hover:text-white hover:bg-white/6"
+            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+        }`}
+      >
+        <Calendar className="w-3.5 h-3.5" />
+        {label ?? <span className="hidden md:inline">Add to Calendar</span>}
+        <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (portal ? createPortal(dropdownMenu, document.body) : dropdownMenu)}
+    </div>
+  )
 }
 
 // Social card constants
@@ -698,27 +887,17 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
                       <ImageIcon className="w-3.5 h-3.5" />
                       <span className="hidden md:inline">{isGenerating ? "Generating…" : "Download"}</span>
                     </button>
-                    <button
-                      onClick={() => {
-                        const calSessions = (filter === "all" 
-                          ? sessions 
-                          : sessions.filter(s => s.track === filter || (s.type === "keynote" && s.track === ""))
-                        )
-                          .filter(s => s.type !== "break")
-                          .map(s => ({ title: s.title, description: s.description || "", time: s.time, duration: s.duration, room: s.room }))
-                        const filename = filter === "all" ? "techday-2026-schedule.ics" : `techday-2026-${filter}.ics`
-                        downloadICS(filename, generateICS(calSessions))
-                      }}
-                      className={`inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition-all ${
-                        isDark
-                          ? "text-white/50 hover:text-white hover:bg-white/6"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      }`}
-                      title={filter === "all" ? "Add full schedule to calendar" : "Add track to calendar"}
-                    >
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span className="hidden md:inline">Add to Calendar</span>
-                    </button>
+                    <CalendarDropdown
+                      events={(filter === "all" 
+                        ? sessions 
+                        : sessions.filter(s => s.track === filter || (s.type === "keynote" && s.track === ""))
+                      )
+                        .filter(s => s.type !== "break")
+                        .map(s => ({ title: s.title, description: s.description || "", time: s.time, duration: s.duration, room: s.room }))}
+                      filename={filter === "all" ? "techday-2026-schedule.ics" : `techday-2026-${filter}.ics`}
+                      isDark={isDark}
+                      trackFilter={filter}
+                    />
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -895,21 +1074,13 @@ export function Schedule({ variant = "light" }: ScheduleProps) {
                                         📍 {session.room}
                                       </span>
                                     )}
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        downloadICS(
-                                          `techday-${session.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.ics`,
-                                          generateICS([{ title: session.title, description: session.description || "", time: session.time, duration: session.duration, room: session.room }])
-                                        )
-                                      }}
-                                      className={`inline-flex items-center gap-1.5 text-xs font-semibold transition-colors ${
-                                        isDark ? "text-primary hover:text-primary/80" : "text-primary hover:text-primary/70"
-                                      }`}
-                                    >
-                                      <Calendar className="w-3.5 h-3.5" />
-                                      Add to Calendar
-                                    </button>
+                                    <CalendarDropdown
+                                      events={[{ title: session.title, description: session.description || "", time: session.time, duration: session.duration, room: session.room }]}
+                                      filename={`techday-${session.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.ics`}
+                                      isDark={isDark}
+                                      label="Add to Calendar"
+                                      portal
+                                    />
                                   </div>
                                 </motion.div>
                               )}
