@@ -8,7 +8,7 @@ import crypto from "crypto"
 // Registration limits per event
 const REGISTRATION_LIMITS: Record<string, number> = {
   techfuel: 300,
-  techday: 400,
+  techday: 500,
 }
 
 // Helper to count registrations per event (handles legacy "2day" entries)
