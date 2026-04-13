@@ -4,7 +4,11 @@ import { PitchSchedulingForm } from "@/components/forms/semifinals-pitches-form"
 export const metadata: Metadata = {
   title: "Pitch Scheduling | Tech Fuel Semi-Finals",
   description: "Select your preferred pitch time for the Tech Fuel 2026 semi-finals.",
-  robots: "noindex, nofollow",
+  robots: { index: false, follow: false },
+  openGraph: {
+    title: "Pitch Scheduling | Tech Fuel Semi-Finals",
+    description: "Select your preferred pitch time for the Tech Fuel 2026 semi-finals.",
+  },
 }
 
 export default function PitchSchedulingPage() {

@@ -4,7 +4,11 @@ import { JudgeSchedulingForm } from "@/components/forms/semifinals-judges-form"
 export const metadata: Metadata = {
   title: "Judge Scheduling | Tech Fuel Semi-Finals",
   description: "Select your preferred date and time for the Tech Fuel 2026 semi-finals judging session.",
-  robots: "noindex, nofollow",
+  robots: { index: false, follow: false },
+  openGraph: {
+    title: "Judge Scheduling | Tech Fuel Semi-Finals",
+    description: "Select your preferred date and time for the Tech Fuel 2026 semi-finals judging session.",
+  },
 }
 
 export default function JudgeSchedulingPage() {

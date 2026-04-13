@@ -4,13 +4,23 @@ import { Editable } from "@/components/editable"
 import { SponsorContactForm } from "@/components/forms/sponsor-contact-form"
 
 export const metadata: Metadata = {
-  title: "Become a Sponsor | Tech Bloc",
+  title: "Become a Sponsor",
   description:
     "Partner with Tech Bloc to support San Antonio's tech community. Sponsorship opportunities for Tech Day and Tech Fuel 2026.",
   openGraph: {
     title: "Become a Sponsor | Tech Bloc",
     description:
       "Partner with Tech Bloc to support San Antonio's tech community. Sponsorship opportunities for Tech Day and Tech Fuel 2026.",
+    url: "https://sanantoniotechday.com/sponsor",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Become a Sponsor | Tech Bloc",
+    description:
+      "Partner with Tech Bloc to support San Antonio's tech community. Sponsorship opportunities for Tech Day and Tech Fuel 2026.",
+  },
+  alternates: {
+    canonical: "https://sanantoniotechday.com/sponsor",
   },
 }
 

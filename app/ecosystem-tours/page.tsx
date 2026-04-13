@@ -2,9 +2,24 @@ import type { Metadata } from "next"
 import { EcosystemToursForm } from "@/components/forms/ecosystem-tours-form"
 
 export const metadata: Metadata = {
-  title: "Ecosystem Tours | Tech Fuel 2026",
+  title: "Ecosystem Tours",
   description:
     "Sign up for ecosystem tours during Tech Fuel 2026. Visit Port San Antonio and VelocityTX — two of San Antonio's most important innovation hubs.",
+  openGraph: {
+    title: "Ecosystem Tours | Tech Fuel 2026",
+    description:
+      "Visit Port San Antonio and VelocityTX — two of San Antonio's most important innovation hubs during Tech Fuel 2026.",
+    url: "https://sanantoniotechday.com/ecosystem-tours",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ecosystem Tours | Tech Fuel 2026",
+    description:
+      "Visit Port San Antonio and VelocityTX — San Antonio's most important innovation hubs.",
+  },
+  alternates: {
+    canonical: "https://sanantoniotechday.com/ecosystem-tours",
+  },
 }
 
 export default function EcosystemToursPage() {
