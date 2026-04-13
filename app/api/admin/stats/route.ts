@@ -24,7 +24,7 @@ export async function GET() {
   try {
     // Fetch all counts in parallel for better performance
     const [registrationsSnapshot, newsletterSnapshot, pitchesSnapshot] = await Promise.all([
-      adminDb.collection(COLLECTIONS.REGISTRATIONS).count().get(),
+      adminDb.collection(COLLECTIONS.REGISTRATIONS).where("status", "in", ["confirmed", "pending", "checked-in"]).count().get(),
       adminDb.collection(COLLECTIONS.NEWSLETTER).where("status", "==", "active").count().get(),
       adminDb.collection(COLLECTIONS.PITCH_SUBMISSIONS).count().get(),
     ])

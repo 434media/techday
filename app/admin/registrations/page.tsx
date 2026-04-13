@@ -234,30 +234,74 @@ export default function RegistrationsPage() {
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-4 lg:grid-cols-7 gap-3 mb-5">
-          <StatCard label="Total" value={stats.total} />
-          <StatCard
-            label="Tech Day"
-            value={stats.techday}
-            sublabel={`${stats.activeTechday} / ${stats.limits.techday}`}
-            progress={(stats.activeTechday / stats.limits.techday) * 100}
-          />
-          <StatCard
-            label="Tech Fuel"
-            value={stats.techfuel}
-            sublabel={`${stats.activeTechfuel} / ${stats.limits.techfuel}`}
-            progress={(stats.activeTechfuel / stats.limits.techfuel) * 100}
-          />
-          <StatCard label="Both Days" value={stats.bothDays} accent="blue" />
-          <StatCard label="TD Only" value={stats.techdayOnly} accent="green" />
-          <StatCard label="TF Only" value={stats.techfuelOnly} accent="purple" />
-          <StatCard
-            label="Eco Tours"
-            value={stats.ecosystemTours}
-            sublabel={`${stats.ecosystemTours} / ${stats.limits.ecosystemTours || 50}`}
-            progress={(stats.ecosystemTours / (stats.limits.ecosystemTours || 50)) * 100}
-            accent="amber"
-          />
+        <div className="space-y-4 mb-5">
+          {/* Total Registrations */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <StatCard label="Total Registered" value={stats.total} sublabel="Unique registrations across all events" />
+            <StatCard label="Both Days" value={stats.bothDays} accent="blue" sublabel="Attending Tech Fuel + Tech Day" />
+            <StatCard
+              label="Eco Tours"
+              value={stats.ecosystemTours}
+              sublabel={`${stats.ecosystemTours} / ${stats.limits.ecosystemTours || 50}`}
+              progress={(stats.ecosystemTours / (stats.limits.ecosystemTours || 50)) * 100}
+              accent="amber"
+            />
+          </div>
+
+          {/* Per-Day Breakdown */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            {/* Tech Fuel — Monday April 20 */}
+            <div className="border border-purple-200 bg-purple-50/30 p-4">
+              <div className="flex items-baseline justify-between mb-3">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 leading-none">
+                    Tech Fuel — Monday, April 20
+                  </p>
+                  <p className="text-2xl font-bold text-purple-700 mt-1">{stats.techfuel} <span className="text-sm font-medium text-neutral-400">expected</span></p>
+                </div>
+                <p className="text-[10px] text-neutral-400 font-medium">{stats.activeTechfuel} / {stats.limits.techfuel} capacity</p>
+              </div>
+              <div className="h-1.5 bg-purple-100 rounded-full overflow-hidden mb-3">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    (stats.activeTechfuel / stats.limits.techfuel) * 100 >= 90 ? "bg-red-500" : (stats.activeTechfuel / stats.limits.techfuel) * 100 >= 70 ? "bg-yellow-500" : "bg-purple-600"
+                  }`}
+                  style={{ width: `${Math.min((stats.activeTechfuel / stats.limits.techfuel) * 100, 100)}%` }}
+                />
+              </div>
+              <div className="flex gap-3 text-xs text-neutral-500">
+                <span><span className="font-semibold text-blue-700">{stats.bothDays}</span> both days</span>
+                <span className="text-neutral-300">+</span>
+                <span><span className="font-semibold text-purple-700">{stats.techfuelOnly}</span> TF only</span>
+              </div>
+            </div>
+
+            {/* Tech Day — Tuesday April 21 */}
+            <div className="border border-green-200 bg-green-50/30 p-4">
+              <div className="flex items-baseline justify-between mb-3">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 leading-none">
+                    Tech Day — Tuesday, April 21
+                  </p>
+                  <p className="text-2xl font-bold text-green-700 mt-1">{stats.techday} <span className="text-sm font-medium text-neutral-400">expected</span></p>
+                </div>
+                <p className="text-[10px] text-neutral-400 font-medium">{stats.activeTechday} / {stats.limits.techday} capacity</p>
+              </div>
+              <div className="h-1.5 bg-green-100 rounded-full overflow-hidden mb-3">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    (stats.activeTechday / stats.limits.techday) * 100 >= 90 ? "bg-red-500" : (stats.activeTechday / stats.limits.techday) * 100 >= 70 ? "bg-yellow-500" : "bg-green-600"
+                  }`}
+                  style={{ width: `${Math.min((stats.activeTechday / stats.limits.techday) * 100, 100)}%` }}
+                />
+              </div>
+              <div className="flex gap-3 text-xs text-neutral-500">
+                <span><span className="font-semibold text-blue-700">{stats.bothDays}</span> both days</span>
+                <span className="text-neutral-300">+</span>
+                <span><span className="font-semibold text-green-700">{stats.techdayOnly}</span> TD only</span>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
