@@ -229,6 +229,309 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
   }
 }
 
+// Generate KBYG (Know Before You Go) content based on event type
+function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: string): string {
+  const BETO_SIG_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
+
+  let intro = ""
+  switch (eventType) {
+    case "both":
+      intro = `We're excited to welcome you to Tech Bloc's <strong>Tech Fuel</strong> and <strong>Tech Day 2026</strong> — two days bringing together founders, investors, operators, and leaders from across San Antonio's innovation ecosystem. Here's everything you need to know before you arrive:`
+      break
+    case "techfuel":
+      intro = `We're excited to welcome you to Tech Bloc's <strong>Tech Fuel 2026</strong> — San Antonio's premier startup pitch competition bringing together founders, investors, operators, and leaders from across the innovation ecosystem. Here's everything you need to know before you arrive:`
+      break
+    case "techday":
+      intro = `We're excited to welcome you to Tech Bloc's <strong>Tech Day 2026</strong> — bringing together founders, investors, operators, and leaders from across San Antonio's innovation ecosystem. Here's everything you need to know before you arrive:`
+      break
+  }
+
+  let locationSection = ""
+  if (eventType === "both") {
+    locationSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 25px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">${DOWN_ARROW_SVG}</div>
+          <h3 style="margin: 0 0 15px; color: #ffffff; font-size: 18px; font-weight: 600;">&#128205; Event Locations</h3>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="50%" style="vertical-align: top; padding-right: 15px;">
+                <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">Tech Fuel</p>
+                <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.5;">
+                  <strong style="color: #ffffff;">UTSA San Pedro I (SP1)</strong><br>506 Dolorosa St<br>San Antonio, TX 78204
+                </p>
+              </td>
+              <td width="50%" style="vertical-align: top; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.1);">
+                <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">Tech Day</p>
+                <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.5;">
+                  <strong style="color: #ffffff;">Boeing Center at Tech Port</strong><br>3331 General Hudnell Dr<br>San Antonio, TX
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>`
+  } else if (eventType === "techfuel") {
+    locationSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 25px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">${DOWN_ARROW_SVG}</div>
+          <h3 style="margin: 0 0 12px; color: #ffffff; font-size: 18px; font-weight: 600;">&#128205; Event Location</h3>
+          <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 15px; line-height: 1.6;">
+            <strong style="color: #ffffff;">UTSA San Pedro I (SP1)</strong><br>506 Dolorosa St<br>San Antonio, TX 78204
+          </p>
+        </td>
+      </tr>
+    </table>`
+  } else {
+    locationSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 25px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">${DOWN_ARROW_SVG}</div>
+          <h3 style="margin: 0 0 12px; color: #ffffff; font-size: 18px; font-weight: 600;">&#128205; Event Location</h3>
+          <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 15px; line-height: 1.6;">
+            <strong style="color: #ffffff;">Boeing Center at Tech Port</strong><br>3331 General Hudnell Dr<br>San Antonio, TX
+          </p>
+        </td>
+      </tr>
+    </table>`
+  }
+
+  let scheduleSection = ""
+  if (eventType === "both") {
+    scheduleSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 25px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">${DOWN_ARROW_SVG}</div>
+          <h3 style="margin: 0 0 20px; color: #ffffff; font-size: 18px; font-weight: 600;">&#9200; Event Overview</h3>
+          <p style="margin: 0 0 10px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">Tech Fuel — Monday, April 20</p>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 20px;">
+            <tr><td style="padding-bottom: 6px;"><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Attendee Arrival Recommended:</strong> 1:30 PM</p></td></tr>
+            <tr><td style="padding-bottom: 6px;"><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Pitch Competition:</strong> 2:00 PM – 5:00 PM</p></td></tr>
+            <tr><td><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Happy Hour Reception:</strong> 5:00 PM – 6:00 PM</p></td></tr>
+          </table>
+          <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+            <p style="margin: 0 0 10px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">Tech Day — Tuesday, April 21</p>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+              <tr><td style="padding-bottom: 6px;"><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Doors Open:</strong> 12:30 PM</p></td></tr>
+              <tr><td style="padding-bottom: 6px;"><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Welcome Remarks:</strong> 12:55 PM</p></td></tr>
+              <tr><td><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Full Day Programming:</strong> Begins at 1:15 PM</p></td></tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
+      Explore the agenda, sessions, speakers, and more at <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+    </p>`
+  } else if (eventType === "techfuel") {
+    scheduleSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 25px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">${DOWN_ARROW_SVG}</div>
+          <h3 style="margin: 0 0 15px; color: #ffffff; font-size: 18px; font-weight: 600;">&#9200; Event Schedule — Monday, April 20</h3>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+            <tr><td style="padding-bottom: 6px;"><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Attendee Arrival Recommended:</strong> 1:30 PM</p></td></tr>
+            <tr><td style="padding-bottom: 6px;"><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Pitch Competition:</strong> 2:00 PM – 5:00 PM</p></td></tr>
+            <tr><td><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Happy Hour Reception:</strong> 5:00 PM – 6:00 PM</p></td></tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
+      Explore the agenda, speakers, and more at <a href="https://sanantoniotechday.com/techfuel" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+    </p>`
+  } else {
+    scheduleSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 25px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">${DOWN_ARROW_SVG}</div>
+          <h3 style="margin: 0 0 15px; color: #ffffff; font-size: 18px; font-weight: 600;">&#9200; Event Schedule — Tuesday, April 21</h3>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+            <tr><td style="padding-bottom: 6px;"><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Doors Open:</strong> 12:30 PM</p></td></tr>
+            <tr><td style="padding-bottom: 6px;"><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Welcome Remarks:</strong> 12:55 PM</p></td></tr>
+            <tr><td><p style="margin: 0; color: #ffffff; font-size: 14px;"><strong style="color: #c73030;">Full Day Programming:</strong> Begins at 1:15 PM</p></td></tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
+      Explore the agenda, sessions, speakers, and more at <a href="https://sanantoniotechday.com/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+    </p>`
+  }
+
+  let expectItems = ""
+  switch (eventType) {
+    case "both":
+      expectItems = `
+            <li>Startup pitch competition featuring this year's Tech Fuel finalists</li>
+            <li>Programming across Venture Capital, Startups, and Emerging Industries</li>
+            <li>Insights from founders, operators, and industry leaders</li>
+            <li>Access to San Antonio's growing innovation ecosystem</li>
+            <li>Opportunities to connect with investors, builders, and community leaders</li>`
+      break
+    case "techfuel":
+      expectItems = `
+            <li>Startup pitch competition featuring this year's Tech Fuel finalists</li>
+            <li>Insights from founders, operators, and industry leaders</li>
+            <li>Access to San Antonio's growing innovation ecosystem</li>
+            <li>Opportunities to connect with investors, builders, and community leaders</li>
+            <li>Happy hour reception following the competition</li>`
+      break
+    case "techday":
+      expectItems = `
+            <li>Programming across Venture Capital, Startups, and Emerging Industries</li>
+            <li>Insights from founders, operators, and industry leaders</li>
+            <li>Access to San Antonio's growing innovation ecosystem</li>
+            <li>Opportunities to connect with investors, builders, and community leaders</li>`
+      break
+  }
+
+  const expectSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 12px; color: #0a0a0a; font-size: 18px; font-weight: 600;">&#128640; What to Expect</h3>
+          <p style="margin: 0 0 12px; color: #525252; font-size: 15px; line-height: 1.6;">
+            ${eventType === "both" ? "Across both days, you'll experience:" : "You'll experience:"}
+          </p>
+          <ul style="margin: 0; padding-left: 20px; color: #525252; font-size: 15px; line-height: 1.8;">${expectItems}
+          </ul>
+        </td>
+      </tr>
+    </table>`
+
+  let parkingSection = ""
+  if (eventType === "both") {
+    parkingSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 15px; color: #0a0a0a; font-size: 18px; font-weight: 600;">&#128663; Parking &amp; Arrival</h3>
+          <p style="margin: 0 0 5px; color: #0a0a0a; font-size: 14px; font-weight: 600;">April 20 — UTSA SP1 (Tech Fuel)</p>
+          <p style="margin: 0 0 12px; color: #525252; font-size: 15px; line-height: 1.6;">
+            Downtown San Antonio will be experiencing increased traffic and limited parking due to Fiesta. We recommend:
+          </p>
+          <ul style="margin: 0 0 15px; padding-left: 20px; color: #525252; font-size: 15px; line-height: 1.8;">
+            <li>Arriving early</li>
+            <li>Using rideshare (Uber or Lyft)</li>
+            <li>Carpooling when possible</li>
+          </ul>
+          <p style="margin: 0 0 20px; color: #525252; font-size: 14px; line-height: 1.6;">
+            Nearby parking options include surface lots on Dolorosa and garages on Houston Street. Availability is not guaranteed.
+          </p>
+          <div style="border-top: 1px solid #e5e7eb; padding-top: 15px;">
+            <p style="margin: 0 0 5px; color: #0a0a0a; font-size: 14px; font-weight: 600;">April 21 — Boeing Center at Tech Port (Tech Day)</p>
+            <p style="margin: 0; color: #525252; font-size: 15px; line-height: 1.6;">
+              Free parking available onsite.
+            </p>
+          </div>
+        </td>
+      </tr>
+    </table>`
+  } else if (eventType === "techfuel") {
+    parkingSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 12px; color: #0a0a0a; font-size: 18px; font-weight: 600;">&#128663; Parking &amp; Arrival</h3>
+          <p style="margin: 0 0 12px; color: #525252; font-size: 15px; line-height: 1.6;">
+            Downtown San Antonio will be experiencing increased traffic and limited parking due to Fiesta. We recommend:
+          </p>
+          <ul style="margin: 0 0 15px; padding-left: 20px; color: #525252; font-size: 15px; line-height: 1.8;">
+            <li>Arriving early</li>
+            <li>Using rideshare (Uber or Lyft)</li>
+            <li>Carpooling when possible</li>
+          </ul>
+          <p style="margin: 0; color: #525252; font-size: 14px; line-height: 1.6;">
+            Nearby parking options include surface lots on Dolorosa and garages on Houston Street. Availability is not guaranteed.
+          </p>
+        </td>
+      </tr>
+    </table>`
+  } else {
+    parkingSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 12px; color: #0a0a0a; font-size: 18px; font-weight: 600;">&#128663; Parking &amp; Arrival</h3>
+          <p style="margin: 0; color: #525252; font-size: 15px; line-height: 1.6;">
+            Free parking is available onsite at Boeing Center at Tech Port.
+          </p>
+        </td>
+      </tr>
+    </table>`
+  }
+
+  const closingSection = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #0a0a0a; border-radius: 8px; padding: 25px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.1; transform: rotate(45deg);">${DOWN_ARROW_SVG}</div>
+          <h3 style="margin: 0 0 12px; color: #ffffff; font-size: 18px; font-weight: 600;">&#128084; What to Wear</h3>
+          <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 15px; line-height: 1.6;">
+            Business casual attire is recommended. Expect a mix of programming, networking, and movement throughout the venue${eventType === "both" ? "s" : ""}.
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 30px;">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 12px; color: #0a0a0a; font-size: 18px; font-weight: 600;">&#129309; Make the Most of Your Experience</h3>
+          <ul style="margin: 0; padding-left: 20px; color: #525252; font-size: 15px; line-height: 1.8;">
+            <li>Plan ahead and review the agenda</li>
+            <li>Be ready to connect — this is a highly engaged audience</li>
+            <li>Take advantage of networking moments before, during, and after sessions</li>
+          </ul>
+        </td>
+      </tr>
+    </table>`
+
+  return `
+    <h3 style="margin: 30px 0 15px; color: #0a0a0a; font-size: 20px; font-weight: 600;">
+      Know Before You Go
+    </h3>
+
+    <p style="margin: 0 0 25px; color: #525252; font-size: 16px; line-height: 1.6;">
+      ${intro}
+    </p>
+
+    ${locationSection}
+    ${scheduleSection}
+    ${expectSection}
+    ${parkingSection}
+    ${closingSection}
+
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      We look forward to seeing you!
+    </p>
+
+    <!-- Beto Signature -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 20px 0 0;">
+      <tr>
+        <td>
+          <img src="${BETO_SIG_URL}" alt="Beto Altamirano signature" width="180" style="display: block; max-width: 180px; height: auto;" />
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 10px;">
+          <p style="margin: 0; color: #0a0a0a; font-size: 15px; font-weight: 600;">Beto Altamirano</p>
+          <p style="margin: 3px 0 0; color: #737373; font-size: 14px;">CEO, Tech Bloc</p>
+        </td>
+      </tr>
+    </table>
+  `
+}
+
 // Get event display name for ticket
 function getEventDisplayName(eventType: "techfuel" | "techday" | "both"): string {
   switch (eventType) {
@@ -299,46 +602,7 @@ export async function sendRegistrationConfirmation(
       </tr>
     </table>
     
-    <h3 style="margin: 30px 0 15px; color: #0a0a0a; font-size: 18px; font-weight: 600;">
-      What's Next?
-    </h3>
-    
-    <ul style="margin: 0; padding: 0 0 0 20px; color: #525252; font-size: 15px; line-height: 1.8;">
-      <li>Save the date: ${message.dateInfo}</li>
-      <li>Location: ${message.locationInfo}</li>
-      <li>Bring this email or your ticket ID for check-in</li>
-      <li>Check the schedule at <a href="${message.scheduleLink}" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a></li>
-    </ul>
-    
-    ${ecosystemTours ? `
-    <!-- Ecosystem Tours Section -->
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
-      <tr>
-        <td style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); border-radius: 8px; padding: 30px; position: relative; overflow: hidden;">
-          <div style="position: absolute; top: -10px; right: -10px; opacity: 0.08; transform: rotate(45deg);">
-            ${DOWN_ARROW_SVG}
-          </div>
-          
-          <p style="margin: 0 0 5px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">
-            You're signed up
-          </p>
-          <p style="margin: 0 0 15px; color: #ffffff; font-size: 20px; font-weight: 600;">
-            🚌 Ecosystem Tours
-          </p>
-          <p style="margin: 0 0 15px; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
-            This year, we're placing attendees directly inside the environments shaping San Antonio and South Texas' emerging industry clusters. Our ecosystem tours will begin at <strong style="color: #ffffff;">Port San Antonio</strong>—a 20-year industrial redevelopment now serving as one of the nation's leading hubs for cyber, aerospace, and advanced manufacturing—followed by a visit to <strong style="color: #ffffff;">VelocityTX</strong>, an internationally recognized bioscience innovation campus purpose-built to accelerate translational research and commercialization.
-          </p>
-          <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
-            Together, these redeveloped assets reflect a coordinated regional strategy to advance innovation across both industrial and life sciences domains—spanning cyber, aerospace, advanced manufacturing, and bioscience. This integrated approach positions San Antonio as one of the few U.S. markets capable of supporting the development and dual-use commercialization of technologies across both defense and civilian applications.
-          </p>
-        </td>
-      </tr>
-    </table>
-    ` : ''}
-
-    <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-      Questions? Reply to this email or reach out on social media.
-    </p>
+    ${getKBYGContent(eventType, firstName)}
   `
 
   // Dynamic subject line based on event type

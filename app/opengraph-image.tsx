@@ -50,7 +50,7 @@ export default async function Image() {
               fontWeight: 500,
             }}
           >
-            San Antonio&apos;s Premier Tech Conference
+            San Antonio&apos;s Tech Conference
           </div>
           <div
             style={{
@@ -71,7 +71,7 @@ export default async function Image() {
               marginTop: "8px",
             }}
           >
-            Invented Here — November 2026
+            Hecho en San Antonio
           </div>
         </div>
 
