@@ -229,6 +229,63 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
   }
 }
 
+// Calendar link URLs for Add to Calendar buttons
+// Tech Fuel: April 20, 2026 2:00-6:00 PM CDT (19:00-23:00 UTC)
+// Tech Day: April 21, 2026 12:30-4:00 PM CDT (17:30-21:00 UTC)
+const CALENDAR_LINKS = {
+  techfuel: {
+    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Fuel%202026&dates=20260420T190000Z/20260420T230000Z&details=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
+    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Fuel%202026&startdt=2026-04-20T19:00:00Z&enddt=2026-04-20T23:00:00Z&body=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
+  },
+  techday: {
+    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Day%202026&dates=20260421T173000Z/20260421T210000Z&details=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
+    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Day%202026&startdt=2026-04-21T17:30:00Z&enddt=2026-04-21T21:00:00Z&body=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
+  },
+}
+
+function getCalendarButton(label: string, googleUrl: string, outlookUrl: string): string {
+  return `
+          <td style="padding-bottom: 12px;">
+            <p style="margin: 0 0 8px; color: #c73030; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">${label}</p>
+            <table role="presentation" cellspacing="0" cellpadding="0">
+              <tr>
+                <td style="padding-right: 10px;">
+                  <a href="${googleUrl}" target="_blank" style="display: inline-block; padding: 8px 16px; background-color: #0a0a0a; color: #ffffff; font-size: 13px; font-weight: 500; text-decoration: none; border-radius: 4px;">Google Calendar</a>
+                </td>
+                <td>
+                  <a href="${outlookUrl}" target="_blank" style="display: inline-block; padding: 8px 16px; background-color: #0a0a0a; color: #ffffff; font-size: 13px; font-weight: 500; text-decoration: none; border-radius: 4px;">Outlook</a>
+                </td>
+              </tr>
+            </table>
+          </td>`
+}
+
+function getCalendarSection(eventType: "techfuel" | "techday" | "both"): string {
+  let buttons = ""
+  if (eventType === "both") {
+    buttons = `
+        <tr>${getCalendarButton("Tech Fuel — April 20", CALENDAR_LINKS.techfuel.google, CALENDAR_LINKS.techfuel.outlook)}</tr>
+        <tr>${getCalendarButton("Tech Day — April 21", CALENDAR_LINKS.techday.google, CALENDAR_LINKS.techday.outlook)}</tr>`
+  } else if (eventType === "techfuel") {
+    buttons = `
+        <tr>${getCalendarButton("Tech Fuel — April 20", CALENDAR_LINKS.techfuel.google, CALENDAR_LINKS.techfuel.outlook)}</tr>`
+  } else {
+    buttons = `
+        <tr>${getCalendarButton("Tech Day — April 21", CALENDAR_LINKS.techday.google, CALENDAR_LINKS.techday.outlook)}</tr>`
+  }
+
+  return `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 0 0 25px;">
+      <tr>
+        <td style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 15px; color: #0a0a0a; font-size: 18px; font-weight: 600;">&#128197; Add to Your Calendar</h3>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${buttons}
+          </table>
+        </td>
+      </tr>
+    </table>`
+}
+
 // Generate KBYG (Know Before You Go) content based on event type
 function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: string): string {
   const BETO_SIG_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
@@ -507,6 +564,7 @@ function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: s
 
     ${locationSection}
     ${scheduleSection}
+    ${getCalendarSection(eventType)}
     ${expectSection}
     ${parkingSection}
     ${closingSection}
