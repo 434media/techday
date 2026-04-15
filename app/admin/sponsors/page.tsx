@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { upload } from "@vercel/blob/client"
 
 type SponsorEvent = "techday" | "techfuel"
 type SponsorCategory = "sponsors" | "community"
@@ -443,23 +444,12 @@ function SponsorModal({
     setIsUploading(true)
 
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("folder", "sponsors")
-
-      const response = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
+      const blob = await upload(`sponsors/${Date.now()}-${file.name}`, file, {
+        access: "public",
+        handleUploadUrl: "/api/admin/upload",
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Upload failed")
-      }
-
-      setForm({ ...form, logoUrl: data.url })
+      setForm({ ...form, logoUrl: blob.url })
     } catch (error) {
       setUploadError(error instanceof Error ? error.message : "Upload failed")
     } finally {

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import { upload } from "@vercel/blob/client"
 import { useAdminAuth } from "@/components/admin/auth-provider"
 
 interface PitchComment {
@@ -442,32 +443,21 @@ function PitchDetailModal({
     if (!file) return
     setIsUploadingLogo(true)
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("folder", "pitch-logos")
-
-      const uploadRes = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
+      const blob = await upload(`pitch-logos/${Date.now()}-${file.name}`, file, {
+        access: "public",
+        handleUploadUrl: "/api/admin/upload",
       })
-      const uploadData = await uploadRes.json()
-
-      if (!uploadRes.ok) {
-        console.error("Upload failed:", uploadData.error)
-        return
-      }
 
       // Save to pitch document
       const patchRes = await fetch("/api/admin/data/pitches", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: pitch.id, action: "updateLogo", logoUrl: uploadData.url }),
+        body: JSON.stringify({ id: pitch.id, action: "updateLogo", logoUrl: blob.url }),
         credentials: "include",
       })
 
       if (patchRes.ok) {
-        setLogoUrl(uploadData.url)
+        setLogoUrl(blob.url)
         onRefresh()
       }
     } catch {

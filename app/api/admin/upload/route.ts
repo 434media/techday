@@ -1,79 +1,58 @@
 import { NextResponse } from "next/server"
-import { put } from "@vercel/blob"
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client"
 import { verifyAdminSession, sessionHasPermission } from "@/lib/admin/session"
 
 export const dynamic = "force-dynamic"
 
+// Client-side upload: handles the token handshake for direct browser-to-blob uploads.
+// This bypasses the 4.5MB serverless body limit — files up to 500MB are supported.
 export async function POST(request: Request) {
-  const session = await verifyAdminSession()
-  
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  // Check for any content permission (speakers, sponsors, schedule, or pitches)
-  const hasSpeakersPermission = await sessionHasPermission("speakers", session)
-  const hasSponsorsPermission = await sessionHasPermission("sponsors", session)
-  const hasSchedulePermission = await sessionHasPermission("schedule", session)
-  const hasPitchesPermission = await sessionHasPermission("pitches", session)
-  
-  if (!hasSpeakersPermission && !hasSponsorsPermission && !hasSchedulePermission && !hasPitchesPermission) {
-    return NextResponse.json({ error: "Permission denied" }, { status: 403 })
-  }
-
-  // Check for Vercel Blob token
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.error("[Upload] BLOB_READ_WRITE_TOKEN not configured")
-    return NextResponse.json({ 
-      error: "Storage not configured. Please add BLOB_READ_WRITE_TOKEN to environment variables." 
-    }, { status: 503 })
-  }
+  const body = (await request.json()) as HandleUploadBody
 
   try {
-    const formData = await request.formData()
-    const file = formData.get("file") as File
-    const folder = formData.get("folder") as string || "uploads"
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async (pathname) => {
+        // Authenticate and authorize
+        const session = await verifyAdminSession()
+        if (!session) {
+          throw new Error("Unauthorized")
+        }
 
-    if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 })
-    }
+        const hasSpeakersPermission = await sessionHasPermission("speakers", session)
+        const hasSponsorsPermission = await sessionHasPermission("sponsors", session)
+        const hasSchedulePermission = await sessionHasPermission("schedule", session)
+        const hasPitchesPermission = await sessionHasPermission("pitches", session)
 
-    // Validate file type
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"]
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ 
-        error: "Invalid file type. Allowed: JPEG, PNG, WebP, GIF, SVG" 
-      }, { status: 400 })
-    }
+        if (!hasSpeakersPermission && !hasSponsorsPermission && !hasSchedulePermission && !hasPitchesPermission) {
+          throw new Error("Permission denied")
+        }
 
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024
-    if (file.size > maxSize) {
-      return NextResponse.json({ 
-        error: "File too large. Maximum size: 5MB" 
-      }, { status: 400 })
-    }
-
-    // Generate unique filename
-    const timestamp = Date.now()
-    const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_")
-    const filename = `${folder}/${timestamp}-${sanitizedName}`
-
-    // Upload to Vercel Blob
-    const blob = await put(filename, file, {
-      access: "public",
-      addRandomSuffix: false,
+        return {
+          allowedContentTypes: [
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+            "image/svg+xml",
+            "application/pdf",
+          ],
+          maximumSizeInBytes: 10 * 1024 * 1024, // 10MB
+        }
+      },
+      onUploadCompleted: async ({ blob }) => {
+        console.log("[Upload] Completed:", blob.url)
+      },
     })
 
-    console.log("[Upload] Successfully uploaded:", blob.url)
-
-    return NextResponse.json({ 
-      success: true, 
-      url: blob.url,
-      filename: blob.pathname,
-    })
+    return NextResponse.json(jsonResponse)
   } catch (error) {
-    console.error("[Upload] Error:", error)
-    return NextResponse.json({ error: "Failed to upload file" }, { status: 500 })
+    const message = error instanceof Error ? error.message : "Upload failed"
+    console.error("[Upload] Error:", message)
+    return NextResponse.json(
+      { error: message },
+      { status: message === "Unauthorized" ? 401 : message === "Permission denied" ? 403 : 500 }
+    )
   }
 }

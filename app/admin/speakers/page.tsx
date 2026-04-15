@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { upload } from "@vercel/blob/client"
 
 interface Speaker {
   id: string
@@ -359,22 +360,12 @@ function SpeakerModal({
     setIsUploading(true)
 
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("folder", "speakers")
-
-      const response = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
+      const blob = await upload(`speakers/${Date.now()}-${file.name}`, file, {
+        access: "public",
+        handleUploadUrl: "/api/admin/upload",
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Upload failed")
-      }
-
-      setForm({ ...form, imageUrl: data.url })
+      setForm({ ...form, imageUrl: blob.url })
     } catch (error) {
       setUploadError(error instanceof Error ? error.message : "Upload failed")
     } finally {

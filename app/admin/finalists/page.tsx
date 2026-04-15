@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import { upload } from "@vercel/blob/client"
 
 interface Finalist {
   id: string
@@ -242,32 +243,21 @@ function FinalistDetailModal({
     if (!file) return
     setIsUploadingDeck(true)
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("folder", "finalist-decks")
-
-      const uploadRes = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
+      const blob = await upload(`finalist-decks/${Date.now()}-${file.name}`, file, {
+        access: "public",
+        handleUploadUrl: "/api/admin/upload",
       })
-      const uploadData = await uploadRes.json()
-
-      if (!uploadRes.ok) {
-        showToast("Upload failed: " + (uploadData.error || "Unknown error"), "error")
-        return
-      }
 
       // Save to finalist document
       const patchRes = await fetch("/api/admin/data/finalists", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: finalist.id, finalDeckUrl: uploadData.url }),
+        body: JSON.stringify({ id: finalist.id, finalDeckUrl: blob.url }),
         credentials: "include",
       })
 
       if (patchRes.ok) {
-        setFinalDeckUrl(uploadData.url)
+        setFinalDeckUrl(blob.url)
         showToast("Final deck uploaded", "success")
         onUpdate()
       } else {
