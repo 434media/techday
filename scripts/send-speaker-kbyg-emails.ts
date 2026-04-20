@@ -72,7 +72,11 @@ const SPEAKER_EMAILS = [
   "charles@geekdom.com",
   "caramand@trinity.edu",
   "jeremy@velocitytx.org",
+  "ssalgueiro@skygrid.com",
 ]
+
+// Send only to new speaker(s)
+const SEND_ONLY = ["ssalgueiro@skygrid.com"]
 
 function getEmailTemplate(content: string) {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tech Day 2026</title></head>
@@ -231,7 +235,8 @@ function getSpeakerContent(): string {
 const INDIVIDUAL_DELAY_MS = 500
 
 async function main() {
-  console.log(`Sending speaker KBYG to ${SPEAKER_EMAILS.length} speakers\n`)
+  const recipients = SEND_ONLY.length > 0 ? SEND_ONLY : SPEAKER_EMAILS
+  console.log(`Sending speaker KBYG to ${recipients.length} speakers\n`)
 
   const content = getSpeakerContent()
   const html = getEmailTemplate(content)
@@ -241,7 +246,7 @@ async function main() {
   let failed = 0
   const failures: { email: string; error: unknown }[] = []
 
-  for (const email of SPEAKER_EMAILS) {
+  for (const email of recipients) {
     try {
       const result = await resend.emails.send({
         from: FROM_EMAIL,
@@ -269,7 +274,7 @@ async function main() {
   }
 
   console.log(`\n========== SUMMARY ==========`)
-  console.log(`Total: ${SPEAKER_EMAILS.length}`)
+  console.log(`Total: ${recipients.length}`)
   console.log(`Sent: ${sent}`)
   console.log(`Failed: ${failed}`)
   if (failures.length > 0) {

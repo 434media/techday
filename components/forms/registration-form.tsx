@@ -325,10 +325,28 @@ export function RegistrationForm() {
                   <div className="text-right shrink-0">
                     <span className="font-mono text-sm text-primary">{event.price}</span>
                     {isFull && (
-                      <p className="text-xs mt-1 text-red-500 font-medium">SOLD OUT</p>
+                      <p className="text-xs mt-1 text-red-500 font-medium">FULL</p>
                     )}
                   </div>
                 </label>
+
+                {/* Venue capacity message when event is full */}
+                {isFull && (
+                  <div className="mt-2 p-3 bg-muted/50 border border-border rounded-lg text-sm text-muted-foreground space-y-1.5">
+                    <p>We&apos;ve reached venue capacity for <span className="font-medium text-foreground">{event.label}</span>.</p>
+                    <p>
+                      Follow{" "}
+                      <a href="https://www.instagram.com/techbloc/" target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">@techbloc</a>{" "}
+                      on Instagram and{" "}
+                      <a href="https://www.linkedin.com/company/sa-tech-bloc/" target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">LinkedIn</a>{" "}
+                      for updates and results.
+                    </p>
+                    <p>
+                      <a href="https://www.instagram.com/devsatx/" target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">@devsatx</a>{" "}
+                      (DEVSA), our community partner, will be sharing live updates throughout the day.
+                    </p>
+                  </div>
+                )}
 
                 {/* Ecosystem Tours Accordion — only visible when Tech Fuel is selected */}
                 {event.id === "techfuel" && (

@@ -102,7 +102,7 @@ export async function POST(request: Request) {
       if (limit && eventCounts[event] >= limit) {
         const eventLabel = event === "techday" ? "Tech Day Conference" : "Tech Fuel Pitch Competition"
         return NextResponse.json(
-          { error: `${eventLabel} has reached capacity (${limit} registrations). Please select a different event.` },
+          { error: `${eventLabel} has reached venue capacity. Follow @techbloc on Instagram and LinkedIn for updates and results. @devsatx (DEVSA) will be sharing live updates throughout the day.` },
           { status: 409 }
         )
       }
