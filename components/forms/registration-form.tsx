@@ -13,7 +13,6 @@ interface RegistrationData {
   company: string
   title: string
   events: string[]
-  ecosystemTours: boolean
   dietaryRestrictions: string
   agreeToTerms: boolean
 }
@@ -27,13 +26,11 @@ const categories = [
 ]
 
 const events = [
-  { id: "techfuel", label: "Tech Fuel Pitch Competition", date: "April 20", price: "Free" },
   { id: "techday", label: "Tech Day Conference", date: "April 21", price: "Free" },
 ]
 
 // Registration limits per event
 const REGISTRATION_LIMITS = {
-  techfuel: 300,
   techday: 500,
 } as const
 
@@ -46,7 +43,6 @@ export function RegistrationForm() {
     company: "",
     title: "",
     events: ["techday"],
-    ecosystemTours: false,
     dietaryRestrictions: "none",
     agreeToTerms: false,
   })
@@ -65,10 +61,6 @@ export function RegistrationForm() {
       .catch(() => {})
   })
 
-  const ecoToursCap = capacityInfo?.ecosystemTours
-  const ecoToursRemaining = ecoToursCap ? ecoToursCap.limit - ecoToursCap.count : null
-  const ecoToursFull = ecoToursRemaining !== null && ecoToursRemaining <= 0
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
     setFormData((prev) => ({
@@ -82,11 +74,7 @@ export function RegistrationForm() {
       const newEvents = prev.events.includes(eventId)
         ? prev.events.filter((e) => e !== eventId)
         : [...prev.events, eventId]
-      // Reset ecosystemTours if Tech Fuel is deselected
-      const ecosystemTours = eventId === "techfuel" && prev.events.includes("techfuel")
-        ? false
-        : prev.ecosystemTours
-      return { ...prev, events: newEvents, ecosystemTours }
+      return { ...prev, events: newEvents }
     })
   }
 
@@ -289,11 +277,6 @@ export function RegistrationForm() {
       {/* Event Selection */}
       <div className="space-y-6">
         <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Select Events</h3>
-        {formData.events.length === 2 && (
-          <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg text-sm text-primary font-medium">
-            ✓ 2-Day Registration — You&apos;re signed up for both days!
-          </div>
-        )}
         <div className="space-y-4">
           {events.map((event) => {
             const cap = capacityInfo?.[event.id]
@@ -309,7 +292,7 @@ export function RegistrationForm() {
                       : formData.events.includes(event.id)
                         ? "border-primary bg-primary/5"
                         : "border-border bg-background hover:border-muted-foreground"
-                  } ${event.id === "techfuel" && formData.events.includes("techfuel") ? "rounded-b-none border-b-0" : ""}`}
+                  }`}
                 >
                   <input
                     type="checkbox"
@@ -348,98 +331,7 @@ export function RegistrationForm() {
                   </div>
                 )}
 
-                {/* Ecosystem Tours Accordion — only visible when Tech Fuel is selected */}
-                {event.id === "techfuel" && (
-                  <motion.div
-                    initial={false}
-                    animate={{
-                      height: formData.events.includes("techfuel") ? "auto" : 0,
-                      opacity: formData.events.includes("techfuel") ? 1 : 0,
-                    }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="overflow-hidden"
-                  >
-                    <div className="border border-t-0 border-primary/30 bg-primary/5 rounded-b-lg px-3 py-3 sm:px-5 sm:py-4">
-                      <label className={`flex items-start gap-3 ${ecoToursFull ? "cursor-default" : "cursor-pointer"} group`}>
-                        <input
-                          type="checkbox"
-                          checked={formData.ecosystemTours}
-                          onChange={(e) => {
-                            if (!ecoToursFull) {
-                              setFormData((prev) => ({ ...prev, ecosystemTours: e.target.checked }))
-                            }
-                          }}
-                          disabled={ecoToursFull}
-                          className="mt-0.5 w-5 h-5 shrink-0 rounded border-border text-primary focus:ring-primary disabled:opacity-50"
-                        />
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary transition-colors">
-                              Ecosystem Tours
-                            </p>
-                            {ecoToursFull && (
-                              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-red-500/10 text-red-500 rounded">
-                                Full
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-[13px] leading-relaxed text-muted-foreground mt-0.5">
-                            {ecoToursFull
-                              ? "Ecosystem tours have reached capacity (50 spots). Join the waitlist at the ecosystem tours page."
-                              : "Included with your Tech Fuel registration \u2022 Running throughout the day"
-                            }
-                          </p>
-                          {!ecoToursFull && ecoToursRemaining !== null && (
-                            <p className="mt-2 text-xs font-semibold text-primary bg-primary/10 border border-primary/20 rounded px-2 py-1 inline-block">
-                              {ecoToursRemaining} of {ecoToursCap?.limit} spots remaining
-                            </p>
-                          )}
-                          {ecoToursFull && (
-                            <a
-                              href="/ecosystem-tours"
-                              className="inline-block mt-1.5 text-[13px] font-medium text-primary hover:underline"
-                            >
-                              Join the waitlist &rarr;
-                            </a>
-                          )}
-                        </div>
-                      </label>
 
-                      {formData.ecosystemTours && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -6 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="mt-3 ml-0 sm:ml-8 p-4 bg-background/70 border border-border/60 rounded-lg space-y-3"
-                        >
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-base" aria-hidden="true">🚐</span>
-                            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-                              Tour Stops
-                            </span>
-                          </div>
-                          <p className="text-[13px] sm:text-sm leading-[1.7] font-normal text-muted-foreground">
-                            This year, we&apos;re placing attendees directly inside the environments shaping San Antonio
-                            and South Texas&apos; emerging industry clusters. Our ecosystem tours will begin at{" "}
-                            <strong className="font-semibold text-foreground">Port San Antonio</strong>—a 20-year
-                            industrial redevelopment now serving as one of the nation&apos;s leading hubs for cyber,
-                            aerospace, and advanced manufacturing—followed by a visit to{" "}
-                            <strong className="font-semibold text-foreground">VelocityTX</strong>, an internationally
-                            recognized bioscience innovation campus purpose-built to accelerate translational research
-                            and commercialization.
-                          </p>
-                          <p className="text-[13px] sm:text-sm leading-[1.7] font-normal text-muted-foreground">
-                            Together, these redeveloped assets reflect a coordinated regional strategy to advance
-                            innovation across both industrial and life sciences domains—spanning cyber, aerospace,
-                            advanced manufacturing, and bioscience. This integrated approach positions San Antonio as
-                            one of the few U.S. markets capable of supporting the development and dual-use
-                            commercialization of technologies across both defense and civilian applications.
-                          </p>
-                        </motion.div>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
               </div>
             )
           })}
