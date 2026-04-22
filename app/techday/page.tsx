@@ -92,10 +92,10 @@ export default function TechDayPage() {
             </Editable>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/register"
+                href="/techday"
                 className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
               >
-                Register Now
+                Thanks for Attending!
               </Link>
               <a
                 href="#speakers"

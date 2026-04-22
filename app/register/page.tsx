@@ -5,6 +5,7 @@ import { InteractiveLanyard } from "@/components/interactive-lanyard"
 import { Editable } from "@/components/editable"
 import { motion } from "motion/react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function RegisterPage() {
   return (
@@ -31,7 +32,7 @@ export default function RegisterPage() {
                 page="register"
                 section="hero"
               >
-                Secure Your Spot at Tech Day &amp; Tech Fuel
+                Thank You for Attending Tech Day &amp; Tech Fuel 2026
               </Editable>
               <Editable 
                 id="register.hero.description" 
@@ -40,7 +41,11 @@ export default function RegisterPage() {
                 page="register"
                 section="hero"
               >
-                Join us in San Antonio on April 20–21, 2026 for two days of innovation, networking, and inspiration. Register now to attend Tech Day and witness the thrilling Tech Fuel startup pitch competition finals.
+                What a two days — thank you to everyone who joined us in San Antonio on April 20–21, 2026 for Tech Day and Tech Fuel. Congratulations to{" "}
+                <a href="https://www.freyya.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
+                  Freyya
+                </a>
+                , our 2026 Tech Fuel winner!
               </Editable>
               <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start text-sm">
                 <div className="inline-flex items-center gap-2 text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
@@ -59,44 +64,6 @@ export default function RegisterPage() {
               </div>
             </motion.div>
           </div>
-        </div>
-      </section>
-
-      {/* Registration Form */}
-      <section id="form" className="bg-foreground relative overflow-hidden">
-        {/* Pixel Arrow Background - matching hero style */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.05]"
-          style={{
-            backgroundImage: "url('https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg')",
-          }}
-        />
-        
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="bg-white/95 backdrop-blur-sm p-6 sm:p-8 rounded-2xl border border-white/20 shadow-2xl"
-          >
-            {/* Form Header with Logo */}
-            <div className="flex items-start justify-between mb-6 pb-6 border-b border-border">
-              <div>
-                <p className="font-mono text-xs text-primary tracking-widest font-semibold uppercase mb-1">Free Event</p>
-                <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Registration Form</h2>
-                <p className="text-sm text-muted-foreground mt-1 font-medium">April 20–21, 2026 • San Antonio, TX</p>
-              </div>
-              <Image
-                src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/10Years_Red.svg"
-                alt="Tech Day 10 Years"
-                width={56}
-                height={56}
-                className="shrink-0"
-              />
-            </div>
-            <RegistrationForm />
-          </motion.div>
         </div>
       </section>
 

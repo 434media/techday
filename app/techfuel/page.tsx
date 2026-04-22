@@ -19,6 +19,7 @@ const finalists2026 = [
     description: "Advancing women's health with real-time, data-driven pelvic care.",
     image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ffreyya.png?alt=media",
     website: "https://www.freyya.com",
+    winner: true,
   },
   {
     name: "Openlane",
@@ -71,6 +72,17 @@ const impactStats = [
 ]
 
 const pastWinners = [
+  {
+    year: "2026",
+    applicants: 75,
+    finalists: [
+      { place: "1st", name: "Freyya", status: "alive" as const },
+      { place: "Finalist", name: "ComeBack Mobility", status: "alive" as const },
+      { place: "Finalist", name: "Openlane", status: "alive" as const },
+      { place: "Finalist", name: "Bytewhisper Security", status: "alive" as const },
+      { place: "Finalist", name: "RentBamboo", status: "alive" as const },
+    ],
+  },
   {
     year: "2024",
     applicants: 54,
@@ -187,7 +199,7 @@ function FinalistsSection() {
           viewport={{ once: true }}
           className="text-center font-mono text-sm text-white/50 tracking-widest uppercase"
         >
-          5 Finalists &middot; $100K in Prizes &middot; Live on April 20
+          2026 Finalists &middot; Congratulations to All Who Applied
         </motion.p>
       </div>
 
@@ -232,6 +244,11 @@ function FinalistsSection() {
                   <p className="text-[13px] text-white/70 leading-relaxed mb-4">
                     {finalist.description}
                   </p>
+                  {finalist.winner && (
+                    <span className="inline-flex items-center gap-1.5 text-sm font-bold text-yellow-400 tracking-tight mb-2">
+                      🏆 2026 Winner
+                    </span>
+                  )}
                   <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary tracking-tight">
                     Visit Website
                     <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="stroke-current">
@@ -254,10 +271,10 @@ function FinalistsSection() {
           className="text-center mt-8 md:mt-10"
         >
           <Link
-            href="/register"
+            href="/techfuel"
             className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
           >
-            Watch Them Compete Live
+            Congratulations to Our 2026 Finalists
           </Link>
         </motion.div>
       </div>
@@ -341,7 +358,13 @@ function PastWinnersAccordion() {
                           <span className={`font-semibold text-foreground ${
                             finalist.place === "1st" ? "text-base" : "text-sm"
                           }`}>
-                            {finalist.name}
+                            {finalist.name === "Freyya" ? (
+                              <a href="https://www.freyya.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                                {finalist.name}
+                              </a>
+                            ) : (
+                              finalist.name
+                            )}
                           </span>
                         </div>
                         <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
@@ -432,15 +455,19 @@ export default function TechFuelPage() {
               page="techfuel"
               section="hero"
             >
-              Greater San Antonio&apos;s largest cash prize pitch competition with $100,000 in non-dilutive cash prizes along with resources and support, sponsored by Bexar County.
+              Congratulations to{" "}
+              <a href="https://www.freyya.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
+                Freyya
+              </a>
+              , the 2026 Tech Fuel winner, and to all the finalists and companies that applied. Thank you, San Antonio!
             </Editable>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/register"
+                href="/techfuel"
                 className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
               >
-                Register to Attend
+                Thanks for Attending!
               </Link>
               <a
                 href="#finalists"
@@ -833,7 +860,7 @@ export default function TechFuelPage() {
                 page="techfuel"
                 section="cta"
               >
-                Watch the Finals Live
+                Thank You for Attending Tech Fuel 2026!
               </Editable>
               <Editable
                 id="techfuel.cta.description"
@@ -842,13 +869,17 @@ export default function TechFuelPage() {
                 page="techfuel"
                 section="cta"
               >
-                Join us at UTSA SP1 to watch 5 finalists pitch for $100,000 in non-dilutive cash prizes. Free to attend.
+                Congratulations to{" "}
+                <a href="https://www.freyya.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
+                  Freyya
+                </a>
+                , our 2026 winner, and to all the incredible finalists and companies that applied to be part of Tech Fuel. See you next year!
               </Editable>
               <Link
-                href="/register"
+                href="/techfuel"
                 className="inline-flex items-center gap-2 px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
               >
-                Register to Attend
+                Thanks for Attending!
               </Link>
             </div>
           </motion.div>

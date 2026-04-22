@@ -141,7 +141,7 @@ export function Hero() {
         >
           {/* Main Headline - Bebas Neue with color sweep effect */}
           <motion.h1 
-            className="mt-1 md:mt-3 font-bold text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-none text-center uppercase"
+            className="mt-1 md:mt-3 font-bold text-6xl md:text-8xl lg:text-9xl leading-none text-center uppercase"
             style={{
               backgroundImage: "linear-gradient(90deg, #0a0a0a 0%, #0a0a0a 40%, #dc2626 50%, #0a0a0a 60%, #0a0a0a 100%)",
               backgroundSize: "200% 100%",
@@ -154,7 +154,7 @@ export function Hero() {
             Tech Day
             <br />
             <span style={{ color: "#dc2626" }}>&</span>
-            <span> Tech Fuel</span>
+            <span style={{ color: "#0a0a0a" }}> Tech Fuel</span>
           </motion.h1>
         </motion.div>
 
@@ -172,11 +172,9 @@ export function Hero() {
             page="home"
             section="hero"
           >
-            San Antonio&apos;s startup pitch competition and tech conference — two days of founders, investors, and emerging industries.
-          </Editable>
+            San Antonio's startup pitch competition and tech conference — two days of founders, investors, and emerging industries.          </Editable>
           <p className="sm:hidden text-[#0a0a0a]/60 text-sm font-medium max-w-xs mx-auto leading-relaxed">
-            Two days of founders, investors, and emerging industries shaping the future of San Antonio.
-          </p>
+            San Antonio's startup pitch competition and tech conference — two days of founders, investors, and emerging industries.          </p>
           <Editable 
             id="hero.tagline" 
             as="span" 
@@ -184,86 +182,8 @@ export function Hero() {
             page="home"
             section="hero"
           >
-            Hecho en San Antonio
+            Thank You, San Antonio
           </Editable>
-        </motion.div>
-
-        {/* Date & CTA — paired columns */}
-        <motion.div
-          className="mt-3 md:mt-6 flex flex-col sm:flex-row items-center sm:items-stretch gap-3 sm:gap-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-        >
-          {/* Tech Fuel column */}
-          <div className="flex flex-col items-center gap-2 sm:gap-3 sm:pr-8 sm:border-r sm:border-[#0a0a0a]/10">
-            <div className="text-center">
-              <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Fuel</p>
-              <Editable 
-                id="hero.techfuel.date" 
-                as="p" 
-                className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight"
-                page="home"
-                section="hero"
-              >
-                April 20
-              </Editable>
-              <Editable 
-                id="hero.techfuel.venue" 
-                as="p" 
-                className="text-[#0a0a0a]/60 text-xs sm:text-sm"
-                page="home"
-                section="hero"
-              >
-                UTSA SP1
-              </Editable>
-              <p className="text-[#0a0a0a]/40 text-[10px] sm:text-xs font-mono mt-1 sm:mt-2 tracking-wide">
-                $100K Pitch Competition · 5 Finalists
-              </p>
-            </div>
-            <Link
-              href="/techfuel"
-              className="group inline-flex items-center justify-center gap-2 bg-[#dc2626] text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-md font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#0a0a0a] hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              Meet the Finalists
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-            </Link>
-          </div>
-
-          {/* Tech Day column */}
-          <div className="flex flex-col items-center gap-2 sm:gap-3 sm:pl-8">
-            <div className="text-center">
-              <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest">Tech Day</p>
-              <Editable 
-                id="hero.techday.date" 
-                as="p" 
-                className="text-[#0a0a0a] text-lg sm:text-xl font-semibold leading-tight"
-                page="home"
-                section="hero"
-              >
-                April 21
-              </Editable>
-              <Editable 
-                id="hero.techday.venue" 
-                as="p" 
-                className="text-[#0a0a0a]/60 text-xs sm:text-sm"
-                page="home"
-                section="hero"
-              >
-                Boeing Center at Tech Port
-              </Editable>
-              <p className="text-[#0a0a0a]/40 text-[10px] sm:text-xs font-mono mt-1 sm:mt-2 tracking-wide">
-                3 Tracks · 30+ Speakers · Panels &amp; Demos
-              </p>
-            </div>
-            <Link
-              href="/techday#schedule"
-              className="group inline-flex items-center justify-center gap-2 bg-[#0a0a0a] text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-md font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-[#dc2626] hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              View Schedule
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-            </Link>
-          </div>
         </motion.div>
       </div>
 

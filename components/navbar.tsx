@@ -61,7 +61,7 @@ export function Navbar() {
               href="/register"
               className="ml-4 px-5 py-2 bg-primary text-primary-foreground font-semibold text-sm rounded-md hover:bg-primary/90 transition-colors"
             >
-              Get Tickets
+              Thanks for Attending!
             </Link>
           </div>
 
@@ -111,7 +111,7 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 bg-primary text-primary-foreground font-semibold text-center rounded-md mt-4"
               >
-                Get Tickets
+                Thanks for Attending!
               </Link>
             </div>
           </motion.div>
