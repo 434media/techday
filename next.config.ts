@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "firebasestorage.googleapis.com",
+        pathname: "/v0/b/groovy-ego-462522-v2.firebasestorage.app/**",
+      },
+      {
+        protocol: "https",
         hostname: "devsa-assets.s3.us-east-2.amazonaws.com",
       },
       {

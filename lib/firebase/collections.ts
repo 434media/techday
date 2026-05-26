@@ -60,7 +60,7 @@ export interface NewsletterDocument {
   id?: string
   email: string
   subscribedAt: Date
-  source: "homepage" | "registration" | "popup" | "footer"
+  source: "homepage" | "registration" | "popup" | "footer" | "2027-updates"
   status: "active" | "unsubscribed"
 }
 

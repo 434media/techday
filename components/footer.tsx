@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Editable } from "@/components/editable"
+import { UpdatesDropdown } from "@/components/updates-dropdown"
 
 export function Footer() {
   return (
@@ -48,9 +49,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/register" className="text-muted-foreground hover:text-primary transition-colors font-medium">
-                  Register
-                </Link>
+                <UpdatesDropdown
+                  variant="desktop"
+                  placement="top"
+                  align="left"
+                  triggerStyle="muted"
+                />
               </li>
             </ul>
           </div>

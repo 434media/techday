@@ -2,239 +2,101 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { motion, useMotionValue, useTransform, useSpring } from "motion/react"
-import { useEffect, useState } from "react"
+import { motion } from "motion/react"
 import { ArrowRight } from "lucide-react"
-import { Editable } from "@/components/editable"
 
-interface Sponsor {
-  id: string
-  name: string
-  logoUrl: string
-  website?: string
-  logoSize?: "default" | "large"
-}
+const TECHDAY_IMAGE =
+  "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ftechday.jpeg?alt=media"
+const TECHFUEL_IMAGE =
+  "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ffreyya.jpeg?alt=media"
 
 export function Hero() {
-  const [apiSponsors, setApiSponsors] = useState<Sponsor[]>([])
-  
-  // Fetch sponsors from CMS (techday + techfuel)
-  useEffect(() => {
-    async function fetchSponsors() {
-      try {
-        const [techdayRes, techfuelRes] = await Promise.all([
-          fetch("/api/content/sponsors?event=techday"),
-          fetch("/api/content/sponsors?event=techfuel"),
-        ])
-        const techdayData = await techdayRes.json()
-        const techfuelData = await techfuelRes.json()
-        const techdaySponsors = techdayData.sponsors?.sponsors || []
-        const techfuelSponsors = techfuelData.sponsors?.sponsors || []
-        const techdayCommunity = techdayData.sponsors?.community || []
-        const techfuelCommunity = techfuelData.sponsors?.community || []
-        // Combine and deduplicate by id
-        const combined = [...techdaySponsors]
-        for (const s of techfuelSponsors) {
-          if (!combined.some((existing: Sponsor) => existing.id === s.id)) {
-            combined.push(s)
-          }
-        }
-        // Include Geekdom from community partners
-        for (const s of [...techdayCommunity, ...techfuelCommunity]) {
-          if (s.name?.toLowerCase() === "geekdom" && !combined.some((existing: Sponsor) => existing.id === s.id || existing.name?.toLowerCase() === "geekdom")) {
-            combined.push(s)
-          }
-        }
-        setApiSponsors(combined)
-      } catch (error) {
-        console.error("Failed to fetch sponsors:", error)
-      }
-    }
-    fetchSponsors()
-  }, [])
-  
-  // Track blimp position for text effect
-  const blimpProgress = useMotionValue(0)
-  const [cycleCount, setCycleCount] = useState(0)
-  
-  // Create a smooth spring for the color transition
-  const smoothProgress = useSpring(blimpProgress, { stiffness: 100, damping: 30 })
-  
-  // Transform progress to gradient position (moves left to right as blimp passes)
-  const gradientPosition = useTransform(smoothProgress, [0, 1], ["-50%", "150%"])
-  
-  // Update progress based on animation cycle (50s duration)
-  useEffect(() => {
-    const duration = 50000 // 50 seconds in ms
-    const startTime = Date.now()
-    
-    const updateProgress = () => {
-      const elapsed = (Date.now() - startTime) % duration
-      const progress = elapsed / duration
-      blimpProgress.set(progress)
-      
-      // Track cycle for potential future use
-      const newCycle = Math.floor((Date.now() - startTime) / duration)
-      if (newCycle !== cycleCount) {
-        setCycleCount(newCycle)
-      }
-    }
-    
-    const interval = setInterval(updateProgress, 50)
-    return () => clearInterval(interval)
-  }, [blimpProgress, cycleCount])
   return (
-    <section className="relative h-dvh flex flex-col overflow-hidden bg-white">
-      {/* Background - subtle pattern */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.03]"
-        style={{
-          backgroundImage: "url('https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg')",
-        }}
-      />
-
-      {/* Floating Blimp — 10 Year Anniversary Banner */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+    <section className="relative min-h-dvh flex flex-col overflow-hidden bg-white">
+      {/* Split hero — two clickable images */}
+      <div className="relative z-10 flex-1 grid grid-cols-1 md:grid-cols-2">
+        {/* Tech Day */}
         <motion.div
-          className="absolute"
-          initial={{ x: "100vw", y: "5%" }}
-          animate={{
-            x: "-100%",
-            y: ["5%", "7%", "3%", "6%", "5%"],
-          }}
-          transition={{
-            x: {
-              duration: 50,
-              repeat: Infinity,
-              ease: "linear",
-            },
-            y: {
-              duration: 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-            },
-          }}
-        >
-          <Image
-            src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/TechBlocBlimp.png"
-            alt="Tech Bloc 10 Year Anniversary"
-            width={300}
-            height={150}
-            className="w-28 sm:w-36 md:w-48 lg:w-56 h-auto mt-14 sm:mt-16 md:mt-20"
-            style={{
-              filter: "drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15))",
-            }}
-            draggable={false}
-          />
-        </motion.div>
-      </div>
-      
-      {/* Main Content - Centered */}
-      <div className="relative z-20 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-12 pb-2">
-        
-        {/* Headlines */}
-        <motion.div
-          className="flex flex-col items-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {/* Main Headline - Bebas Neue with color sweep effect */}
-          <motion.h1 
-            className="mt-1 md:mt-3 font-bold text-6xl md:text-8xl lg:text-9xl leading-none text-center uppercase"
-            style={{
-              backgroundImage: "linear-gradient(90deg, #0a0a0a 0%, #0a0a0a 40%, #dc2626 50%, #0a0a0a 60%, #0a0a0a 100%)",
-              backgroundSize: "200% 100%",
-              backgroundPositionX: gradientPosition,
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
-          >
-            Tech Day
-            <br />
-            <span style={{ color: "#dc2626" }}>&</span>
-            <span style={{ color: "#0a0a0a" }}> Tech Fuel</span>
-          </motion.h1>
-        </motion.div>
-
-        {/* Tagline */}
-        <motion.div
-          className="mt-1 md:mt-3 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="relative h-[50vh] md:h-auto"
         >
-          <Editable 
-            id="hero.subtitle" 
-            as="p" 
-            className="hidden sm:block text-[#0a0a0a]/60 text-base md:text-lg font-medium max-w-xl mx-auto leading-relaxed"
-            page="home"
-            section="hero"
+          <Link
+            href="/techday"
+            aria-label="Tech Day 2026 recap"
+            className="group absolute inset-0 block overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/40"
           >
-            San Antonio's startup pitch competition and tech conference — two days of founders, investors, and emerging industries.          </Editable>
-          <p className="sm:hidden text-[#0a0a0a]/60 text-sm font-medium max-w-xs mx-auto leading-relaxed">
-            San Antonio's startup pitch competition and tech conference — two days of founders, investors, and emerging industries.          </p>
-          <Editable 
-            id="hero.tagline" 
-            as="span" 
-            className="text-[#dc2626] font-semibold text-xs sm:text-sm tracking-wide uppercase mt-2 inline-block"
-            page="home"
-            section="hero"
+            <Image
+              src={TECHDAY_IMAGE}
+              alt="Tech Day 2026"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+              className="object-cover transition-transform duration-1200 ease-out group-hover:scale-[1.04]"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/25 to-black/40 transition-opacity duration-500 group-hover:opacity-80" />
+            <div className="absolute inset-0 bg-linear-to-r from-black/45 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/15" />
+
+            <div className="relative h-full flex flex-col justify-end p-6 sm:p-10 md:p-12">
+              <p className="font-mono text-[10px] sm:text-xs text-white/80 tracking-[0.25em] uppercase mb-2 transition-transform duration-500 group-hover:-translate-y-0.5">
+                April 21, 2026
+              </p>
+              <h2 className="text-white font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.95] uppercase tracking-tight">
+                Tech Day
+              </h2>
+              <span className="mt-4 inline-flex items-center gap-1.5 text-white text-sm font-semibold tracking-wide">
+                <span className="border-b border-transparent group-hover:border-white transition-colors">
+                  View recap
+                </span>
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </span>
+            </div>
+          </Link>
+        </motion.div>
+
+        {/* Tech Fuel */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
+          className="relative h-[50vh] md:h-auto"
+        >
+          <Link
+            href="/techfuel"
+            aria-label="Tech Fuel 2026 recap"
+            className="group absolute inset-0 block overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/40"
           >
-            Thank You, San Antonio
-          </Editable>
+            <Image
+              src={TECHFUEL_IMAGE}
+              alt="Tech Fuel 2026 — Freyya"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+              className="object-cover transition-transform duration-1200 ease-out group-hover:scale-[1.04]"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/25 to-black/40 transition-opacity duration-500 group-hover:opacity-80" />
+            <div className="absolute inset-0 bg-linear-to-l from-black/45 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/15" />
+
+            <div className="relative h-full flex flex-col justify-end p-6 sm:p-10 md:p-12 md:text-right md:items-end">
+              <p className="font-mono text-[10px] sm:text-xs text-white/80 tracking-[0.25em] uppercase mb-2 transition-transform duration-500 group-hover:-translate-y-0.5">
+                April 20, 2026 · Winner: Freyya
+              </p>
+              <h2 className="text-white font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.95] uppercase tracking-tight">
+                Tech Fuel
+              </h2>
+              <span className="mt-4 inline-flex items-center gap-1.5 text-white text-sm font-semibold tracking-wide">
+                <span className="border-b border-transparent group-hover:border-white transition-colors">
+                  View recap
+                </span>
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </span>
+            </div>
+          </Link>
         </motion.div>
       </div>
-
-      {/* Sponsors Bar - Bottom */}
-      <motion.div
-        className="relative z-20 border-t border-[#0a0a0a]/10 bg-white shrink-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 md:py-5">
-          <div className="flex items-center justify-center gap-3 sm:gap-6">
-            <p className="text-[#0a0a0a]/50 text-[10px] sm:text-xs font-mono uppercase tracking-widest whitespace-nowrap shrink-0">Sponsored by</p>
-            <div className="overflow-hidden flex-1 min-w-0 max-w-80 mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-              {apiSponsors.length > 0 && (
-              <div className="flex items-center gap-6 md:gap-8 w-max animate-scroll-sponsors">
-                {/* Double the sponsors for seamless loop */}
-                {[...apiSponsors, ...apiSponsors].map((sponsor, i) => (
-                  <a
-                    key={`${sponsor.id}-${i}`}
-                    href={sponsor.website || "#"}
-                    target={sponsor.website ? "_blank" : undefined}
-                    rel={sponsor.website ? "noopener noreferrer" : undefined}
-                    className="opacity-60 hover:opacity-100 transition-opacity shrink-0"
-                  >
-                    <Image
-                      src={sponsor.logoUrl}
-                      alt={sponsor.name}
-                      width={sponsor.logoSize === "large" ? 140 : 80}
-                      height={sponsor.logoSize === "large" ? 56 : 32}
-                      className={`w-auto grayscale hover:grayscale-0 transition-all ${
-                        sponsor.logoSize === "large" ? "h-10 md:h-14" : "h-6 md:h-8"
-                      }`}
-                      loading="eager"
-                      priority
-                    />
-                  </a>
-                ))}
-              </div>
-              )}
-            </div>
-            <Link 
-              href="/sponsor" 
-              className="inline-flex items-center gap-1 text-[#dc2626] text-xs font-semibold hover:underline underline-offset-2 whitespace-nowrap shrink-0"
-            >
-              Become a Sponsor
-              <ArrowRight className="w-3 h-3" />
-            </Link>
-          </div>
-        </div>
-      </motion.div>
     </section>
   )
 }

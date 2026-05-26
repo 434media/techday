@@ -1,11 +1,15 @@
 "use client"
 
 import { useState, useRef } from "react"
+import Image from "next/image"
 import { Sponsors } from "@/components/sections/sponsors"
 import { PixelArrow } from "@/components/pixel-arrow"
 import { Editable } from "@/components/editable"
 import { motion, AnimatePresence } from "motion/react"
 import Link from "next/link"
+
+const TECHFUEL_HERO_IMAGE =
+  "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ffreyya.jpeg?alt=media"
 
 const finalists2026 = [
   {
@@ -399,83 +403,92 @@ function PastWinnersAccordion() {
 export default function TechFuelPage() {
   return (
     <main className="min-h-screen bg-white">
-      {/* Hero */}
-      <section className="relative min-h-dvh flex items-center justify-center px-4 bg-white overflow-hidden">
+      {/* Hero - text left / image right */}
+      <section className="relative min-h-dvh bg-white overflow-hidden">
         <PixelArrow position="top-right" size="xl" variant="light" type="anniversary" />
-        
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }} 
-            animate={{ opacity: 1, y: 0 }} 
+
+        <div className="relative z-10 min-h-dvh grid grid-cols-1 md:grid-cols-2">
+          {/* Text (left on desktop, bottom on mobile) */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative flex items-center px-6 sm:px-10 md:px-12 lg:px-16 py-14 md:py-20 order-last md:order-first"
           >
-            <Editable 
-              id="techfuel.hero.subtitle" 
-              as="p" 
-              className="font-mono text-sm text-primary mb-6 tracking-widest uppercase"
-              page="techfuel"
-              section="hero"
-            >
-              April 20, 2026 • UTSA SP1
-            </Editable>
-            <Editable 
-              id="techfuel.hero.time" 
-              as="p" 
-              className="font-mono text-sm text-muted-foreground mb-6 tracking-widest uppercase font-medium leading-none"
-              page="techfuel"
-              section="hero"
-            >
-              2:00 PM – 6:00 PM
-            </Editable>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground mb-4 leading-[0.95] tracking-tight">
-              <Editable 
-                id="techfuel.hero.title" 
-                as="span" 
-                className="text-foreground"
+            <div className="max-w-xl">
+              <Editable
+                id="techfuel.hero.subtitle"
+                as="p"
+                className="font-mono text-sm text-primary mb-6 tracking-widest uppercase"
                 page="techfuel"
                 section="hero"
               >
-                TECH FUEL
-              </Editable>{" "}
-              <span className="text-primary">2026</span>
-            </h1>
-            <Editable 
-              id="techfuel.hero.prize" 
-              as="p" 
-              className="font-mono text-xl sm:text-2xl md:text-3xl text-primary font-bold mb-8 tracking-tight"
-              page="techfuel"
-              section="hero"
-            >
-              $100K Pitch Competition
-            </Editable>
-            <Editable 
-              id="techfuel.hero.description" 
-              as="p" 
-              className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-normal"
-              page="techfuel"
-              section="hero"
-            >
-              Congratulations to{" "}
-              <a href="https://www.freyya.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
-                Freyya
-              </a>
-              , the 2026 Tech Fuel winner, and to all the finalists and companies that applied. Thank you, San Antonio!
-            </Editable>
+                April 20, 2026 • UTSA SP1
+              </Editable>
+              <h1 className="text-5xl sm:text-6xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-foreground mb-4 leading-[0.95] tracking-tight">
+                <Editable
+                  id="techfuel.hero.title"
+                  as="span"
+                  className="text-foreground"
+                  page="techfuel"
+                  section="hero"
+                >
+                  TECH FUEL
+                </Editable>{" "}
+                <span className="text-primary">2026</span>
+              </h1>
+              <Editable
+                id="techfuel.hero.prize"
+                as="p"
+                className="font-mono text-lg sm:text-xl md:text-2xl text-primary font-bold mb-6 tracking-tight"
+                page="techfuel"
+                section="hero"
+              >
+                $100K Pitch Competition
+              </Editable>
+              <Editable
+                id="techfuel.hero.description"
+                as="p"
+                className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed font-normal"
+                page="techfuel"
+                section="hero"
+              >
+                Congratulations to{" "}
+                <a href="https://www.freyya.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
+                  Freyya
+                </a>
+                , the 2026 Tech Fuel winner, and to all the finalists and companies that applied. Thank you, San Antonio!
+              </Editable>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/techfuel"
-                className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
-              >
-                Thanks for Attending!
-              </Link>
-              <a
-                href="#finalists"
-                className="px-10 py-5 bg-muted border border-border text-foreground font-semibold rounded-md hover:border-primary/50 transition-all text-lg"
-              >
-                Meet the Finalists
-              </a>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a
+                  href="#sponsors"
+                  className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg text-center"
+                >
+                  Thank You to Our Sponsors
+                </a>
+              </div>
             </div>
+          </motion.div>
+
+          {/* Image (right on desktop, top on mobile) */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative h-[55vh] md:h-auto overflow-hidden"
+          >
+            <Image
+              src={TECHFUEL_HERO_IMAGE}
+              alt="Freyya — Tech Fuel 2026 Winner"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover object-center"
+            />
+            {/* Edge fade into the white text panel */}
+            <div className="absolute inset-0 bg-linear-to-l from-transparent via-transparent to-white/40 md:to-white/80" />
+            <div className="absolute inset-0 bg-linear-to-t from-white/60 via-transparent to-transparent md:from-white/20" />
           </motion.div>
         </div>
       </section>
@@ -835,58 +848,6 @@ export default function TechFuelPage() {
         </div>
       </section>
 
-      {/* Register CTA */}
-      <section className="py-24 md:py-32 bg-white relative overflow-hidden">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="text-center p-8 sm:p-12 bg-muted border border-primary/30 rounded-2xl">
-              <Editable
-                id="techfuel.cta.label"
-                as="p"
-                className="font-mono text-sm text-primary mb-4 tracking-widest uppercase"
-                page="techfuel"
-                section="cta"
-              >
-                April 20, 2026
-              </Editable>
-              <Editable
-                id="techfuel.cta.title"
-                as="h2"
-                className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 leading-[0.95] tracking-tight"
-                page="techfuel"
-                section="cta"
-              >
-                Thank You for Attending Tech Fuel 2026!
-              </Editable>
-              <Editable
-                id="techfuel.cta.description"
-                as="p"
-                className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed"
-                page="techfuel"
-                section="cta"
-              >
-                Congratulations to{" "}
-                <a href="https://www.freyya.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
-                  Freyya
-                </a>
-                , our 2026 winner, and to all the incredible finalists and companies that applied to be part of Tech Fuel. See you next year!
-              </Editable>
-              <Link
-                href="/techfuel"
-                className="inline-flex items-center gap-2 px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
-              >
-                Thanks for Attending!
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-
-        <PixelArrow position="bottom-left" size="lg" variant="light" type="anniversary" />
-      </section>
     </main>
   )
 }

@@ -1,13 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { SpeakerCard, type Speaker } from "@/components/sections/speaker-card"
 import { Schedule } from "@/components/sections/schedule"
 import { Sponsors } from "@/components/sections/sponsors"
 import { PixelArrow } from "@/components/pixel-arrow"
 import { Editable } from "@/components/editable"
 import { motion } from "motion/react"
-import Link from "next/link"
+
+const TECHDAY_HERO_IMAGE =
+  "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ftechday.jpeg?alt=media"
 
 export default function TechDayPage() {
   const [speakers, setSpeakers] = useState<Speaker[]>([])
@@ -31,78 +34,78 @@ export default function TechDayPage() {
 
   return (
     <main className="min-h-screen bg-foreground">
-      {/* Hero - Dark Theme with dvh */}
-      <section className="relative min-h-dvh flex items-center justify-center px-4 bg-foreground overflow-hidden">
+      {/* Hero - Dark Theme, image left / text right */}
+      <section className="relative min-h-dvh bg-foreground overflow-hidden">
         {/* Pixel Arrow - Top Right */}
         <PixelArrow position="top-right" size="xl" variant="dark" type="video" />
-        
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }} 
-            animate={{ opacity: 1, y: 0 }} 
+
+        <div className="relative z-10 min-h-dvh grid grid-cols-1 md:grid-cols-2">
+          {/* Image (left on desktop, top on mobile) */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative h-[55vh] md:h-auto overflow-hidden"
           >
-            <Editable 
-              id="techday.hero.subtitle" 
-              as="p" 
-              className="font-mono text-sm text-primary mb-6 tracking-widest uppercase"
-              page="techday"
-              section="hero"
-            >
-              April 21, 2026 • Boeing Center at Tech Port
-            </Editable>
-            <Editable 
-              id="techday.hero.doorsopen" 
-              as="p" 
-              className="font-mono text-xs text-white/60 mb-2 tracking-widest uppercase"
-              page="techday"
-              section="hero"
-            >
-              Doors Open at 12:30 PM
-            </Editable>
-            <Editable 
-              id="techday.hero.time" 
-              as="p" 
-              className="font-mono text-sm text-white/70 mb-6 tracking-widest uppercase font-medium leading-normal"
-              page="techday"
-              section="hero"
-            >
-              1:00 PM – 4:00 PM
-            </Editable>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-[0.95] tracking-tight">
-              <Editable 
-                id="techday.hero.title" 
-                as="span" 
-                className="text-white"
+            <Image
+              src={TECHDAY_HERO_IMAGE}
+              alt="Tech Day 2026 — San Antonio"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover object-center"
+            />
+            {/* Edge fade into the dark text panel */}
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-transparent to-foreground/40 md:to-foreground/80" />
+            <div className="absolute inset-0 bg-linear-to-t from-foreground/60 via-transparent to-transparent md:from-foreground/30" />
+          </motion.div>
+
+          {/* Text (right on desktop, bottom on mobile) */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative flex items-center px-6 sm:px-10 md:px-12 lg:px-16 py-14 md:py-20"
+          >
+            <div className="max-w-xl">
+              <Editable
+                id="techday.hero.subtitle"
+                as="p"
+                className="font-mono text-sm text-primary mb-6 tracking-widest uppercase"
                 page="techday"
                 section="hero"
               >
-                TECH DAY
-              </Editable>{" "}
-              <span className="text-primary">2026</span>
-            </h1>
-            <Editable 
-              id="techday.hero.description" 
-              as="p" 
-              className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-3xl mx-auto mb-12 leading-relaxed font-light"
-              page="techday"
-              section="hero"
-            >
-              Emerging Industries. Founders &amp; Investors. AI. Three tracks powering the future and growth of San Antonio.
-            </Editable>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/techday"
-                className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg"
+                April 21, 2026 • Boeing Center at Tech Port
+              </Editable>
+              <h1 className="text-5xl sm:text-6xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-6 leading-[0.95] tracking-tight">
+                <Editable
+                  id="techday.hero.title"
+                  as="span"
+                  className="text-white"
+                  page="techday"
+                  section="hero"
+                >
+                  TECH DAY
+                </Editable>{" "}
+                <span className="text-primary">2026</span>
+              </h1>
+              <Editable
+                id="techday.hero.description"
+                as="p"
+                className="text-base sm:text-lg md:text-xl text-white/80 mb-10 leading-relaxed font-light"
+                page="techday"
+                section="hero"
               >
-                Thanks for Attending!
-              </Link>
-              <a
-                href="#speakers"
-                className="px-10 py-5 bg-transparent border-2 border-white/40 text-white font-semibold rounded-md hover:bg-white hover:text-foreground transition-all text-lg"
-              >
-                View Speakers
-              </a>
+                Emerging Industries. Founders &amp; Investors. AI. Three tracks powering the future and growth of San Antonio.
+              </Editable>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a
+                  href="#sponsors"
+                  className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-all text-lg text-center"
+                >
+                  Thank You to Our Sponsors
+                </a>
+              </div>
             </div>
           </motion.div>
         </div>

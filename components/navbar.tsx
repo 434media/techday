@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "motion/react"
+import { UpdatesDropdown } from "./updates-dropdown"
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -57,12 +58,9 @@ export function Navbar() {
                 )}
               </Link>
             ))}
-            <Link
-              href="/register"
-              className="ml-4 px-5 py-2 bg-primary text-primary-foreground font-semibold text-sm rounded-md hover:bg-primary/90 transition-colors"
-            >
-              Thanks for Attending!
-            </Link>
+            <div className="ml-4">
+              <UpdatesDropdown variant="desktop" />
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -106,13 +104,10 @@ export function Navbar() {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                href="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 bg-primary text-primary-foreground font-semibold text-center rounded-md mt-4"
-              >
-                Thanks for Attending!
-              </Link>
+              <UpdatesDropdown
+                variant="mobile"
+                onSubscribed={() => setMobileMenuOpen(false)}
+              />
             </div>
           </motion.div>
         )}
