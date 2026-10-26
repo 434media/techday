@@ -40,12 +40,12 @@ const industries = [
   "Other",
 ]
 
-// The preview src comes from a local FileReader (data:image/...) or the upload
-// API's returned URL (https:). Anything else is dropped so no other scheme can
-// reach the <img> (CodeQL js/xss-through-dom).
+// The preview src is a blob: URL for the chosen file (URL.createObjectURL, so
+// the file is never read into text) or the https: URL the upload API returns.
+// Anything else is dropped (CodeQL js/xss-through-dom).
 function safeImageSrc(src: string | null | undefined): string | undefined {
   if (!src) return undefined
-  return /^(https:|blob:|data:image\/)/i.test(src) ? src : undefined
+  return /^(https:|blob:)/i.test(src) ? src : undefined
 }
 
 export function PitchSubmissionForm() {
@@ -72,6 +72,13 @@ export function PitchSubmissionForm() {
   const [submitted, setSubmitted] = useState(false)
   const [isUploadingLogo, setIsUploadingLogo] = useState(false)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  // A blob: URL for the chosen file. The previous one is released whenever it
+  // is replaced or cleared.
+  const setPreview = (next: string | null) =>
+    setLogoPreview((prev) => {
+      if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev)
+      return next
+    })
   const logoInputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -103,9 +110,7 @@ export function PitchSubmissionForm() {
     setIsUploadingLogo(true)
 
     // Show preview immediately
-    const reader = new FileReader()
-    reader.onload = (ev) => setLogoPreview(ev.target?.result as string)
-    reader.readAsDataURL(file)
+    setPreview(URL.createObjectURL(file))
 
     try {
       const fd = new FormData()
@@ -116,14 +121,14 @@ export function PitchSubmissionForm() {
 
       if (!res.ok) {
         setError(data.error || "Failed to upload logo")
-        setLogoPreview(null)
+        setPreview(null)
         return
       }
 
       setFormData((prev) => ({ ...prev, logoUrl: data.url }))
     } catch {
       setError("Failed to upload logo. Please try again.")
-      setLogoPreview(null)
+      setPreview(null)
     } finally {
       setIsUploadingLogo(false)
     }
@@ -131,7 +136,7 @@ export function PitchSubmissionForm() {
 
   const handleRemoveLogo = () => {
     setFormData((prev) => ({ ...prev, logoUrl: "" }))
-    setLogoPreview(null)
+    setPreview(null)
     if (logoInputRef.current) logoInputRef.current.value = ""
   }
 
