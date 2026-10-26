@@ -3,6 +3,7 @@ import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type PitchSchedulingDocument } from "@/lib/firebase/collections"
 import { verifyAdminSession } from "@/lib/admin/session"
 import { sendPitchSemifinalsNotification } from "@/lib/email/resend"
+import { maskEmail } from "@/lib/mask-email"
 
 export const dynamic = "force-dynamic"
 
@@ -85,7 +86,7 @@ export async function POST(request: Request) {
       )
       emailSent = emailResult.success
       if (!emailSent) {
-        console.error(`Failed to auto-send semi-finalist email to ${doc.email}`)
+        console.error("Failed to auto-send semi-finalist email to %s", maskEmail(doc.email))
       }
     }
 

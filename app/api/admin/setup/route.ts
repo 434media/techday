@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { adminDb, adminAuth, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type UserDocument } from "@/lib/firebase/collections"
+import { maskEmail } from "@/lib/mask-email"
 
 export const dynamic = "force-dynamic"
 
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
       .doc(firebaseUser.uid)
       .set(adminUser)
 
-    console.log(`First admin user created: ${data.email}`)
+    console.log("First admin user created: %s", maskEmail(data.email))
 
     return NextResponse.json({
       success: true,

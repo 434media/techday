@@ -3,6 +3,8 @@ import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type SponsorContactDocument } from "@/lib/firebase/collections"
 import { sendSponsorInquiryConfirmation } from "@/lib/email/resend"
+import { isValidEmail } from "@/lib/validate-email"
+import { maskEmail } from "@/lib/mask-email"
 
 export async function POST(request: Request) {
   try {
@@ -36,8 +38,7 @@ export async function POST(request: Request) {
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(data.workEmail)) {
+    if (!isValidEmail(data.workEmail)) {
       return NextResponse.json(
         { error: "Invalid email format" },
         { status: 400 }
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
     )
 
     if (!emailResult.success) {
-      console.warn(`Sponsor inquiry saved but email failed for ${contact.workEmail}`)
+      console.warn("Sponsor inquiry saved but email failed for %s", maskEmail(contact.workEmail))
     }
 
     return NextResponse.json({

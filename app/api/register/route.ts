@@ -4,6 +4,8 @@ import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type RegistrationDocument, ECOSYSTEM_TOURS_LIMIT } from "@/lib/firebase/collections"
 import { sendRegistrationConfirmation } from "@/lib/email/resend"
 import crypto from "crypto"
+import { isValidEmail } from "@/lib/validate-email"
+import { maskEmail } from "@/lib/mask-email"
 
 // Registration limits per event
 const REGISTRATION_LIMITS: Record<string, number> = {
@@ -68,8 +70,7 @@ export async function POST(request: Request) {
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(data.email)) {
+    if (!isValidEmail(data.email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
         { status: 400 }
@@ -161,7 +162,7 @@ export async function POST(request: Request) {
     )
 
     if (!emailResult.success) {
-      console.warn(`Registration saved but email failed for ${registration.email}`)
+      console.warn("Registration saved but email failed for %s", maskEmail(registration.email))
     }
 
     return NextResponse.json({

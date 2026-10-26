@@ -82,6 +82,17 @@ function addMinutes(time: string, minutes: number): string {
   return `${String(Math.floor(totalMin / 60)).padStart(2, "0")}:${String(totalMin % 60).padStart(2, "0")}`
 }
 
+// RFC 5545 TEXT escaping: backslash first, then semicolon, comma and newlines.
+// Escaping commas and newlines alone (as before) left backslashes and
+// semicolons able to break out of a field (CodeQL js/incomplete-sanitization).
+function escapeICSText(value: string): string {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\r?\n/g, "\\n")
+}
+
 function generateICS(events: { title: string; description: string; time: string; duration: number; room: string }[]): string {
   const lines = [
     "BEGIN:VCALENDAR",
@@ -94,14 +105,15 @@ function generateICS(events: { title: string; description: string; time: string;
     const dtStart = toICSDate(EVENT_DATE, event.time)
     const endTime = addMinutes(event.time, event.duration)
     const dtEnd = toICSDate(EVENT_DATE, endTime)
-    const desc = event.description.replace(/\n/g, "\\n").replace(/,/g, "\\,")
+    const desc = escapeICSText(event.description)
+    const location = event.room ? `${event.room} - ${EVENT_LOCATION}` : EVENT_LOCATION
     lines.push(
       "BEGIN:VEVENT",
       `DTSTART:${dtStart}`,
       `DTEND:${dtEnd}`,
-      `SUMMARY:${event.title}`,
+      `SUMMARY:${escapeICSText(event.title)}`,
       `DESCRIPTION:${desc}`,
-      `LOCATION:${event.room ? `${event.room} - ${EVENT_LOCATION}` : EVENT_LOCATION}`,
+      `LOCATION:${escapeICSText(location)}`,
       `STATUS:CONFIRMED`,
       "END:VEVENT"
     )

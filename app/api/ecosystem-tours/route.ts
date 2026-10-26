@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, ECOSYSTEM_TOURS_LIMIT } from "@/lib/firebase/collections"
+import { isValidEmail } from "@/lib/validate-email"
+import { maskEmail } from "@/lib/mask-email"
 
 // Helper to count current ecosystem tours registrations
 async function getEcosystemToursCount(): Promise<number> {
@@ -38,8 +40,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(data.email)) {
+    if (!isValidEmail(data.email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
         { status: 400 }
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
         createdAt: new Date(),
       })
 
-      console.log(`Ecosystem tours waitlist signup for ${email}`)
+      console.log("Ecosystem tours waitlist signup for %s", maskEmail(email))
 
       return NextResponse.json({
         success: true,
@@ -134,7 +135,7 @@ export async function POST(request: Request) {
         updatedAt: new Date(),
       })
 
-    console.log(`Ecosystem tours opt-in updated for ${email} (doc: ${doc.id})`)
+    console.log("Ecosystem tours opt-in updated for %s (doc: %s)", maskEmail(email), doc.id)
 
     return NextResponse.json({
       success: true,

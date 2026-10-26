@@ -40,6 +40,14 @@ const industries = [
   "Other",
 ]
 
+// The preview src comes from a local FileReader (data:image/...) or the upload
+// API's returned URL (https:). Anything else is dropped so no other scheme can
+// reach the <img> (CodeQL js/xss-through-dom).
+function safeImageSrc(src: string | null | undefined): string | undefined {
+  if (!src) return undefined
+  return /^(https:|blob:|data:image\/)/i.test(src) ? src : undefined
+}
+
 export function PitchSubmissionForm() {
   const [formData, setFormData] = useState<PitchFormData>({
     companyName: "",
@@ -268,7 +276,7 @@ export function PitchSubmissionForm() {
             <div className="w-20 h-20 rounded-lg border-2 border-dashed border-border bg-background flex items-center justify-center overflow-hidden shrink-0">
               {(logoPreview || formData.logoUrl) ? (
                 <img
-                  src={logoPreview || formData.logoUrl}
+                  src={safeImageSrc(logoPreview || formData.logoUrl)}
                   alt="Logo preview"
                   className="w-full h-full object-cover rounded-lg"
                 />

@@ -8,6 +8,15 @@ export const dynamic = "force-dynamic"
 type SponsorEvent = "techday" | "techfuel"
 type SponsorCategory = "sponsors" | "community"
 
+// event and category arrive from the request and index the sponsors object, so
+// only the known values are accepted; anything else ("__proto__", "constructor")
+// is refused before it can be used as a key (CodeQL js/prototype-polluting-assignment).
+const SPONSOR_EVENTS: readonly string[] = ["techday", "techfuel"]
+const SPONSOR_CATEGORIES: readonly string[] = ["sponsors", "community"]
+const isSponsorEvent = (v: unknown): v is SponsorEvent => typeof v === "string" && SPONSOR_EVENTS.includes(v)
+const isSponsorCategory = (v: unknown): v is SponsorCategory => typeof v === "string" && SPONSOR_CATEGORIES.includes(v)
+const invalidKeys = () => NextResponse.json({ error: "Invalid event or category" }, { status: 400 })
+
 interface EventSponsors {
   sponsors: SponsorContent[]
   community: SponsorContent[]
@@ -102,10 +111,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Name, event, and category are required" }, { status: 400 })
     }
 
-    const validEvents: SponsorEvent[] = ["techday", "techfuel"]
-    const validCategories: SponsorCategory[] = ["sponsors", "community"]
-    if (!validEvents.includes(event) || !validCategories.includes(category)) {
-      return NextResponse.json({ error: "Invalid event or category" }, { status: 400 })
+    if (!isSponsorEvent(event) || !isSponsorCategory(category)) {
+      return invalidKeys()
     }
 
     if (!sponsor.id) {
@@ -160,6 +167,13 @@ export async function PUT(request: Request) {
     if (!sponsor.id) {
       return NextResponse.json({ error: "Sponsor ID is required" }, { status: 400 })
     }
+    if (
+      !isSponsorEvent(event) || !isSponsorCategory(category) ||
+      (oldEvent !== undefined && !isSponsorEvent(oldEvent)) ||
+      (oldCategory !== undefined && !isSponsorCategory(oldCategory))
+    ) {
+      return invalidKeys()
+    }
 
     const doc = await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").get()
     const currentSponsors = cloneSponsors(doc.exists ? doc.data()?.sponsors : undefined)
@@ -210,6 +224,9 @@ export async function PATCH(request: Request) {
 
     if (!event || !category || !reorderedSponsors || !Array.isArray(reorderedSponsors)) {
       return NextResponse.json({ error: "Event, category, and sponsors array are required" }, { status: 400 })
+    }
+    if (!isSponsorEvent(event) || !isSponsorCategory(category)) {
+      return invalidKeys()
     }
 
     const doc = await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").get()
@@ -269,6 +286,9 @@ export async function DELETE(request: Request) {
 
     if (!event || !category) {
       return NextResponse.json({ error: "Event and category are required for individual delete" }, { status: 400 })
+    }
+    if (!isSponsorEvent(event) || !isSponsorCategory(category)) {
+      return invalidKeys()
     }
 
     const doc = await adminDb.collection(COLLECTIONS.CONTENT).doc("sponsors").get()

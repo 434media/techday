@@ -3,6 +3,7 @@ import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type PitchSchedulingDocument } from "@/lib/firebase/collections"
 import { sendPitchSchedulingConfirmation } from "@/lib/email/resend"
+import { isValidEmail } from "@/lib/validate-email"
 
 // Each pitch slot holds exactly 1 company
 const MAX_PER_SLOT = 1
@@ -149,8 +150,7 @@ export async function POST(request: Request) {
     }
 
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(data.email)) {
+    if (!isValidEmail(data.email)) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
     }
 

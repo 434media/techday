@@ -3,6 +3,8 @@ import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type JudgeSchedulingDocument } from "@/lib/firebase/collections"
 import { sendJudgeSchedulingConfirmation } from "@/lib/email/resend"
+import { isValidEmail } from "@/lib/validate-email"
+import { maskEmail } from "@/lib/mask-email"
 
 // Slot capacity
 const MAX_PER_SLOT = 5
@@ -97,8 +99,7 @@ export async function POST(request: Request) {
       if (!data.email?.trim()) {
         return NextResponse.json({ error: "Email is required for custom names" }, { status: 400 })
       }
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(data.email)) {
+      if (!isValidEmail(data.email)) {
         return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
       }
     }
@@ -151,7 +152,7 @@ export async function POST(request: Request) {
         doc.timeSlot
       )
       if (!emailResult.success) {
-        console.warn(`Judge scheduling saved but email failed for ${doc.email}`)
+        console.warn("Judge scheduling saved but email failed for %s", maskEmail(doc.email))
       }
     }
 
