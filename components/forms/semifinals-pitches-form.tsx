@@ -6,8 +6,6 @@ import { motion } from "motion/react"
 interface ApprovedPitch {
   id: string
   companyName: string
-  founderName: string
-  email: string
 }
 
 const DATES = [
@@ -122,9 +120,7 @@ export function PitchSchedulingForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          companyName: selectedPitch.companyName,
-          founderName: selectedPitch.founderName,
-          email: selectedPitch.email,
+          pitchId: selectedPitch.id,
           date: selectedDate,
           judgeBlock: selectedBlock,
           pitchSlot: selectedSlot,
@@ -169,7 +165,7 @@ export function PitchSchedulingForm() {
           Judge Block: {selectedBlock}
         </p>
         <p className="text-sm text-neutral-500 mt-6 leading-relaxed">
-          A confirmation email with Zoom details has been sent to <span className="font-medium">{selectedPitch?.email}</span>. Check your inbox for the calendar invite link.
+          A confirmation email with Zoom details has been sent to the email on your application. Check your inbox for the calendar invite link.
         </p>
       </motion.div>
     )
@@ -231,23 +227,12 @@ export function PitchSchedulingForm() {
                     }`}>
                       {pitch.companyName}
                     </p>
-                    <p className="text-[12px] text-neutral-400 leading-4 mt-0.5">
-                      {pitch.founderName}
-                    </p>
                   </button>
                 ))
               )}
             </div>
           )}
         </div>
-
-        {selectedPitch && (
-          <div className="mt-3 p-3 bg-neutral-50 border border-neutral-200 rounded-md">
-            <p className="text-[13px] text-neutral-500 leading-5">
-              <span className="font-semibold text-neutral-700">{selectedPitch.founderName}</span> — {selectedPitch.email}
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Date Selection */}
