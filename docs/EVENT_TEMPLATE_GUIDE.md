@@ -125,7 +125,6 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_xxxxx  # For image uploads
 ```bash
 DISABLE_BOT_PROTECTION=true         # Skip BotID checks in dev
 ADMIN_SETUP_SECRET=your-secret      # For /api/admin/seed route
-ADMIN_SETUP_KEY=your-key            # For /api/admin/migrate route
 ADMIN_USERS=email|role|name|q|a|pin # Legacy config-based admin auth
 ```
 
@@ -174,7 +173,6 @@ app/
 │       ├── stats/          # Dashboard statistics
 │       ├── seed/           # Seed admin users
 │       ├── setup/          # First-time admin setup
-│       ├── migrate/        # DB migration utility
 │       └── upload/         # Image upload via Vercel Blob
 components/
 ├── navbar.tsx              # Fixed top navigation
@@ -548,7 +546,6 @@ Each text block is stored as a document in the `siteText` collection, keyed by i
 | `/api/admin/upload` | POST | Upload image to Vercel Blob |
 | `/api/admin/setup` | POST, GET | First-time admin creation |
 | `/api/admin/seed` | POST, GET | Seed admin users |
-| `/api/admin/migrate` | POST, GET | Database migration utility |
 
 ### Common API Patterns
 
@@ -910,7 +907,6 @@ All content is hardcoded in English. For international events:
 
 #### 18. **Cleanup: Remove Dead Code**
 - `lib/admin/config.ts` — Legacy env-based admin auth system (replaced by Firebase Auth)
-- `/api/admin/migrate` — One-time migration utility, should be removed after use
 - `components/conference-hero.tsx` — Appears to be an older/alternate hero component
 - Mailchimp env vars (`MAILCHIMP_API_KEY`, `MAILCHIMP_AUDIENCE_ID`) — Not used in codebase, Resend is the email provider
 
