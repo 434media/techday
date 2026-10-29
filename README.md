@@ -169,6 +169,27 @@ ADMIN_USERS=admin@example.com|superadmin|Admin|What is 2+2?|4|1234
 
 # Vercel Blob (for file uploads)
 BLOB_READ_WRITE_TOKEN=your-vercel-blob-token
+
+# Tech Fuel semi-finals Zoom details (server-side only; never NEXT_PUBLIC_).
+# One set per date. Unset = emails say details will follow; admin shows "Not configured".
+ZOOM_SEMIFINALS_20260402_URL=https://us06web.zoom.us/j/...
+ZOOM_SEMIFINALS_20260402_MEETING_ID="000 0000 0000"
+ZOOM_SEMIFINALS_20260402_PASSCODE=...
+ZOOM_SEMIFINALS_20260403_URL=https://us06web.zoom.us/j/...
+ZOOM_SEMIFINALS_20260403_MEETING_ID="000 0000 0000"
+ZOOM_SEMIFINALS_20260403_PASSCODE=...
+
+# Semi-finals judge roster id -> email (JSON, server-side only). Ids are in
+# lib/semifinal-judges.ts. Unset = listed judges get no confirmation email.
+SEMIFINALS_JUDGE_EMAILS={"jane-doe":"jane@example.com"}
+
+# One-off email scripts (scripts/, local only). Recipient lists live in JSON
+# files OUTSIDE the repo; see scripts/lib/recipients.ts.
+SPEAKER_KBYG_RECIPIENTS_FILE=/path/outside/repo/speaker-kbyg-recipients.json  # ["a@x.com", ...]
+SPEAKER_KBYG_SEND_ONLY=new.speaker@example.com   # optional subset; else pass --all
+JUDGE_KBYG_RECIPIENTS_FILE=/path/outside/repo/judge-kbyg-recipients.json      # [{"name","email"}, ...]
+NONFINALIST_SKIP_EMAILS=dup@example.com          # optional, comma-separated
+PREVIEW_EXTRA_RECIPIENTS=someone@example.com     # optional, comma-separated
 ```
 
 > ⚠️ **Important:** Never commit `.env.local` to version control. It's already in `.gitignore`.
@@ -278,6 +299,8 @@ Add the following environment variables in your Vercel project settings:
 - `ADMIN_SESSION_SECRET`
 - `ADMIN_USERS`
 - `BLOB_READ_WRITE_TOKEN`
+- `ZOOM_SEMIFINALS_<YYYYMMDD>_URL`, `_MEETING_ID`, `_PASSCODE` (see lib/zoom-meetings.ts)
+- `SEMIFINALS_JUDGE_EMAILS` (see lib/semifinal-judge-emails.ts)
 
 ---
 

@@ -4,6 +4,7 @@
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { Resend } from "resend"
+import { escapeHtml } from "../lib/email/escape"
 
 // Load .env.local manually
 const envFile = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8")
@@ -49,7 +50,7 @@ const companyName = "Rocketman"
 
 const content = `
   <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-    Hey ${founderName},
+    Hey ${escapeHtml(founderName)},
   </h2>
   
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -57,7 +58,7 @@ const content = `
   </p>
   
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-    After a highly competitive review process, <strong>${companyName}</strong> was not selected to advance to the next stage this year. This was not an easy decision. We received a strong pool of applications and, with limited spots, had to make difficult choices across a range of factors.
+    After a highly competitive review process, <strong>${escapeHtml(companyName)}</strong> was not selected to advance to the next stage this year. This was not an easy decision. We received a strong pool of applications and, with limited spots, had to make difficult choices across a range of factors.
   </p>
   
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">

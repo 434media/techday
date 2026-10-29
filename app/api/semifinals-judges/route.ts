@@ -3,6 +3,8 @@ import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type JudgeSchedulingDocument } from "@/lib/firebase/collections"
 import { sendJudgeSchedulingConfirmation } from "@/lib/email/resend"
+import { findSemifinalJudge } from "@/lib/semifinal-judges"
+import { getSemifinalJudgeEmail } from "@/lib/semifinal-judge-emails"
 
 // Slot capacity
 const MAX_PER_SLOT = 5
@@ -81,8 +83,17 @@ export async function POST(request: Request) {
 
     const data = await request.json()
 
-    // Validate required fields
-    if (!data.judgeName?.trim()) {
+    // Listed judges are identified by roster id; their name and email come from
+    // the server, never from the client. Only custom judges supply both.
+    const isCustomName = data.isCustomName === true
+    const listedJudge = isCustomName ? undefined : findSemifinalJudge(data.judgeId)
+    if (!isCustomName && !listedJudge) {
+      return NextResponse.json({ error: "Please select your name from the list" }, { status: 400 })
+    }
+    const judgeName: string = listedJudge
+      ? listedJudge.name
+      : typeof data.judgeName === "string" ? data.judgeName.trim() : ""
+    if (!judgeName) {
       return NextResponse.json({ error: "Judge name is required" }, { status: 400 })
     }
     if (!data.date || !VALID_SLOTS[data.date]) {
@@ -93,20 +104,25 @@ export async function POST(request: Request) {
     }
 
     // If custom name, email is required
-    if (data.isCustomName) {
-      if (!data.email?.trim()) {
+    let judgeEmail = ""
+    if (isCustomName) {
+      const customEmail = typeof data.email === "string" ? data.email.trim() : ""
+      if (!customEmail) {
         return NextResponse.json({ error: "Email is required for custom names" }, { status: 400 })
       }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(data.email)) {
+      if (!emailRegex.test(customEmail)) {
         return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
       }
+      judgeEmail = customEmail.toLowerCase()
+    } else if (listedJudge) {
+      judgeEmail = getSemifinalJudgeEmail(listedJudge.id)
     }
 
     // Check if this judge already registered
     const existingQuery = await adminDb
       .collection(COLLECTIONS.JUDGE_SCHEDULING)
-      .where("judgeName", "==", data.judgeName.trim())
+      .where("judgeName", "==", judgeName)
       .get()
 
     if (!existingQuery.empty) {
@@ -128,9 +144,9 @@ export async function POST(request: Request) {
     }
 
     const doc: JudgeSchedulingDocument = {
-      judgeName: data.judgeName.trim(),
-      email: (data.email || data.judgeEmail || "").toLowerCase().trim(),
-      isCustomName: !!data.isCustomName,
+      judgeName,
+      email: judgeEmail,
+      isCustomName,
       date: data.date,
       timeSlot: data.timeSlot,
       submittedAt: new Date(),

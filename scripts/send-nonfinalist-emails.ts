@@ -6,6 +6,8 @@ import { resolve } from "path"
 import { initializeApp, cert, getApps } from "firebase-admin/app"
 import { getFirestore } from "firebase-admin/firestore"
 import { Resend } from "resend"
+import { escapeHtml } from "../lib/email/escape"
+import { loadEmailListEnv } from "./lib/recipients"
 
 const envFile = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8")
 for (const line of envFile.split("\n")) {
@@ -72,8 +74,8 @@ const FINALIST_COMPANIES = [
   "ComeBack Mobility",
 ]
 
-// Duplicate to skip (PropyLaw submitted twice)
-const SKIP_EMAIL = "aldo.tig011@gmail.com"
+// Duplicate submissions to skip: comma-separated emails in NONFINALIST_SKIP_EMAILS
+// (.env.local), read in main(). Kept out of the repo because it is public.
 
 function getEmailTemplate(content: string) {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tech Fuel 2026</title></head>
@@ -111,14 +113,14 @@ function getEmailTemplate(content: string) {
 function getNonFinalistContent(founderName: string, companyName: string) {
   const firstName = founderName.split(" ")[0]
   return `
-    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">Hi ${firstName},</h2>
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">Hi ${escapeHtml(firstName)},</h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      Thank you for being part of TechFuel 2026. Out of more than 75 applicants, you advanced to the top 25 semifinalists. That is a meaningful accomplishment, and <strong>${companyName}</strong> made a strong impression on our judges.
+      Thank you for being part of TechFuel 2026. Out of more than 75 applicants, you advanced to the top 25 semifinalists. That is a meaningful accomplishment, and <strong>${escapeHtml(companyName)}</strong> made a strong impression on our judges.
     </p>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      After careful deliberation, we've selected our finalists for the April 20th event. While <strong>${companyName}</strong> will not be moving forward this round, we hope the experience was valuable and energizing. We have no doubt you are building something meaningful, and this is just one step in a much longer journey.
+      After careful deliberation, we've selected our finalists for the April 20th event. While <strong>${escapeHtml(companyName)}</strong> will not be moving forward this round, we hope the experience was valuable and energizing. We have no doubt you are building something meaningful, and this is just one step in a much longer journey.
     </p>
     
     <p style="margin: 0 0 30px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -185,6 +187,7 @@ function getNonFinalistContent(founderName: string, companyName: string) {
 }
 
 async function main() {
+  const skipEmails = new Set(loadEmailListEnv("NONFINALIST_SKIP_EMAILS").map((e) => e.toLowerCase()))
   // Get all semifinalists from pitchScheduling
   const schedSnap = await db.collection("pitchScheduling").get()
   const semifinalistCompanies = new Set<string>()
@@ -206,7 +209,7 @@ async function main() {
     // Must NOT be a finalist
     if (FINALIST_COMPANIES.some((f) => f.toLowerCase() === companyName.toLowerCase())) continue
     // Skip duplicate PropyLaw entry
-    if (email.toLowerCase() === SKIP_EMAIL) continue
+    if (skipEmails.has(email.toLowerCase())) continue
 
     nonFinalists.push({
       companyName,

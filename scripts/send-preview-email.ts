@@ -4,6 +4,8 @@
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { Resend } from "resend"
+import { escapeHtml, safeHref } from "../lib/email/escape"
+import { getZoomMeeting } from "../lib/zoom-meetings"
 
 // Load .env.local manually
 const envFile = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8")
@@ -42,17 +44,15 @@ const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns=
 
 const BETO_SIGNATURE_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
 
-const ZOOM_MEETINGS: Record<string, { url: string; meetingId: string; passcode: string }> = {
-  "2026-04-02": {
-    url: "https://us06web.zoom.us/j/84733840136?pwd=WfCT50nnaUvgGV9PwWe3zgAeM1nt5Y.1",
-    meetingId: "847 3384 0136",
-    passcode: "Techbloc",
-  },
-  "2026-04-03": {
-    url: "https://us06web.zoom.us/j/81595831528?pwd=HnDxWd4sU0RoKezdGsZEaGS7Ajqmif.1",
-    meetingId: "815 9583 1528",
-    passcode: "Techbloc",
-  },
+// Zoom details come from server-side env vars (ZOOM_SEMIFINALS_<YYYYMMDD>_URL,
+// _MEETING_ID, _PASSCODE in .env.local) and are never committed. See lib/zoom-meetings.ts.
+// Read lazily, after .env.local has been loaded above.
+function requireZoom(date: string) {
+  const zoom = getZoomMeeting(date)
+  if (!zoom) {
+    throw new Error(`Zoom details for ${date} are not set. Add ZOOM_SEMIFINALS_${date.replace(/-/g, "")}_URL/_MEETING_ID/_PASSCODE to .env.local`)
+  }
+  return zoom
 }
 
 // Preview data
@@ -62,16 +62,16 @@ const companyName = "Rocketman"
 const date = "2026-04-02"
 const pitchSlot = "9:05 AM - 9:15 AM"
 const judgeBlock = "9:00 AM - 10:30 AM"
-const zoom = ZOOM_MEETINGS[date]
+const zoom = requireZoom(date)
 const dateLabel = "Thursday, April 2, 2026"
 
 const content = `
   <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-    Hey ${founderName},
+    Hey ${escapeHtml(founderName)},
   </h2>
   
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-    <strong>${companyName}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
+    <strong>${escapeHtml(companyName)}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
   </p>
   
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -98,17 +98,17 @@ const content = `
           <tr>
             <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
               <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Date</p>
-              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${dateLabel}</p>
+              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(dateLabel)}</p>
             </td>
             <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
               <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Pitch Time</p>
-              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${pitchSlot}</p>
+              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${escapeHtml(pitchSlot)}</p>
             </td>
           </tr>
           <tr>
             <td width="50%" style="vertical-align: top;">
               <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Company</p>
-              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${companyName}</p>
+              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(companyName)}</p>
             </td>
             <td width="50%" style="vertical-align: top;">
               <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Format</p>
@@ -132,7 +132,7 @@ const content = `
             <td style="padding-bottom: 10px;">
               <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
               <p style="margin: 0;">
-                <a href="${zoom.url}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
+                <a href="${safeHref(zoom.url)}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
                   Click here to join Zoom meeting
                 </a>
               </p>
@@ -144,11 +144,11 @@ const content = `
                 <tr>
                   <td style="padding-right: 30px;">
                     <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
-                    <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.meetingId}</p>
+                    <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${escapeHtml(zoom.meetingId)}</p>
                   </td>
                   <td>
                     <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
-                    <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.passcode}</p>
+                    <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${escapeHtml(zoom.passcode)}</p>
                   </td>
                 </tr>
               </table>

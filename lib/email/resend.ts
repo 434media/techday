@@ -1,4 +1,6 @@
 import { Resend } from "resend"
+import { escapeHtml, safeHref } from "@/lib/email/escape"
+import { getZoomMeeting, ZOOM_DETAILS_FALLBACK, type ZoomMeeting } from "@/lib/zoom-meetings"
 
 // Initialize Resend with API key
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -204,7 +206,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
   switch (eventType) {
     case "techfuel":
       return {
-        greeting: `You're In, ${firstName}! 🎉`,
+        greeting: `You're In, ${escapeHtml(firstName)}! 🎉`,
         description: "Your registration for <strong>Tech Fuel 2026</strong> is confirmed. Get ready to witness the most exciting startup pitch competition in San Antonio!",
         dateInfo: "<strong>April 20, 2026 • 2:00–6:00 PM</strong>",
         locationInfo: "<strong>UTSA SP1</strong>, San Antonio",
@@ -212,7 +214,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
       }
     case "techday":
       return {
-        greeting: `You're In, ${firstName}! 🎉`,
+        greeting: `You're In, ${escapeHtml(firstName)}! 🎉`,
         description: "Your registration for <strong>Tech Day 2026</strong> is confirmed. We can't wait to see you at Boeing Center at Tech Port on April 21st!",
         dateInfo: "<strong>April 21, 2026 • 1:00–4:00 PM</strong><br/>Doors Open at 12:30 PM",
         locationInfo: "<strong>Boeing Center at Tech Port</strong>, San Antonio",
@@ -220,7 +222,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
       }
     case "both":
       return {
-        greeting: `You're In, ${firstName}! 🎉`,
+        greeting: `You're In, ${escapeHtml(firstName)}! 🎉`,
         description: "Your registration for <strong>Tech Fuel & Tech Day 2026</strong> is confirmed. Join us for two incredible days of innovation, pitches, and networking!",
         dateInfo: "<strong>April 20-21, 2026</strong><br/>Tech Fuel: 2:00–6:00 PM • Tech Day: 1:00–4:00 PM (Doors 12:30 PM)",
         locationInfo: "<strong>UTSA SP1</strong> (April 20) & <strong>Boeing Center at Tech Port</strong> (April 21), San Antonio",
@@ -641,18 +643,18 @@ export async function sendRegistrationConfirmation(
             Your Ticket ID
           </p>
           <p style="margin: 0 0 20px; color: #ffffff; font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px;">
-            ${ticketId}
+            ${escapeHtml(ticketId)}
           </p>
           
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
             <tr>
               <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Attendee</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${firstName} ${lastName}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(firstName)} ${escapeHtml(lastName)}</p>
               </td>
               <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Category</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; text-transform: capitalize;">${category}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; text-transform: capitalize;">${escapeHtml(category)}</p>
               </td>
             </tr>
           </table>
@@ -701,7 +703,7 @@ export async function sendPitchConfirmation(
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      Hey ${founderName}, thanks for submitting <strong>${companyName}</strong> to Tech Fuel! Your pitch is now in our review queue.
+      Hey ${escapeHtml(founderName)}, thanks for submitting <strong>${escapeHtml(companyName)}</strong> to Tech Fuel! Your pitch is now in our review queue.
     </p>
     
     <!-- Status Card -->
@@ -720,7 +722,7 @@ export async function sendPitchConfirmation(
                   Submission ID
                 </p>
                 <p style="margin: 0 0 20px; color: #ffffff; font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace;">
-                  ${submissionId.slice(0, 12)}...
+                  ${escapeHtml(submissionId.slice(0, 12))}...
                 </p>
               </td>
             </tr>
@@ -829,11 +831,11 @@ export async function sendSponsorInquiryConfirmation(
 ) {
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Thanks for Reaching Out, ${firstName}! 🤝
+      Thanks for Reaching Out, ${escapeHtml(firstName)}! 🤝
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      We've received your sponsorship inquiry from <strong>${company}</strong> and our partnerships team is excited to connect with you.
+      We've received your sponsorship inquiry from <strong>${escapeHtml(company)}</strong> and our partnerships team is excited to connect with you.
     </p>
     
     <p style="margin: 0 0 25px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -853,14 +855,14 @@ export async function sendSponsorInquiryConfirmation(
             Sponsorship Inquiry
           </p>
           <p style="margin: 0 0 20px; color: #ffffff; font-size: 20px; font-weight: 600;">
-            ${company}
+            ${escapeHtml(company)}
           </p>
           
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
             <tr>
               <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Contact</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${firstName} ${lastName}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(firstName)} ${escapeHtml(lastName)}</p>
               </td>
               <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Status</p>
@@ -958,22 +960,66 @@ export async function sendSponsorInquiryConfirmation(
   }
 }
 
-// Zoom meeting details per date
-const ZOOM_MEETINGS: Record<string, { url: string; meetingId: string; passcode: string }> = {
-  "2026-04-02": {
-    url: "https://us06web.zoom.us/j/84733840136?pwd=WfCT50nnaUvgGV9PwWe3zgAeM1nt5Y.1",
-    meetingId: "847 3384 0136",
-    passcode: "Techbloc",
-  },
-  "2026-04-03": {
-    url: "https://us06web.zoom.us/j/81595831528?pwd=HnDxWd4sU0RoKezdGsZEaGS7Ajqmif.1",
-    meetingId: "815 9583 1528",
-    passcode: "Techbloc",
-  },
+// Zoom details block for semi-finals emails. Details come from server-side env
+// vars (lib/zoom-meetings.ts); when unset, the email says they will follow.
+function renderZoomDetails(zoom: ZoomMeeting | null): string {
+  if (!zoom) {
+    return `
+    <!-- Zoom Details -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background-color: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 10px; color: #1e40af; font-size: 16px; font-weight: 600;">
+            📹 Zoom Meeting Details
+          </h3>
+          <p style="margin: 0; color: #0a0a0a; font-size: 14px;">${ZOOM_DETAILS_FALLBACK}</p>
+        </td>
+      </tr>
+    </table>`
+  }
+  return `
+    <!-- Zoom Details -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+      <tr>
+        <td style="background-color: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 25px;">
+          <h3 style="margin: 0 0 15px; color: #1e40af; font-size: 16px; font-weight: 600;">
+            📹 Zoom Meeting Details
+          </h3>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="padding-bottom: 10px;">
+                <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
+                <p style="margin: 0;">
+                  <a href="${safeHref(zoom.url)}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
+                    Click here to join Zoom meeting
+                  </a>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table role="presentation" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td style="padding-right: 30px;">
+                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
+                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${escapeHtml(zoom.meetingId)}</p>
+                    </td>
+                    <td>
+                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
+                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${escapeHtml(zoom.passcode)}</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>`
 }
 
 // Build a Google Calendar link for the judging session
-function buildCalendarLink(date: string, timeSlot: string, zoomUrl: string): string {
+function buildCalendarLink(date: string, timeSlot: string, zoomUrl: string | undefined): string {
   // Parse the time slot: "9:00 AM - 10:30 AM"
   const [startStr, endStr] = timeSlot.split(" - ")
   const dateStr = date // "2026-04-02"
@@ -993,7 +1039,8 @@ function buildCalendarLink(date: string, timeSlot: string, zoomUrl: string): str
   const start = parseTime(dateStr, startStr)
   const end = parseTime(dateStr, endStr)
   const title = encodeURIComponent("Tech Fuel 2026 Semi-Finals Judging")
-  const details = encodeURIComponent(`Join via Zoom: ${zoomUrl}\n\nYou are scheduled to judge Tech Fuel semi-finalist pitches.`)
+  const joinLine = zoomUrl ? `Join via Zoom: ${zoomUrl}` : ZOOM_DETAILS_FALLBACK
+  const details = encodeURIComponent(`${joinLine}\n\nYou are scheduled to judge Tech Fuel semi-finalist pitches.`)
   const location = encodeURIComponent("Zoom (link in description)")
 
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`
@@ -1006,13 +1053,13 @@ export async function sendJudgeSchedulingConfirmation(
   date: string,
   timeSlot: string
 ) {
-  const zoom = ZOOM_MEETINGS[date]
+  const zoom = getZoomMeeting(date)
   const dateLabel = date === "2026-04-02" ? "Thursday, April 2, 2026" : "Friday, April 3, 2026"
-  const calendarLink = buildCalendarLink(date, timeSlot, zoom.url)
+  const calendarLink = buildCalendarLink(date, timeSlot, zoom?.url)
 
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      You're Confirmed, ${judgeName}! 🎓
+      You're Confirmed, ${escapeHtml(judgeName)}! 🎓
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -1035,17 +1082,17 @@ export async function sendJudgeSchedulingConfirmation(
             <tr>
               <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Date</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${dateLabel}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(dateLabel)}</p>
               </td>
               <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Time</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${timeSlot}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${escapeHtml(timeSlot)}</p>
               </td>
             </tr>
             <tr>
               <td colspan="2" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Judge</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${judgeName}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(judgeName)}</p>
               </td>
             </tr>
           </table>
@@ -1053,50 +1100,13 @@ export async function sendJudgeSchedulingConfirmation(
       </tr>
     </table>
     
-    <!-- Zoom Details -->
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
-      <tr>
-        <td style="background-color: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 25px;">
-          <h3 style="margin: 0 0 15px; color: #1e40af; font-size: 16px; font-weight: 600;">
-            📹 Zoom Meeting Details
-          </h3>
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-            <tr>
-              <td style="padding-bottom: 10px;">
-                <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
-                <p style="margin: 0;">
-                  <a href="${zoom.url}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
-                    Click here to join Zoom meeting
-                  </a>
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <table role="presentation" cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td style="padding-right: 30px;">
-                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
-                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.meetingId}</p>
-                    </td>
-                    <td>
-                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
-                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.passcode}</p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
+    ${renderZoomDetails(zoom)}
     
     <!-- Add to Calendar -->
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
       <tr>
         <td align="center">
-          <a href="${calendarLink}" target="_blank" style="display: inline-block; padding: 14px 32px; background-color: #0a0a0a; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 4px; letter-spacing: 0.5px;">
+          <a href="${safeHref(calendarLink)}" target="_blank" style="display: inline-block; padding: 14px 32px; background-color: #0a0a0a; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 4px; letter-spacing: 0.5px;">
             📅 ADD TO GOOGLE CALENDAR
           </a>
         </td>
@@ -1190,17 +1200,17 @@ export async function sendPitchSchedulingConfirmation(
   pitchSlot: string,
   judgeBlock: string
 ) {
-  const zoom = ZOOM_MEETINGS[date]
+  const zoom = getZoomMeeting(date)
   const dateLabel = date === "2026-04-02" ? "Thursday, April 2, 2026" : "Friday, April 3, 2026"
-  const calendarLink = buildCalendarLink(date, pitchSlot, zoom.url)
+  const calendarLink = buildCalendarLink(date, pitchSlot, zoom?.url)
 
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Congratulations, ${founderName}! 🎉
+      Congratulations, ${escapeHtml(founderName)}! 🎉
     </h2>
     
     <p style="margin: 0 0 15px; color: #525252; font-size: 16px; line-height: 1.6;">
-      We're excited to share that <strong>${companyName}</strong> has been selected as a <strong>Semi-Finalist</strong> for the Tech Fuel 2026 Startup Pitch Competition! Out of many impressive applications, your pitch stood out to our review panel.
+      We're excited to share that <strong>${escapeHtml(companyName)}</strong> has been selected as a <strong>Semi-Finalist</strong> for the Tech Fuel 2026 Startup Pitch Competition! Out of many impressive applications, your pitch stood out to our review panel.
     </p>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -1223,21 +1233,21 @@ export async function sendPitchSchedulingConfirmation(
             <tr>
               <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Date</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${dateLabel}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(dateLabel)}</p>
               </td>
               <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Pitch Time</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${pitchSlot}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${escapeHtml(pitchSlot)}</p>
               </td>
             </tr>
             <tr>
               <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Company</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${companyName}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(companyName)}</p>
               </td>
               <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Judge Block</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${judgeBlock}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${escapeHtml(judgeBlock)}</p>
               </td>
             </tr>
           </table>
@@ -1245,50 +1255,13 @@ export async function sendPitchSchedulingConfirmation(
       </tr>
     </table>
     
-    <!-- Zoom Details -->
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
-      <tr>
-        <td style="background-color: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 25px;">
-          <h3 style="margin: 0 0 15px; color: #1e40af; font-size: 16px; font-weight: 600;">
-            📹 Zoom Meeting Details
-          </h3>
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-            <tr>
-              <td style="padding-bottom: 10px;">
-                <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
-                <p style="margin: 0;">
-                  <a href="${zoom.url}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
-                    Click here to join Zoom meeting
-                  </a>
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <table role="presentation" cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td style="padding-right: 30px;">
-                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
-                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.meetingId}</p>
-                    </td>
-                    <td>
-                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
-                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.passcode}</p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
+    ${renderZoomDetails(zoom)}
     
     <!-- Add to Calendar -->
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
       <tr>
         <td align="center">
-          <a href="${calendarLink}" target="_blank" style="display: inline-block; padding: 14px 32px; background-color: #0a0a0a; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 4px; letter-spacing: 0.5px;">
+          <a href="${safeHref(calendarLink)}" target="_blank" style="display: inline-block; padding: 14px 32px; background-color: #0a0a0a; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 4px; letter-spacing: 0.5px;">
             📅 ADD TO GOOGLE CALENDAR
           </a>
         </td>
@@ -1380,7 +1353,7 @@ export async function sendJudgeInvitationEmail(
 ) {
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      You're Invited to Judge, ${judgeName}! 🎓
+      You're Invited to Judge, ${escapeHtml(judgeName)}! 🎓
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -1517,16 +1490,16 @@ export async function sendPitchSemifinalsNotification(
   pitchSlot: string,
   judgeBlock: string
 ) {
-  const zoom = ZOOM_MEETINGS[date]
+  const zoom = getZoomMeeting(date)
   const dateLabel = date === "2026-04-02" ? "Thursday, April 2, 2026" : "Friday, April 3, 2026"
 
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Hey ${founderName},
+      Hey ${escapeHtml(founderName)},
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      <strong>${companyName}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
+      <strong>${escapeHtml(companyName)}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
     </p>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -1553,17 +1526,17 @@ export async function sendPitchSemifinalsNotification(
             <tr>
               <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Date</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${dateLabel}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(dateLabel)}</p>
               </td>
               <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Pitch Time</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${pitchSlot}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${escapeHtml(pitchSlot)}</p>
               </td>
             </tr>
             <tr>
               <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Company</p>
-                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${companyName}</p>
+                <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(companyName)}</p>
               </td>
               <td width="50%" style="vertical-align: top;">
                 <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Format</p>
@@ -1575,44 +1548,7 @@ export async function sendPitchSemifinalsNotification(
       </tr>
     </table>
     
-    <!-- Zoom Details -->
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
-      <tr>
-        <td style="background-color: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 25px;">
-          <h3 style="margin: 0 0 15px; color: #1e40af; font-size: 16px; font-weight: 600;">
-            📹 Zoom Meeting Details
-          </h3>
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-            <tr>
-              <td style="padding-bottom: 10px;">
-                <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
-                <p style="margin: 0;">
-                  <a href="${zoom.url}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
-                    Click here to join Zoom meeting
-                  </a>
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <table role="presentation" cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td style="padding-right: 30px;">
-                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
-                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.meetingId}</p>
-                    </td>
-                    <td>
-                      <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
-                      <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.passcode}</p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
+    ${renderZoomDetails(zoom)}
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
       If you have any questions, feel free to reply directly to this email.
@@ -1673,7 +1609,7 @@ export async function sendEcosystemToursNotification(
 
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      New Addition to Tech Fuel, ${firstName}! 🚌
+      New Addition to Tech Fuel, ${escapeHtml(firstName)}! 🚌
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -1759,6 +1695,47 @@ export async function sendEcosystemToursNotification(
   }
 }
 
+// Ecosystem tours opt-in confirmation (sent only to the registration's address on file)
+export async function sendEcosystemToursOptInConfirmation(
+  email: string,
+  firstName: string,
+  events: string[]
+) {
+  const eventType = getEventType(events)
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      You're on the Tour, ${escapeHtml(firstName)}! 🚌
+    </h2>
+
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Your Tech Fuel 2026 registration now includes <strong>Ecosystem Tours</strong> on April 20th at UTSA SP1. Your ticket ID is unchanged — use the one from your registration email at check-in.
+    </p>
+
+    <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+      Didn't request this? Reply to this email and we'll remove it.
+    </p>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: "You're signed up for Tech Fuel Ecosystem Tours 🚌",
+      html: getEventEmailTemplate(content, eventType, "Ecosystem tours are included with your Tech Fuel registration"),
+    })
+
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send ecosystem tours opt-in confirmation to ${email}:`, error)
+    return { success: false, error }
+  }
+}
+
 // Pitch non-select notification email — notifies pitch applicants they were not selected for semifinals
 export async function sendPitchNonSelectNotification(
   email: string,
@@ -1767,7 +1744,7 @@ export async function sendPitchNonSelectNotification(
 ) {
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Hey ${founderName},
+      Hey ${escapeHtml(founderName)},
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -1775,7 +1752,7 @@ export async function sendPitchNonSelectNotification(
     </p>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      After a highly competitive review process, <strong>${companyName}</strong> was not selected to advance to the next stage this year. This was not an easy decision. We received a strong pool of applications and, with limited spots, had to make difficult choices across a range of factors.
+      After a highly competitive review process, <strong>${escapeHtml(companyName)}</strong> was not selected to advance to the next stage this year. This was not an easy decision. We received a strong pool of applications and, with limited spots, had to make difficult choices across a range of factors.
     </p>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -1851,11 +1828,11 @@ export async function sendFinalistNotification(
   const firstName = founderName.split(" ")[0]
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Hi ${firstName},
+      Hi ${escapeHtml(firstName)},
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      Congratulations — <strong>${companyName}</strong> has advanced to the <strong>TechFuel 2026 FINALS!</strong>
+      Congratulations — <strong>${escapeHtml(companyName)}</strong> has advanced to the <strong>TechFuel 2026 FINALS!</strong>
     </p>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -2037,15 +2014,15 @@ export async function sendNonFinalistNotification(
   const firstName = founderName.split(" ")[0]
   const content = `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Hi ${firstName},
+      Hi ${escapeHtml(firstName)},
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      Thank you for being part of TechFuel 2026. Out of more than 75 applicants, you advanced to the top 25 semifinalists. That is a meaningful accomplishment, and <strong>${companyName}</strong> made a strong impression on our judges.
+      Thank you for being part of TechFuel 2026. Out of more than 75 applicants, you advanced to the top 25 semifinalists. That is a meaningful accomplishment, and <strong>${escapeHtml(companyName)}</strong> made a strong impression on our judges.
     </p>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      After careful deliberation, we've selected our finalists for the April 20th event. While <strong>${companyName}</strong> will not be moving forward this round, we hope the experience was valuable and energizing. We have no doubt you are building something meaningful, and this is just one step in a much longer journey.
+      After careful deliberation, we've selected our finalists for the April 20th event. While <strong>${escapeHtml(companyName)}</strong> will not be moving forward this round, we hope the experience was valuable and energizing. We have no doubt you are building something meaningful, and this is just one step in a much longer journey.
     </p>
     
     <p style="margin: 0 0 30px; color: #525252; font-size: 16px; line-height: 1.6;">

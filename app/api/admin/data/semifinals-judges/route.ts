@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type JudgeSchedulingDocument } from "@/lib/firebase/collections"
 import { verifyAdminSession } from "@/lib/admin/session"
+import { getAllZoomMeetings } from "@/lib/zoom-meetings"
 import { sendJudgeSchedulingConfirmation } from "@/lib/email/resend"
 
 export const dynamic = "force-dynamic"
@@ -13,7 +14,7 @@ export async function GET() {
   }
 
   if (!isFirebaseConfigured()) {
-    return NextResponse.json({ judges: [] })
+    return NextResponse.json({ judges: [], zoomMeetings: getAllZoomMeetings() })
   }
 
   try {
@@ -27,7 +28,7 @@ export async function GET() {
       submittedAt: doc.data().submittedAt?.toDate?.()?.toISOString() || doc.data().submittedAt,
     }))
 
-    return NextResponse.json({ judges })
+    return NextResponse.json({ judges, zoomMeetings: getAllZoomMeetings() })
   } catch (error) {
     console.error("Admin judge scheduling error:", error)
     return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 })
