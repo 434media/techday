@@ -4,6 +4,8 @@
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { Resend } from "resend"
+import { loadEmailListEnv } from "./lib/recipients"
+import { escapeHtml } from "../lib/email/escape"
 
 // Load .env.local manually
 const envFile = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8")
@@ -24,7 +26,8 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 const FROM_EMAIL = "Beto Altamirano <ceo@send.satechbloc.com>"
 const REPLY_TO = "ceo@satechbloc.com"
-const PREVIEW_EMAIL = ["marcos@434media.com", "altamirano@irystechnologies.com", "jesse@434media.com"]
+// Extra (non-staff) preview recipients come from PREVIEW_EXTRA_RECIPIENTS in .env.local.
+const PREVIEW_EMAIL = ["marcos@434media.com", "jesse@434media.com", ...loadEmailListEnv("PREVIEW_EXTRA_RECIPIENTS")]
 
 const BETO_SIGNATURE_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
 
@@ -98,15 +101,15 @@ function getNonFinalistEmailContent(founderName: string, companyName: string) {
   const firstName = founderName.split(" ")[0]
   return `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Hi ${firstName},
+      Hi ${escapeHtml(firstName)},
     </h2>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      Thank you for being part of TechFuel 2026. Out of more than 75 applicants, you advanced to the top 25 semifinalists. That is a meaningful accomplishment, and <strong>${companyName}</strong> made a strong impression on our judges.
+      Thank you for being part of TechFuel 2026. Out of more than 75 applicants, you advanced to the top 25 semifinalists. That is a meaningful accomplishment, and <strong>${escapeHtml(companyName)}</strong> made a strong impression on our judges.
     </p>
     
     <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-      After careful deliberation, we've selected our finalists for the April 20th event. While <strong>${companyName}</strong> will not be moving forward this round, we hope the experience was valuable and energizing. We have no doubt you are building something meaningful, and this is just one step in a much longer journey.
+      After careful deliberation, we've selected our finalists for the April 20th event. While <strong>${escapeHtml(companyName)}</strong> will not be moving forward this round, we hope the experience was valuable and energizing. We have no doubt you are building something meaningful, and this is just one step in a much longer journey.
     </p>
     
     <p style="margin: 0 0 30px; color: #525252; font-size: 16px; line-height: 1.6;">

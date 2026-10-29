@@ -4,6 +4,7 @@
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { Resend } from "resend"
+import { escapeHtml, safeHref } from "../lib/email/escape"
 import { getZoomMeeting } from "../lib/zoom-meetings"
 
 // Load .env.local manually
@@ -66,11 +67,11 @@ const dateLabel = "Thursday, April 2, 2026"
 
 const content = `
   <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-    Hey ${founderName},
+    Hey ${escapeHtml(founderName)},
   </h2>
   
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-    <strong>${companyName}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
+    <strong>${escapeHtml(companyName)}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
   </p>
   
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -97,17 +98,17 @@ const content = `
           <tr>
             <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
               <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Date</p>
-              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${dateLabel}</p>
+              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(dateLabel)}</p>
             </td>
             <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
               <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Pitch Time</p>
-              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${pitchSlot}</p>
+              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${escapeHtml(pitchSlot)}</p>
             </td>
           </tr>
           <tr>
             <td width="50%" style="vertical-align: top;">
               <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Company</p>
-              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${companyName}</p>
+              <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(companyName)}</p>
             </td>
             <td width="50%" style="vertical-align: top;">
               <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Format</p>
@@ -131,7 +132,7 @@ const content = `
             <td style="padding-bottom: 10px;">
               <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
               <p style="margin: 0;">
-                <a href="${zoom.url}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
+                <a href="${safeHref(zoom.url)}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">
                   Click here to join Zoom meeting
                 </a>
               </p>
@@ -143,11 +144,11 @@ const content = `
                 <tr>
                   <td style="padding-right: 30px;">
                     <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
-                    <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.meetingId}</p>
+                    <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${escapeHtml(zoom.meetingId)}</p>
                   </td>
                   <td>
                     <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
-                    <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.passcode}</p>
+                    <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${escapeHtml(zoom.passcode)}</p>
                   </td>
                 </tr>
               </table>

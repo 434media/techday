@@ -182,6 +182,14 @@ ZOOM_SEMIFINALS_20260403_PASSCODE=...
 # Semi-finals judge roster id -> email (JSON, server-side only). Ids are in
 # lib/semifinal-judges.ts. Unset = listed judges get no confirmation email.
 SEMIFINALS_JUDGE_EMAILS={"jane-doe":"jane@example.com"}
+
+# One-off email scripts (scripts/, local only). Recipient lists live in JSON
+# files OUTSIDE the repo; see scripts/lib/recipients.ts.
+SPEAKER_KBYG_RECIPIENTS_FILE=/path/outside/repo/speaker-kbyg-recipients.json  # ["a@x.com", ...]
+SPEAKER_KBYG_SEND_ONLY=new.speaker@example.com   # optional subset; else pass --all
+JUDGE_KBYG_RECIPIENTS_FILE=/path/outside/repo/judge-kbyg-recipients.json      # [{"name","email"}, ...]
+NONFINALIST_SKIP_EMAILS=dup@example.com          # optional, comma-separated
+PREVIEW_EXTRA_RECIPIENTS=someone@example.com     # optional, comma-separated
 ```
 
 > ⚠️ **Important:** Never commit `.env.local` to version control. It's already in `.gitignore`.

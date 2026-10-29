@@ -1695,6 +1695,47 @@ export async function sendEcosystemToursNotification(
   }
 }
 
+// Ecosystem tours opt-in confirmation (sent only to the registration's address on file)
+export async function sendEcosystemToursOptInConfirmation(
+  email: string,
+  firstName: string,
+  events: string[]
+) {
+  const eventType = getEventType(events)
+  const content = `
+    <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
+      You're on the Tour, ${escapeHtml(firstName)}! 🚌
+    </h2>
+
+    <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
+      Your Tech Fuel 2026 registration now includes <strong>Ecosystem Tours</strong> on April 20th at UTSA SP1. Your ticket ID is unchanged — use the one from your registration email at check-in.
+    </p>
+
+    <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+      Didn't request this? Reply to this email and we'll remove it.
+    </p>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: "You're signed up for Tech Fuel Ecosystem Tours 🚌",
+      html: getEventEmailTemplate(content, eventType, "Ecosystem tours are included with your Tech Fuel registration"),
+    })
+
+    if (result.error) {
+      console.error(`Resend API error for ${email}:`, result.error)
+      return { success: false, error: result.error }
+    }
+    return { success: true, data: result }
+  } catch (error) {
+    console.error(`Failed to send ecosystem tours opt-in confirmation to ${email}:`, error)
+    return { success: false, error }
+  }
+}
+
 // Pitch non-select notification email — notifies pitch applicants they were not selected for semifinals
 export async function sendPitchNonSelectNotification(
   email: string,
