@@ -157,6 +157,10 @@ FIREBASE_PROJECT_ID=your-project-id
 FIREBASE_CLIENT_EMAIL=your-service-account@your-project.iam.gserviceaccount.com
 FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 
+# Admin access allowlist (comma-separated). Only these addresses, with a verified
+# email, can open /admin; 434media.com staff must be listed too. Unset = nobody.
+ADMIN_EMAILS=someone@example.com,other@example.com
+
 # Admin Session Secret (generate with: openssl rand -base64 32)
 ADMIN_SESSION_SECRET=your-secure-random-string
 
@@ -270,6 +274,7 @@ Add the following environment variables in your Vercel project settings:
 - `FIREBASE_PROJECT_ID`
 - `FIREBASE_CLIENT_EMAIL`
 - `FIREBASE_PRIVATE_KEY`
+- `ADMIN_EMAILS` (admin allowlist; see lib/admin/allowlist.ts)
 - `ADMIN_SESSION_SECRET`
 - `ADMIN_USERS`
 - `BLOB_READ_WRITE_TOKEN`
