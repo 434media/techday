@@ -157,8 +157,8 @@ FIREBASE_PROJECT_ID=your-project-id
 FIREBASE_CLIENT_EMAIL=your-service-account@your-project.iam.gserviceaccount.com
 FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 
-# Admin access allowlist (comma-separated). Besides 434media.com Google accounts,
-# only these addresses, with a verified email, can open /admin. Unset = nobody else.
+# Admin access allowlist (comma-separated). Only these addresses, with a verified
+# email, can open /admin; 434media.com staff must be listed too. Unset = nobody.
 ADMIN_EMAILS=someone@example.com,other@example.com
 
 # Admin Session Secret (generate with: openssl rand -base64 32)

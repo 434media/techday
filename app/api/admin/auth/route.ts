@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic"
 // Firebase Authentication-based admin access.
 // Firebase Auth proves identity only: the project is shared with other apps and
 // allows public sign-up. Who is an admin is decided by lib/admin/allowlist.ts
-// (verified email, plus ADMIN_EMAILS or a 434media.com Google account).
+// (a verified email that is listed in ADMIN_EMAILS; no domain shortcut).
 
 const SESSION_COOKIE_NAME = "admin_session"
 const SESSION_DURATION = 60 * 60 * 24 * 7 // 7 days in seconds
