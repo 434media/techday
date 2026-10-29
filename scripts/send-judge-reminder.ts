@@ -5,6 +5,7 @@
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { Resend } from "resend"
+import { getZoomMeeting } from "../lib/zoom-meetings"
 import { initializeApp, cert } from "firebase-admin/app"
 import { getFirestore } from "firebase-admin/firestore"
 
@@ -69,17 +70,15 @@ const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns=
 
 const BETO_SIGNATURE_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
 
-const ZOOM_MEETINGS: Record<string, { url: string; meetingId: string; passcode: string }> = {
-  "2026-04-02": {
-    url: "https://us06web.zoom.us/j/84733840136?pwd=WfCT50nnaUvgGV9PwWe3zgAeM1nt5Y.1",
-    meetingId: "847 3384 0136",
-    passcode: "Techbloc",
-  },
-  "2026-04-03": {
-    url: "https://us06web.zoom.us/j/81595831528?pwd=HnDxWd4sU0RoKezdGsZEaGS7Ajqmif.1",
-    meetingId: "815 9583 1528",
-    passcode: "Techbloc",
-  },
+// Zoom details come from server-side env vars (ZOOM_SEMIFINALS_<YYYYMMDD>_URL,
+// _MEETING_ID, _PASSCODE in .env.local) and are never committed. See lib/zoom-meetings.ts.
+// Read lazily, after .env.local has been loaded above.
+function requireZoom(date: string) {
+  const zoom = getZoomMeeting(date)
+  if (!zoom) {
+    throw new Error(`Zoom details for ${date} are not set. Add ZOOM_SEMIFINALS_${date.replace(/-/g, "")}_URL/_MEETING_ID/_PASSCODE to .env.local`)
+  }
+  return zoom
 }
 
 const DATE_LABELS: Record<string, string> = {
@@ -131,7 +130,7 @@ function wrap(headerHtml: string, content: string, footerText = "") {
 
 function buildReminderEmail(judgeName: string, date: string, timeSlot: string) {
   const dateLabel = DATE_LABELS[date]
-  const zoom = ZOOM_MEETINGS[date]
+  const zoom = requireZoom(date)
 
   return wrap(techFuelHeader(), `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">

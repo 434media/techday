@@ -11,6 +11,13 @@ const REGISTRATION_LIMITS: Record<string, number> = {
   techday: 550,
 }
 
+// The one success response for POST, identical for new and already-registered
+// emails. The ticket ID is delivered by email only, never in the response.
+const REGISTRATION_ACCEPTED = {
+  success: true,
+  message: "Registration received. Check your email for your ticket.",
+} as const
+
 // Helper to count registrations per event (handles legacy "2day" entries)
 async function getEventCounts(): Promise<Record<string, number>> {
   const snapshot = await adminDb
@@ -76,19 +83,6 @@ export async function POST(request: Request) {
       )
     }
 
-    // Check for existing registration with same email
-    const existingRegistration = await adminDb
-      .collection(COLLECTIONS.REGISTRATIONS)
-      .where("email", "==", data.email.toLowerCase())
-      .get()
-
-    if (!existingRegistration.empty) {
-      return NextResponse.json(
-        { error: "This email is already registered" },
-        { status: 409 }
-      )
-    }
-
     // Normalize events — convert "2day" to ["techday", "techfuel"]
     let selectedEvents: string[] = data.events || ["techday"]
     if (selectedEvents.includes("2day")) {
@@ -106,6 +100,36 @@ export async function POST(request: Request) {
           { status: 409 }
         )
       }
+    }
+
+    // Existing registration with the same email: answer exactly as for a new
+    // registration so the response never reveals whether an address is
+    // registered. The ticket is re-sent to the address on file (using the stored
+    // record, not the submitted fields), so the real owner can recover it.
+    const existingRegistration = await adminDb
+      .collection(COLLECTIONS.REGISTRATIONS)
+      .where("email", "==", data.email.toLowerCase().trim())
+      .limit(1)
+      .get()
+
+    if (!existingRegistration.empty) {
+      const existing = existingRegistration.docs[0].data() as RegistrationDocument
+      // A cancelled ticket is not re-sent; the response is still the same.
+      if (existing.status !== "cancelled" && existing.ticketId) {
+        const resendResult = await sendRegistrationConfirmation(
+          existing.email,
+          existing.firstName,
+          existing.lastName,
+          existing.ticketId,
+          existing.category,
+          existing.events,
+          existing.ecosystemTours
+        )
+        if (!resendResult.success) {
+          console.warn(`Duplicate registration attempt; re-sending confirmation failed for ${existing.email}`)
+        }
+      }
+      return NextResponse.json(REGISTRATION_ACCEPTED)
     }
 
     // Check ecosystem tours capacity if requested
@@ -164,11 +188,7 @@ export async function POST(request: Request) {
       console.warn(`Registration saved but email failed for ${registration.email}`)
     }
 
-    return NextResponse.json({
-      success: true,
-      ticketId,
-      message: "Registration successful",
-    })
+    return NextResponse.json(REGISTRATION_ACCEPTED)
   } catch (error) {
     console.error("Registration error:", error)
     return NextResponse.json(
@@ -178,7 +198,9 @@ export async function POST(request: Request) {
   }
 }
 
-// GET endpoint to check registration status or capacity
+// GET endpoint: public capacity check only (used by the registration form).
+// Per-registrant lookup by email or ticket ID was removed: it let anyone confirm
+// whether an address was registered and read the registrant's name.
 export async function GET(request: Request) {
   try {
     // Check if Firebase is configured
@@ -191,66 +213,28 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url)
 
-    // Capacity check endpoint
-    if (searchParams.get("capacity") === "true") {
-      const counts = await getEventCounts()
-      const ecoSnapshot = await adminDb
-        .collection(COLLECTIONS.REGISTRATIONS)
-        .where("ecosystemTours", "==", true)
-        .where("status", "in", ["confirmed", "pending", "checked-in"])
-        .get()
-      const ecoCount = ecoSnapshot.size
-      return NextResponse.json({
-        capacity: {
-          techday: { count: counts.techday, limit: REGISTRATION_LIMITS.techday },
-          techfuel: { count: counts.techfuel, limit: REGISTRATION_LIMITS.techfuel },
-          ecosystemTours: { count: ecoCount, limit: ECOSYSTEM_TOURS_LIMIT },
-        },
-      })
+    if (searchParams.get("capacity") !== "true") {
+      return NextResponse.json({ error: "Not found" }, { status: 404 })
     }
 
-    const ticketId = searchParams.get("ticketId")
-    const email = searchParams.get("email")
-
-    if (!ticketId && !email) {
-      return NextResponse.json(
-        { error: "Please provide ticketId or email" },
-        { status: 400 }
-      )
-    }
-
-    let query = adminDb.collection(COLLECTIONS.REGISTRATIONS)
-
-    if (ticketId) {
-      query = query.where("ticketId", "==", ticketId) as typeof query
-    } else if (email) {
-      query = query.where("email", "==", email.toLowerCase()) as typeof query
-    }
-
-    const snapshot = await query.get()
-
-    if (snapshot.empty) {
-      return NextResponse.json(
-        { error: "Registration not found" },
-        { status: 404 }
-      )
-    }
-
-    const doc = snapshot.docs[0]
-    const data = doc.data()
-
+    const counts = await getEventCounts()
+    const ecoSnapshot = await adminDb
+      .collection(COLLECTIONS.REGISTRATIONS)
+      .where("ecosystemTours", "==", true)
+      .where("status", "in", ["confirmed", "pending", "checked-in"])
+      .get()
+    const ecoCount = ecoSnapshot.size
     return NextResponse.json({
-      ticketId: data.ticketId,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      category: data.category,
-      events: data.events,
-      status: data.status,
+      capacity: {
+        techday: { count: counts.techday, limit: REGISTRATION_LIMITS.techday },
+        techfuel: { count: counts.techfuel, limit: REGISTRATION_LIMITS.techfuel },
+        ecosystemTours: { count: ecoCount, limit: ECOSYSTEM_TOURS_LIMIT },
+      },
     })
   } catch (error) {
-    console.error("Registration lookup error:", error)
+    console.error("Capacity lookup error:", error)
     return NextResponse.json(
-      { error: "Failed to lookup registration" },
+      { error: "Failed to look up capacity" },
       { status: 500 }
     )
   }
