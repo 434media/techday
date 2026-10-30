@@ -40,6 +40,13 @@ const industries = [
   "Other",
 ]
 
+// The logo preview shows only the https: URL the upload API returned, held in
+// its own state. Nothing the visitor types or selects reaches <img src>
+// directly, which is what CodeQL js/xss-through-dom traced before.
+function safeImageSrc(src: string | null): string | undefined {
+  return src && /^https:\/\//i.test(src) ? src : undefined
+}
+
 export function PitchSubmissionForm() {
   const [formData, setFormData] = useState<PitchFormData>({
     companyName: "",
@@ -63,7 +70,7 @@ export function PitchSubmissionForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [isUploadingLogo, setIsUploadingLogo] = useState(false)
-  const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const [uploadedLogoUrl, setUploadedLogoUrl] = useState<string | null>(null)
   const logoInputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -94,11 +101,6 @@ export function PitchSubmissionForm() {
     setError(null)
     setIsUploadingLogo(true)
 
-    // Show preview immediately
-    const reader = new FileReader()
-    reader.onload = (ev) => setLogoPreview(ev.target?.result as string)
-    reader.readAsDataURL(file)
-
     try {
       const fd = new FormData()
       fd.append("file", file)
@@ -108,14 +110,13 @@ export function PitchSubmissionForm() {
 
       if (!res.ok) {
         setError(data.error || "Failed to upload logo")
-        setLogoPreview(null)
         return
       }
 
       setFormData((prev) => ({ ...prev, logoUrl: data.url }))
+      setUploadedLogoUrl(data.url)
     } catch {
       setError("Failed to upload logo. Please try again.")
-      setLogoPreview(null)
     } finally {
       setIsUploadingLogo(false)
     }
@@ -123,7 +124,7 @@ export function PitchSubmissionForm() {
 
   const handleRemoveLogo = () => {
     setFormData((prev) => ({ ...prev, logoUrl: "" }))
-    setLogoPreview(null)
+    setUploadedLogoUrl(null)
     if (logoInputRef.current) logoInputRef.current.value = ""
   }
 
@@ -266,9 +267,9 @@ export function PitchSubmissionForm() {
           </label>
           <div className="flex items-start gap-4">
             <div className="w-20 h-20 rounded-lg border-2 border-dashed border-border bg-background flex items-center justify-center overflow-hidden shrink-0">
-              {(logoPreview || formData.logoUrl) ? (
+              {safeImageSrc(uploadedLogoUrl) ? (
                 <img
-                  src={logoPreview || formData.logoUrl}
+                  src={safeImageSrc(uploadedLogoUrl)}
                   alt="Logo preview"
                   className="w-full h-full object-cover rounded-lg"
                 />

@@ -5,6 +5,8 @@ import { COLLECTIONS, type JudgeSchedulingDocument } from "@/lib/firebase/collec
 import { sendJudgeSchedulingConfirmation } from "@/lib/email/resend"
 import { findSemifinalJudge } from "@/lib/semifinal-judges"
 import { getSemifinalJudgeEmail } from "@/lib/semifinal-judge-emails"
+import { maskEmail } from "@/lib/mask-email"
+import { isValidEmail } from "@/lib/validate-email"
 
 // Slot capacity
 const MAX_PER_SLOT = 5
@@ -110,8 +112,7 @@ export async function POST(request: Request) {
       if (!customEmail) {
         return NextResponse.json({ error: "Email is required for custom names" }, { status: 400 })
       }
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(customEmail)) {
+      if (!isValidEmail(customEmail)) {
         return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
       }
       judgeEmail = customEmail.toLowerCase()
@@ -167,7 +168,7 @@ export async function POST(request: Request) {
         doc.timeSlot
       )
       if (!emailResult.success) {
-        console.warn(`Judge scheduling saved but email failed for ${doc.email}`)
+        console.warn("Judge scheduling saved but email failed for %s", maskEmail(doc.email))
       }
     }
 

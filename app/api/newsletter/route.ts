@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type NewsletterDocument } from "@/lib/firebase/collections"
+import { isValidEmail } from "@/lib/validate-email"
+import { maskEmail } from "@/lib/mask-email"
 
 export async function POST(request: Request) {
   try {
@@ -33,8 +35,7 @@ export async function POST(request: Request) {
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(data.email)) {
+    if (!isValidEmail(data.email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
         { status: 400 }
@@ -85,7 +86,7 @@ export async function POST(request: Request) {
       .collection(COLLECTIONS.NEWSLETTER)
       .add(subscription)
 
-    console.log(`New newsletter subscription: ${docRef.id} - ${email}`)
+    console.log("New newsletter subscription: %s - %s", docRef.id, maskEmail(email))
 
     return NextResponse.json({
       success: true,
