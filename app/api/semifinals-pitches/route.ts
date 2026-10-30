@@ -3,7 +3,6 @@ import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type PitchSchedulingDocument } from "@/lib/firebase/collections"
 import { sendPitchSchedulingConfirmation } from "@/lib/email/resend"
-import { isValidEmail } from "@/lib/validate-email"
 
 // Each pitch slot holds exactly 1 company
 const MAX_PER_SLOT = 1
@@ -62,7 +61,9 @@ export async function GET() {
 
     const taken = await getTakenSlots()
 
-    // Also fetch approved pitches for the dropdown
+    // Also fetch approved pitches for the dropdown. This route is public, so the
+    // response carries only the id and company name — never the founder's name
+    // or email. POST looks those up server-side from the id.
     const pitchesSnapshot = await adminDb
       .collection(COLLECTIONS.PITCH_SUBMISSIONS)
       .where("status", "==", "accepted")
@@ -70,9 +71,7 @@ export async function GET() {
 
     const approvedPitches = pitchesSnapshot.docs.map((doc) => ({
       id: doc.id,
-      companyName: doc.data().companyName,
-      founderName: doc.data().founderName,
-      email: doc.data().email,
+      companyName: doc.data().companyName as string,
     }))
 
     // Check which companies already have a scheduled pitch
@@ -129,14 +128,8 @@ export async function POST(request: Request) {
     const data = await request.json()
 
     // Validate required fields
-    if (!data.companyName?.trim()) {
-      return NextResponse.json({ error: "Company name is required" }, { status: 400 })
-    }
-    if (!data.founderName?.trim()) {
-      return NextResponse.json({ error: "Founder name is required" }, { status: 400 })
-    }
-    if (!data.email?.trim()) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 })
+    if (typeof data.pitchId !== "string" || !data.pitchId.trim()) {
+      return NextResponse.json({ error: "Please select your company" }, { status: 400 })
     }
     if (!data.date || !JUDGE_BLOCKS[data.date]) {
       return NextResponse.json({ error: "Invalid date selected" }, { status: 400 })
@@ -149,15 +142,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid pitch slot selected" }, { status: 400 })
     }
 
-    // Email validation
-    if (!isValidEmail(data.email)) {
-      return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
+    // Resolve the company, founder and email from the accepted submission
+    // rather than trusting the client — the public GET no longer exposes them.
+    const pitchDoc = await adminDb
+      .collection(COLLECTIONS.PITCH_SUBMISSIONS)
+      .doc(data.pitchId.trim())
+      .get()
+    const pitch = pitchDoc.data()
+    if (!pitchDoc.exists || !pitch || pitch.status !== "accepted") {
+      return NextResponse.json({ error: "Please select your company" }, { status: 400 })
+    }
+    const companyName = String(pitch.companyName ?? "").trim()
+    const founderName = String(pitch.founderName ?? "").trim()
+    const email = String(pitch.email ?? "").toLowerCase().trim()
+    if (!companyName) {
+      return NextResponse.json({ error: "Please select your company" }, { status: 400 })
     }
 
     // Check if this company already scheduled
     const existingQuery = await adminDb
       .collection(COLLECTIONS.PITCH_SCHEDULING)
-      .where("companyName", "==", data.companyName.trim())
+      .where("companyName", "==", companyName)
       .get()
 
     if (!existingQuery.empty) {
@@ -178,9 +183,9 @@ export async function POST(request: Request) {
     }
 
     const doc: PitchSchedulingDocument = {
-      companyName: data.companyName.trim(),
-      founderName: data.founderName.trim(),
-      email: data.email.toLowerCase().trim(),
+      companyName,
+      founderName,
+      email,
       date: data.date,
       judgeBlock: data.judgeBlock,
       pitchSlot: data.pitchSlot,

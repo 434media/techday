@@ -3,8 +3,9 @@ import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type PitchSubmissionDocument } from "@/lib/firebase/collections"
 import { sendPitchConfirmation } from "@/lib/email/resend"
-import { isValidEmail } from "@/lib/validate-email"
+import { verifyAdminSession } from "@/lib/admin/session"
 import { maskEmail } from "@/lib/mask-email"
+import { isValidEmail } from "@/lib/validate-email"
 
 export async function POST(request: Request) {
   try {
@@ -134,6 +135,11 @@ export async function POST(request: Request) {
 
 // GET endpoint for admin to retrieve pitch submissions
 export async function GET(request: Request) {
+  // Admin only: submissions carry founders' names, emails, phones and decks.
+  const session = await verifyAdminSession()
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
   try {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get("status")

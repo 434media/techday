@@ -1,9 +1,7 @@
 import { cookies } from "next/headers"
 import { adminAuth } from "@/lib/firebase/admin"
 import type { AdminPermission } from "@/lib/firebase/collections"
-
-// Allowed email domain for Google Sign-in
-const ALLOWED_DOMAIN = "434media.com"
+import { isAllowedAdmin } from "@/lib/admin/allowlist"
 
 // Default permissions for authenticated admins
 const DEFAULT_PERMISSIONS: AdminPermission[] = [
@@ -25,7 +23,7 @@ export interface SessionUser {
 }
 
 // Verify admin session from Firebase session cookie
-// Uses Firebase Auth as the source of truth - no Firestore admins collection
+// Firebase Auth proves identity; lib/admin/allowlist.ts decides who is an admin
 export async function verifyAdminSession(): Promise<SessionUser | null> {
   try {
     const cookieStore = await cookies()
@@ -44,16 +42,10 @@ export async function verifyAdminSession(): Promise<SessionUser | null> {
     const email = decodedClaims.email
     if (!email) return null
     
-    // For Google sign-in, verify domain is @434.media
-    const signInProvider = decodedClaims.firebase?.sign_in_provider
-    if (signInProvider === "google.com") {
-      const emailDomain = email.split("@")[1]
-      if (emailDomain !== ALLOWED_DOMAIN) {
-        return null
-      }
-    }
+    // Firebase Auth is shared and open to public sign-up, so a valid session is
+    // not enough: re-apply the admin allowlist on every request (deny by default).
+    if (!isAllowedAdmin(decodedClaims)) return null
     
-    // All authenticated Firebase users are admins
     return {
       email,
       name: decodedClaims.name || email.split("@")[0],

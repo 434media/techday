@@ -2,34 +2,8 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion } from "motion/react"
+import { SEMIFINAL_JUDGES } from "@/lib/semifinal-judges"
 
-const JUDGES = [
-  { name: "Alfonso Garcia", email: "ponchog@gmail.com" },
-  { name: "Alfred Breuer", email: "Alfred.breuer@sanantonio.gov" },
-  { name: "Andrea Casillas", email: "andreacasillasf@gmail.com" },
-  { name: "Areli Fontecha", email: "afontecha@kw.com" },
-  { name: "Beto Gomez", email: "beto@irystechnologies.com" },
-  { name: "Carmen Aramanda", email: "caramand@trinity.edu" },
-  { name: "Chris Burney", email: "chris@espada.capital" },
-  { name: "Chris Packham", email: "Chris.packham@utsa.edu" },
-  { name: "Cliff Zintgraff", email: "cliff.zintgraff@samsat.org" },
-  { name: "Elizabeth Eichhorn", email: "elizabeth@scroobious.com" },
-  { name: "Enrique Pavlioglou", email: "enrique@checkups.us" },
-  { name: "Heidi Leach", email: "heidi.leach@jpmorgan.com" },
-  { name: "Joe Broschak", email: "joseph.broschak@utsa.edu" },
-  { name: "Lawrence Coffee", email: "lawrence@lawrence.coffee" },
-  { name: "Lina Rugova", email: "lina@emergeandrise.org" },
-  { name: "Marcos Resendez", email: "marcos@vemosvamos.com" },
-  { name: "Mayra Delgado", email: "mayra.e.delgado@nasa.gov" },
-  { name: "Melissa Chalfant", email: "Melissa@InVentures.team" },
-  { name: "Melissa Unsell-Smith", email: "melissa@catalyticicon.com" },
-  { name: "Rhia Pape", email: "rhia@sadigitalconnects.com" },
-  { name: "Robert Miggins", email: "robert@bigsunsolar.com" },
-  { name: "Shirley Frobish", email: "shirley@greatersatx.com" },
-  { name: "Travis Runty", email: "trunty@gmail.com" },
-  { name: "Victor Reyna", email: "victor.reyna@amegybank.com" },
-  { name: "Walt Ugalde", email: "walter.g.ugalde@nasa.gov" },
-]
 
 const DATES = [
   { value: "2026-04-02", label: "Thursday, April 2, 2026" },
@@ -121,17 +95,19 @@ export function JudgeSchedulingForm() {
     setIsSubmitting(true)
 
     try {
-      // Get the judge email from the list if not custom
-      const judgeEmail = isCustomName
-        ? customEmail.trim()
-        : JUDGES.find((j) => j.name === selectedJudge)?.email || ""
+      // Listed judges submit their roster id; the server looks up their email.
+      // Only a custom (unlisted) judge supplies an email address here.
+      const judgeId = isCustomName
+        ? undefined
+        : SEMIFINAL_JUDGES.find((j) => j.name === selectedJudge)?.id
 
       const res = await fetch("/api/semifinals-judges", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          judgeId,
           judgeName,
-          email: judgeEmail,
+          email: isCustomName ? customEmail.trim() : undefined,
           isCustomName,
           date: selectedDate,
           timeSlot: selectedSlot,
@@ -212,7 +188,7 @@ export function JudgeSchedulingForm() {
 
             {dropdownOpen && (
               <div className="absolute z-10 mt-1 w-full bg-white border border-neutral-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                {JUDGES.map((judge) => (
+                {SEMIFINAL_JUDGES.map((judge) => (
                   <button
                     key={judge.name}
                     type="button"

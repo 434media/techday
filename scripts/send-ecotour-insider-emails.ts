@@ -6,6 +6,7 @@ import { resolve } from "path"
 import { initializeApp, cert, getApps } from "firebase-admin/app"
 import { getFirestore } from "firebase-admin/firestore"
 import { Resend } from "resend"
+import { escapeHtml } from "../lib/email/escape"
 
 const envFile = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8")
 for (const line of envFile.split("\n")) {
@@ -98,7 +99,7 @@ function getEmailTemplate(content: string) {
 }
 
 function getEcoTourInsiderContent(firstName: string) {
-  const greeting = firstName ? `Hello ${firstName},` : "Hello,"
+  const greeting = firstName ? `Hello ${escapeHtml(firstName)},` : "Hello,"
   return `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
       ${greeting}

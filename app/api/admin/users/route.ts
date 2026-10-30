@@ -1,49 +1,22 @@
 import { NextResponse } from "next/server"
 import { adminDb, adminAuth, isFirebaseConfigured } from "@/lib/firebase/admin"
+import { verifyAdminSession } from "@/lib/admin/session"
 import { COLLECTIONS, type UserDocument, type UserRole, type Permission } from "@/lib/firebase/collections"
 
 export const dynamic = "force-dynamic"
 
-// Middleware helper to verify admin token
-async function verifyAdminToken(request: Request): Promise<{ uid: string; email: string } | null> {
-  try {
-    if (!isFirebaseConfigured()) {
-      return null
-    }
-
-    const authHeader = request.headers.get("authorization")
-    if (!authHeader?.startsWith("Bearer ")) {
-      return null
-    }
-
-    const token = authHeader.split("Bearer ")[1]
-    const decodedToken = await adminAuth.verifyIdToken(token)
-    
-    // Check if user has admin role in Firestore
-    const userDoc = await adminDb
-      .collection(COLLECTIONS.USERS)
-      .doc(decodedToken.uid)
-      .get()
-
-    if (!userDoc.exists) {
-      return null
-    }
-
-    const userData = userDoc.data() as UserDocument
-    if (userData.role !== "admin") {
-      return null
-    }
-
-    return { uid: decodedToken.uid, email: decodedToken.email || "" }
-  } catch (error) {
-    console.error("Token verification error:", error)
-    return null
-  }
+// Admin gate: the same session + ADMIN_EMAILS allowlist as every other admin
+// route (lib/admin/session.ts). The Firestore users/{uid}.role field is no longer
+// an admin path of its own.
+async function verifyAdminToken(): Promise<{ uid: string; email: string } | null> {
+  if (!isFirebaseConfigured()) return null
+  const session = await verifyAdminSession()
+  return session ? { uid: session.uid, email: session.email } : null
 }
 
 // GET - List all admin users
-export async function GET(request: Request) {
-  const admin = await verifyAdminToken(request)
+export async function GET() {
+  const admin = await verifyAdminToken()
   if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
@@ -70,7 +43,7 @@ export async function GET(request: Request) {
 
 // POST - Create or update admin user
 export async function POST(request: Request) {
-  const admin = await verifyAdminToken(request)
+  const admin = await verifyAdminToken()
   if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
@@ -178,7 +151,7 @@ export async function POST(request: Request) {
 
 // DELETE - Remove admin user
 export async function DELETE(request: Request) {
-  const admin = await verifyAdminToken(request)
+  const admin = await verifyAdminToken()
   if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }

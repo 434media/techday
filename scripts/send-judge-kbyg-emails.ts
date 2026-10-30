@@ -4,6 +4,8 @@
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { Resend } from "resend"
+import { escapeHtml } from "../lib/email/escape"
+import { loadPeopleFile } from "./lib/recipients"
 
 const envFile = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8")
 for (const line of envFile.split("\n")) {
@@ -49,13 +51,6 @@ const GOOGLE_CAL_URL =
 const OUTLOOK_CAL_URL =
   "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Fuel%202026&startdt=2026-04-20T19:00:00Z&enddt=2026-04-20T23:00:00Z&body=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204"
 
-const JUDGES = [
-  { name: "Ben Jones", email: "bljones1888@gmail.com" },
-  { name: "Ileana Gonzalez", email: "gonzalez.ileana@heb.com" },
-  { name: "Paul Lynch", email: "Paul.lynch@centage.com" },
-  { name: "Ryan Saavedra", email: "Ryan@altbionics.com" },
-  { name: "Cristal Glangchai", email: "cristal@venturelab.org" },
-]
 
 function getEmailTemplate(content: string) {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tech Fuel 2026</title></head>
@@ -90,7 +85,7 @@ function getEmailTemplate(content: string) {
 function getJudgeContent(firstName: string): string {
   return `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Dear ${firstName},
+      Dear ${escapeHtml(firstName)},
     </h2>
 
     <p style="margin: 0 0 25px; color: #525252; font-size: 16px; line-height: 1.6;">
@@ -216,6 +211,8 @@ function getJudgeContent(firstName: string): string {
 }
 
 async function main() {
+  // Judges come from a JSON file outside the repo: [{ "name", "email" }, ...]
+  const JUDGES = loadPeopleFile("JUDGE_KBYG_RECIPIENTS_FILE")
   console.log(`Sending judge KBYG to ${JUDGES.length} judges\n`)
 
   const subject = "Tech Fuel 2026 Judge: Know Before You Go 📍"

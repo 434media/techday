@@ -124,8 +124,6 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_xxxxx  # For image uploads
 
 ```bash
 DISABLE_BOT_PROTECTION=true         # Skip BotID checks in dev
-ADMIN_SETUP_SECRET=your-secret      # For /api/admin/seed route
-ADMIN_SETUP_KEY=your-key            # For /api/admin/migrate route
 ADMIN_USERS=email|role|name|q|a|pin # Legacy config-based admin auth
 ```
 
@@ -172,9 +170,6 @@ app/
 │       ├── content/        # CRUD for speakers, schedule, sponsors, partners, text
 │       ├── data/           # View/manage registrations, newsletter, pitches, contacts
 │       ├── stats/          # Dashboard statistics
-│       ├── seed/           # Seed admin users
-│       ├── setup/          # First-time admin setup
-│       ├── migrate/        # DB migration utility
 │       └── upload/         # Image upload via Vercel Blob
 components/
 ├── navbar.tsx              # Fixed top navigation
@@ -546,9 +541,6 @@ Each text block is stored as a document in the `siteText` collection, keyed by i
 | `/api/admin/content/text` | GET, PUT, DELETE | CRUD editable text blocks |
 | `/api/admin/content/text/history/[id]` | GET | Fetch version history for a text block |
 | `/api/admin/upload` | POST | Upload image to Vercel Blob |
-| `/api/admin/setup` | POST, GET | First-time admin creation |
-| `/api/admin/seed` | POST, GET | Seed admin users |
-| `/api/admin/migrate` | POST, GET | Database migration utility |
 
 ### Common API Patterns
 
@@ -746,7 +738,6 @@ Update these for your own S3 buckets or CDN domains.
 
 8. **Seed initial data**
    - Use admin dashboard to add speakers, schedule, sponsors
-   - Or use `/api/admin/seed` with mock data
 
 9. **Deploy to Vercel**
    - Push to GitHub, import in Vercel
@@ -754,8 +745,7 @@ Update these for your own S3 buckets or CDN domains.
    - Deploy
 
 10. **First admin setup**
-    - Visit `/admin`, sign in with your Firebase Auth credentials
-    - Or use `/api/admin/setup` for first-time initialization
+    - Create the first user in the Firebase Authentication console, then visit `/admin` and sign in
 
 ---
 
@@ -791,9 +781,9 @@ For template builds with placeholder content:
 
 ### Seeding Mock Data
 
-Create a seed script or use the existing `/api/admin/seed` route. Alternatively, add mock data directly through the admin dashboard after first login.
+Create a seed script, or add mock data directly through the admin dashboard after first login.
 
-Consider adding a `lib/mock-data.ts` file to the template with all placeholder content that can be loaded via a seed API route during initial setup.
+Consider adding a `lib/mock-data.ts` file to the template with all placeholder content that a local seed script can load during initial setup.
 
 ---
 
@@ -910,7 +900,6 @@ All content is hardcoded in English. For international events:
 
 #### 18. **Cleanup: Remove Dead Code**
 - `lib/admin/config.ts` — Legacy env-based admin auth system (replaced by Firebase Auth)
-- `/api/admin/migrate` — One-time migration utility, should be removed after use
 - `components/conference-hero.tsx` — Appears to be an older/alternate hero component
 - Mailchimp env vars (`MAILCHIMP_API_KEY`, `MAILCHIMP_AUDIENCE_ID`) — Not used in codebase, Resend is the email provider
 

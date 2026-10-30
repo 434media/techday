@@ -1,9 +1,10 @@
 // Send Speaker KBYG email to all Tech Day speakers
-// Run with: npx tsx scripts/send-speaker-kbyg-emails.ts
+// Run with: npx tsx scripts/send-speaker-kbyg-emails.ts [--all]
 
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { Resend } from "resend"
+import { loadEmailListEnv, loadEmailListFile } from "./lib/recipients"
 
 const envFile = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8")
 for (const line of envFile.split("\n")) {
@@ -50,33 +51,7 @@ const OUTLOOK_CAL_URL =
   "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Day%202026&startdt=2026-04-21T17:30:00Z&enddt=2026-04-21T21:00:00Z&body=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX"
 
 // All speaker emails (deduplicated)
-const SPEAKER_EMAILS = [
-  "trunty@gmail.com",
-  "rtietzsch@gmail.com",
-  "Alex@modtechlabs.com",
-  "dirk@r26d.com",
-  "will.k.conway@gmail.com",
-  "jrodom@gmail.com",
-  "brhodes@knightaerospace.com",
-  "aclark@knightaerospace.com",
-  "kathy@therxngroup.com",
-  "sebastian@alamoangels.com",
-  "scollier@darkhive.com",
-  "ashley.mitchell@darkhive.com",
-  "g.niederauer@freyya.com",
-  "gvela@neuscience.co",
-  "Matthew.Reat@sanantonio.gov",
-  "beto@bfinstitute.org",
-  "brian.dillard@viainfo.net",
-  "ponchog@gmail.com",
-  "charles@geekdom.com",
-  "caramand@trinity.edu",
-  "jeremy@velocitytx.org",
-  "ssalgueiro@skygrid.com",
-]
 
-// Send only to new speaker(s)
-const SEND_ONLY = ["ssalgueiro@skygrid.com"]
 
 function getEmailTemplate(content: string) {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tech Day 2026</title></head>
@@ -235,7 +210,15 @@ function getSpeakerContent(): string {
 const INDIVIDUAL_DELAY_MS = 500
 
 async function main() {
-  const recipients = SEND_ONLY.length > 0 ? SEND_ONLY : SPEAKER_EMAILS
+  // Recipients come from outside the repo (see scripts/lib/recipients.ts):
+  //   SPEAKER_KBYG_SEND_ONLY      comma-separated subset to send to, or
+  //   SPEAKER_KBYG_RECIPIENTS_FILE JSON array of every speaker email (requires --all)
+  const sendOnly = loadEmailListEnv("SPEAKER_KBYG_SEND_ONLY")
+  if (sendOnly.length === 0 && !process.argv.includes("--all")) {
+    console.error("Set SPEAKER_KBYG_SEND_ONLY, or pass --all to send to everyone in SPEAKER_KBYG_RECIPIENTS_FILE.")
+    process.exit(1)
+  }
+  const recipients = sendOnly.length > 0 ? sendOnly : loadEmailListFile("SPEAKER_KBYG_RECIPIENTS_FILE")
   console.log(`Sending speaker KBYG to ${recipients.length} speakers\n`)
 
   const content = getSpeakerContent()

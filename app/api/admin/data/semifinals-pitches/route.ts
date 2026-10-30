@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type PitchSchedulingDocument } from "@/lib/firebase/collections"
 import { verifyAdminSession } from "@/lib/admin/session"
+import { getAllZoomMeetings } from "@/lib/zoom-meetings"
 import { sendPitchSemifinalsNotification } from "@/lib/email/resend"
 import { maskEmail } from "@/lib/mask-email"
 
@@ -14,7 +15,7 @@ export async function GET() {
   }
 
   if (!isFirebaseConfigured()) {
-    return NextResponse.json({ pitches: [] })
+    return NextResponse.json({ pitches: [], zoomMeetings: getAllZoomMeetings() })
   }
 
   try {
@@ -28,7 +29,7 @@ export async function GET() {
       submittedAt: doc.data().submittedAt?.toDate?.()?.toISOString() || doc.data().submittedAt,
     }))
 
-    return NextResponse.json({ pitches })
+    return NextResponse.json({ pitches, zoomMeetings: getAllZoomMeetings() })
   } catch (error) {
     console.error("Admin pitch scheduling error:", error)
     return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 })
