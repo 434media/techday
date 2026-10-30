@@ -2,22 +2,19 @@ import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import { adminAuth } from "@/lib/firebase/admin"
 import type { AdminPermission } from "@/lib/firebase/collections"
+import { isAllowedAdmin } from "@/lib/admin/allowlist"
 
 export const dynamic = "force-dynamic"
 
-// Firebase Authentication-based admin access
-// Uses Firebase Auth as the source of truth - no Firestore admins collection
-// Google Sign-in: Only @434.media workspace accounts (enforced by client + server)
-// Email/Password: Only users created in Firebase Authentication
+// Firebase Authentication-based admin access.
+// Firebase Auth proves identity only: the project is shared with other apps and
+// allows public sign-up. Who is an admin is decided by lib/admin/allowlist.ts
+// (a verified email that is listed in ADMIN_EMAILS; no domain shortcut).
 
 const SESSION_COOKIE_NAME = "admin_session"
 const SESSION_DURATION = 60 * 60 * 24 * 7 // 7 days in seconds
 
-// Allowed email domain for Google Sign-in
-const ALLOWED_DOMAIN = "434media.com"
-
 // Default permissions for authenticated admins
-// All Firebase Auth users get full admin access
 const DEFAULT_PERMISSIONS: AdminPermission[] = [
   "registrations",
   "newsletter", 
@@ -62,22 +59,13 @@ export async function POST(request: Request) {
       )
     }
 
-    // Check sign-in provider
-    const signInProvider = decodedToken.firebase?.sign_in_provider
-
-    // For Google sign-in, verify the domain is @434.media
-    if (signInProvider === "google.com") {
-      const emailDomain = email.split("@")[1]
-      if (emailDomain !== ALLOWED_DOMAIN) {
-        return NextResponse.json(
-          { error: `Only @${ALLOWED_DOMAIN} accounts are allowed for Google sign-in` },
-          { status: 403 }
-        )
-      }
+    // Deny by default: a valid Firebase token is not admin access
+    if (!isAllowedAdmin(decodedToken)) {
+      return NextResponse.json(
+        { error: "This account is not authorized for admin access" },
+        { status: 403 }
+      )
     }
-
-    // For email/password sign-in, the user must exist in Firebase Auth
-    // (already verified by verifyIdToken - if they authenticated, they exist)
 
     // Create a session cookie for subsequent requests
     const expiresIn = SESSION_DURATION * 1000 // Convert to milliseconds
@@ -96,7 +84,7 @@ export async function POST(request: Request) {
     // Get display name from token
     const displayName = decodedToken.name || email.split("@")[0]
 
-    // Return admin info - all authenticated Firebase users are admins
+    // Return admin info
     return NextResponse.json({
       success: true,
       user: {
@@ -138,13 +126,9 @@ export async function GET() {
       return NextResponse.json({ authenticated: false })
     }
 
-    // For Google sign-in sessions, re-verify domain
-    const signInProvider = decodedClaims.firebase?.sign_in_provider
-    if (signInProvider === "google.com") {
-      const emailDomain = email.split("@")[1]
-      if (emailDomain !== ALLOWED_DOMAIN) {
-        return NextResponse.json({ authenticated: false })
-      }
+    // Re-apply the allowlist so removed admins lose access immediately
+    if (!isAllowedAdmin(decodedClaims)) {
+      return NextResponse.json({ authenticated: false })
     }
 
     const displayName = decodedClaims.name || email.split("@")[0]

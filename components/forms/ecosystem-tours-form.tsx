@@ -93,7 +93,7 @@ export function EcosystemToursForm() {
         </div>
         <h3 className="text-xl font-bold text-foreground mb-2">You&apos;re Signed Up!</h3>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          Your registration has been updated to include ecosystem tours. See you on April 20th!
+          If that name and email match your Tech Fuel registration, ecosystem tours are now added and a confirmation is on its way to your inbox. No email? Check that you used the same name and email you registered with.
         </p>
       </div>
     )

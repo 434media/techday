@@ -20,18 +20,8 @@ interface AcceptedPitch {
   email: string
 }
 
-const ZOOM_LINKS: Record<string, { url: string; meetingId: string; passcode: string }> = {
-  "2026-04-02": {
-    url: "https://us06web.zoom.us/j/84733840136?pwd=WfCT50nnaUvgGV9PwWe3zgAeM1nt5Y.1",
-    meetingId: "847 3384 0136",
-    passcode: "Techbloc",
-  },
-  "2026-04-03": {
-    url: "https://us06web.zoom.us/j/81595831528?pwd=HnDxWd4sU0RoKezdGsZEaGS7Ajqmif.1",
-    meetingId: "815 9583 1528",
-    passcode: "Techbloc",
-  },
-}
+// Zoom details come from the admin API (server-side env vars), never from this bundle.
+type ZoomLinks = Record<string, { url: string; meetingId: string; passcode: string }>
 
 const DATE_LABELS: Record<string, string> = {
   "2026-04-02": "Thursday, April 2, 2026",
@@ -72,6 +62,7 @@ const PITCH_SLOTS: Record<string, string[]> = {
 export default function AdminPitchSchedulingPage() {
   const [pitches, setPitches] = useState<PitchEntry[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [zoomLinks, setZoomLinks] = useState<ZoomLinks>({})
   const [showAddModal, setShowAddModal] = useState(false)
   const [addForm, setAddForm] = useState({ companyName: "", founderName: "", email: "", date: "", judgeBlock: "", pitchSlot: "" })
   const [addError, setAddError] = useState("")
@@ -105,6 +96,7 @@ export default function AdminPitchSchedulingPage() {
       }
       const data = await res.json()
       setPitches(data.pitches || [])
+      setZoomLinks(data.zoomMeetings || {})
     } catch {
       console.error("Failed to fetch pitches")
     } finally {
@@ -337,7 +329,7 @@ export default function AdminPitchSchedulingPage() {
 
       {/* Email Preview for Selected Semifinalist */}
       {previewEmailPitch && (() => {
-        const zoom = ZOOM_LINKS[previewEmailPitch.date]
+        const zoom = zoomLinks[previewEmailPitch.date]
         return (
           <div className="mb-10 bg-white border border-neutral-200 rounded-md overflow-hidden">
             <div className="flex items-center justify-between p-5 border-b border-neutral-100">
@@ -477,7 +469,7 @@ export default function AdminPitchSchedulingPage() {
       ) : (
         <div className="space-y-14">
           {ALL_DATES.map((date) => {
-            const zoom = ZOOM_LINKS[date]
+            const zoom = zoomLinks[date]
             const blocks = JUDGE_BLOCKS_PER_DATE[date] || []
 
             return (
@@ -496,15 +488,21 @@ export default function AdminPitchSchedulingPage() {
                       </svg>
                       <div className="text-sm leading-relaxed">
                         <p className="font-bold text-blue-900 mb-1">Zoom Meeting</p>
-                        <p className="text-blue-800 leading-5">
-                          <a href={zoom.url} target="_blank" rel="noopener noreferrer" className="underline break-all">
-                            {zoom.url}
-                          </a>
-                        </p>
-                        <p className="text-blue-700 mt-1.5 leading-5">
-                          Meeting ID: <span className="font-mono font-semibold">{zoom.meetingId}</span>
-                          {" "} | Passcode: <span className="font-mono font-semibold">{zoom.passcode}</span>
-                        </p>
+                        {zoom ? (
+                          <>
+                          <p className="text-blue-800 leading-5">
+                            <a href={zoom.url} target="_blank" rel="noopener noreferrer" className="underline break-all">
+                              {zoom.url}
+                            </a>
+                          </p>
+                          <p className="text-blue-700 mt-1.5 leading-5">
+                            Meeting ID: <span className="font-mono font-semibold">{zoom.meetingId}</span>
+                            {" "} | Passcode: <span className="font-mono font-semibold">{zoom.passcode}</span>
+                          </p>
+                          </>
+                        ) : (
+                          <p className="text-blue-800 leading-5">Not configured. Set the ZOOM_SEMIFINALS_* env vars on the server.</p>
+                        )}
                       </div>
                     </div>
                   </div>

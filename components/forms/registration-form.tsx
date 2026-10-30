@@ -48,7 +48,6 @@ export function RegistrationForm() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [ticketId, setTicketId] = useState("")
   const [capacityInfo, setCapacityInfo] = useState<Record<string, { count: number; limit: number }> | null>(null)
 
   // Fetch remaining capacity on mount
@@ -100,7 +99,6 @@ export function RegistrationForm() {
         throw new Error(data.error || "Failed to register")
       }
 
-      setTicketId(data.ticketId)
       setSubmitted(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unexpected error occurred")
@@ -133,7 +131,7 @@ export function RegistrationForm() {
             </div>
             <div className="text-right">
               <p className="font-mono text-xs text-muted-foreground">TICKET ID</p>
-              <p className="font-mono text-lg text-primary">{ticketId}</p>
+              <p className="font-mono text-sm text-primary">Sent to your email</p>
             </div>
           </div>
           <div className="space-y-2 text-sm">
@@ -153,7 +151,7 @@ export function RegistrationForm() {
             </div>
           </div>
           <div className="mt-4 pt-4 border-t border-dashed border-border">
-            <p className="text-xs text-muted-foreground text-center">Present this ticket at check-in</p>
+            <p className="text-xs text-muted-foreground text-center">Present the ticket from your email at check-in</p>
           </div>
         </div>
       </motion.div>

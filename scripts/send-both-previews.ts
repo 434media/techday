@@ -4,6 +4,9 @@
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { Resend } from "resend"
+import { loadEmailListEnv } from "./lib/recipients"
+import { escapeHtml, safeHref } from "../lib/email/escape"
+import { getZoomMeeting } from "../lib/zoom-meetings"
 
 const envFile = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8")
 for (const line of envFile.split("\n")) {
@@ -23,7 +26,8 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 const FROM_EMAIL = "Beto Altamirano <ceo@send.satechbloc.com>"
 const REPLY_TO = "ceo@satechbloc.com"
-const TO = ["marcos@434media.com", "altamirano@irystechnologies.com"]
+// Extra (non-staff) preview recipients come from PREVIEW_EXTRA_RECIPIENTS in .env.local.
+const TO = ["marcos@434media.com", ...loadEmailListEnv("PREVIEW_EXTRA_RECIPIENTS")]
 const CC = ["jesse@434media.com"]
 
 const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.15;">
@@ -43,17 +47,15 @@ const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns=
 
 const BETO_SIGNATURE_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
 
-const ZOOM_MEETINGS: Record<string, { url: string; meetingId: string; passcode: string }> = {
-  "2026-04-02": {
-    url: "https://us06web.zoom.us/j/84733840136?pwd=WfCT50nnaUvgGV9PwWe3zgAeM1nt5Y.1",
-    meetingId: "847 3384 0136",
-    passcode: "Techbloc",
-  },
-  "2026-04-03": {
-    url: "https://us06web.zoom.us/j/81595831528?pwd=HnDxWd4sU0RoKezdGsZEaGS7Ajqmif.1",
-    meetingId: "815 9583 1528",
-    passcode: "Techbloc",
-  },
+// Zoom details come from server-side env vars (ZOOM_SEMIFINALS_<YYYYMMDD>_URL,
+// _MEETING_ID, _PASSCODE in .env.local) and are never committed. See lib/zoom-meetings.ts.
+// Read lazily, after .env.local has been loaded above.
+function requireZoom(date: string) {
+  const zoom = getZoomMeeting(date)
+  if (!zoom) {
+    throw new Error(`Zoom details for ${date} are not set. Add ZOOM_SEMIFINALS_${date.replace(/-/g, "")}_URL/_MEETING_ID/_PASSCODE to .env.local`)
+  }
+  return zoom
 }
 
 function techFuelHeader() {
@@ -103,12 +105,12 @@ const sfName = "Elton John"
 const sfCompany = "Rocketman"
 const sfDate = "2026-04-02"
 const sfSlot = "9:05 AM - 9:15 AM"
-const zoom = ZOOM_MEETINGS[sfDate]
+const zoom = requireZoom(sfDate)
 
 const semifinalistHtml = wrap(techFuelHeader(), `
-  <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">Hey ${sfName},</h2>
+  <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">Hey ${escapeHtml(sfName)},</h2>
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-    <strong>${sfCompany}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
+    <strong>${escapeHtml(sfCompany)}</strong> has been selected as a <strong>2026 TechFuel Semi-Finalist!</strong>
   </p>
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
     We reviewed a strong pool of applicants, and your company stood out. We're looking forward to learning more about what you're building.
@@ -128,13 +130,13 @@ const semifinalistHtml = wrap(techFuelHeader(), `
           </td>
           <td width="50%" style="vertical-align: top; padding-bottom: 15px;">
             <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Pitch Time</p>
-            <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${sfSlot}</p>
+            <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">${escapeHtml(sfSlot)}</p>
           </td>
         </tr>
         <tr>
           <td width="50%" style="vertical-align: top;">
             <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Company</p>
-            <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${sfCompany}</p>
+            <p style="margin: 0; color: #ffffff; font-size: 15px; font-weight: 500;">${escapeHtml(sfCompany)}</p>
           </td>
           <td width="50%" style="vertical-align: top;">
             <p style="margin: 0 0 3px; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Format</p>
@@ -150,17 +152,17 @@ const semifinalistHtml = wrap(techFuelHeader(), `
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
         <tr><td style="padding-bottom: 10px;">
           <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Join Link</p>
-          <p style="margin: 0;"><a href="${zoom.url}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">Click here to join Zoom meeting</a></p>
+          <p style="margin: 0;"><a href="${safeHref(zoom.url)}" style="color: #2563eb; text-decoration: underline; font-size: 14px; word-break: break-all;">Click here to join Zoom meeting</a></p>
         </td></tr>
         <tr><td>
           <table role="presentation" cellspacing="0" cellpadding="0"><tr>
             <td style="padding-right: 30px;">
               <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Meeting ID</p>
-              <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.meetingId}</p>
+              <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${escapeHtml(zoom.meetingId)}</p>
             </td>
             <td>
               <p style="margin: 0 0 3px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Passcode</p>
-              <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${zoom.passcode}</p>
+              <p style="margin: 0; color: #0a0a0a; font-size: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">${escapeHtml(zoom.passcode)}</p>
             </td>
           </tr></table>
         </td></tr>
@@ -184,12 +186,12 @@ const nsName = "Elton John"
 const nsCompany = "Rocketman"
 
 const nonSelectHtml = wrap(techFuelHeader(), `
-  <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">Hey ${nsName},</h2>
+  <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">Hey ${escapeHtml(nsName)},</h2>
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
     Thank you for taking the time to apply and engage with us for Tech Fuel 2026. We truly appreciate the effort that goes into building and sharing what you're working on.
   </p>
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
-    After a highly competitive review process, <strong>${nsCompany}</strong> was not selected to advance to the next stage this year. This was not an easy decision. We received a strong pool of applications and, with limited spots, had to make difficult choices across a range of factors.
+    After a highly competitive review process, <strong>${escapeHtml(nsCompany)}</strong> was not selected to advance to the next stage this year. This was not an easy decision. We received a strong pool of applications and, with limited spots, had to make difficult choices across a range of factors.
   </p>
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">
     This outcome does not diminish the quality of what you're building or the potential ahead. Many of the founders in our ecosystem have applied more than once, and we've seen firsthand the progress teams make between cycles. We encourage you to keep building, validating your assumptions, and gaining traction—and to consider applying again next year.

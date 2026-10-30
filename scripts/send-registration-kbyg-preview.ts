@@ -4,6 +4,7 @@
 import { readFileSync } from "fs"
 import { resolve } from "path"
 import { Resend } from "resend"
+import { escapeHtml } from "../lib/email/escape"
 
 // Load .env.local manually
 const envFile = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8")
@@ -436,7 +437,7 @@ function getKBYGContent(eventType: EventType, firstName: string): string {
 
   return `
     <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 24px; font-weight: 600;">
-      Hello, ${firstName}!
+      Hello, ${escapeHtml(firstName)}!
     </h2>
 
     <p style="margin: 0 0 25px; color: #525252; font-size: 16px; line-height: 1.6;">
