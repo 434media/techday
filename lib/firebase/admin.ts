@@ -47,10 +47,14 @@ let _externalClient: BaseExternalAccountClient | null = null
 /** Workload Identity Federation client for techday-app, fed by the Vercel OIDC token. */
 function getExternalClient(): BaseExternalAccountClient {
   if (_externalClient) return _externalClient
-  const audience =
-    `https://iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}` +
+  const providerPath =
+    `iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}` +
     `/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}` +
     `/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`
+  // STS wants the provider's resource name ("//iam.googleapis.com/..."); the Vercel
+  // OIDC token is requested for the https form, one of the provider's allowed audiences.
+  const audience = `//${providerPath}`
+  const oidcAudience = `https://${providerPath}`
   const client = ExternalAccountClient.fromJSON({
     type: "external_account",
     audience,
@@ -61,7 +65,7 @@ function getExternalClient(): BaseExternalAccountClient {
       `${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
     // Read per request, never at module load: on Vercel the token arrives in the
     // request (x-vercel-oidc-token) and is not available at build time.
-    subject_token_supplier: { getSubjectToken: () => getVercelOidcToken({ audience }) },
+    subject_token_supplier: { getSubjectToken: () => getVercelOidcToken({ audience: oidcAudience }) },
   })
   if (!client) throw new Error("Could not create the Workload Identity Federation client.")
   _externalClient = client
