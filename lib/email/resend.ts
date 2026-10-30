@@ -1,6 +1,7 @@
 import { Resend } from "resend"
 import { escapeHtml, safeHref } from "@/lib/email/escape"
 import { getZoomMeeting, ZOOM_DETAILS_FALLBACK, type ZoomMeeting } from "@/lib/zoom-meetings"
+import { maskEmail } from "@/lib/mask-email"
 
 // Initialize Resend with API key
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -679,13 +680,13 @@ export async function sendRegistrationConfirmation(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Registration confirmation sent to ${email}:`, result)
+    console.log("Registration confirmation sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send registration confirmation to ${email}:`, error)
+    console.error("Failed to send registration confirmation to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -811,13 +812,13 @@ export async function sendPitchConfirmation(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Pitch confirmation sent to ${email}:`, result)
+    console.log("Pitch confirmation sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send pitch confirmation to ${email}:`, error)
+    console.error("Failed to send pitch confirmation to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -949,13 +950,13 @@ export async function sendSponsorInquiryConfirmation(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Sponsor inquiry confirmation sent to ${email}:`, result)
+    console.log("Sponsor inquiry confirmation sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send sponsor inquiry confirmation to ${email}:`, error)
+    console.error("Failed to send sponsor inquiry confirmation to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -1025,7 +1026,8 @@ function buildCalendarLink(date: string, timeSlot: string, zoomUrl: string | und
   const dateStr = date // "2026-04-02"
 
   function parseTime(dateBase: string, time: string): string {
-    const match = time.match(/(\d+):(\d+)\s*(AM|PM)/i)
+    // Anchored and bounded ("9:00 AM", "10:30 PM") so it cannot backtrack polynomially.
+    const match = time.trim().match(/^(\d{1,2}):(\d{2})\s?(AM|PM)$/i)
     if (!match) return ""
     let hours = parseInt(match[1])
     const minutes = match[2]
@@ -1180,13 +1182,13 @@ export async function sendJudgeSchedulingConfirmation(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Judge scheduling confirmation sent to ${email}:`, result)
+    console.log("Judge scheduling confirmation sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send judge scheduling confirmation to ${email}:`, error)
+    console.error("Failed to send judge scheduling confirmation to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -1335,13 +1337,13 @@ export async function sendPitchSchedulingConfirmation(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Pitch scheduling confirmation sent to ${email}:`, result)
+    console.log("Pitch scheduling confirmation sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send pitch scheduling confirmation to ${email}:`, error)
+    console.error("Failed to send pitch scheduling confirmation to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -1465,13 +1467,13 @@ export async function sendJudgeInvitationEmail(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Judge invitation email sent to ${email}:`, result)
+    console.log("Judge invitation email sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send judge invitation email to ${email}:`, error)
+    console.error("Failed to send judge invitation email to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -1588,13 +1590,13 @@ export async function sendPitchSemifinalsNotification(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Pitch semifinals notification sent to ${email}:`, result)
+    console.log("Pitch semifinals notification sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send pitch semifinals notification to ${email}:`, error)
+    console.error("Failed to send pitch semifinals notification to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -1684,13 +1686,13 @@ export async function sendEcosystemToursNotification(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Ecosystem tours notification sent to ${email}:`, result)
+    console.log("Ecosystem tours notification sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send ecosystem tours notification to ${email}:`, error)
+    console.error("Failed to send ecosystem tours notification to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -1726,12 +1728,12 @@ export async function sendEcosystemToursOptInConfirmation(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send ecosystem tours opt-in confirmation to ${email}:`, error)
+    console.error("Failed to send ecosystem tours opt-in confirmation to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -1808,13 +1810,13 @@ export async function sendPitchNonSelectNotification(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Pitch non-select notification sent to ${email}:`, result)
+    console.log("Pitch non-select notification sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send pitch non-select notification to ${email}:`, error)
+    console.error("Failed to send pitch non-select notification to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -1995,13 +1997,13 @@ export async function sendFinalistNotification(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Finalist notification sent to ${email}:`, result)
+    console.log("Finalist notification sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send finalist notification to ${email}:`, error)
+    console.error("Failed to send finalist notification to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }
@@ -2107,13 +2109,13 @@ export async function sendNonFinalistNotification(
     })
 
     if (result.error) {
-      console.error(`Resend API error for ${email}:`, result.error)
+      console.error("Resend API error for %s:", maskEmail(email), result.error)
       return { success: false, error: result.error }
     }
-    console.log(`Non-finalist notification sent to ${email}:`, result)
+    console.log("Non-finalist notification sent to %s:", maskEmail(email), result)
     return { success: true, data: result }
   } catch (error) {
-    console.error(`Failed to send non-finalist notification to ${email}:`, error)
+    console.error("Failed to send non-finalist notification to %s:", maskEmail(email), error)
     return { success: false, error }
   }
 }

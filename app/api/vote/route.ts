@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS } from "@/lib/firebase/collections"
+import { isValidEmail } from "@/lib/validate-email"
 
 const VOTE_COLLECTION = "votes"
 
@@ -25,8 +26,7 @@ export async function POST(request: Request) {
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
+    if (!isValidEmail(email)) {
       return NextResponse.json(
         { success: false, message: "Please enter a valid email address." },
         { status: 400 }
