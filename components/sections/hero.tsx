@@ -6,9 +6,9 @@ import { motion } from "motion/react"
 import { ArrowRight } from "lucide-react"
 
 const TECHDAY_IMAGE =
-  "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ftechday.jpeg?alt=media"
+  "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/techday.jpeg"
 const TECHFUEL_IMAGE =
-  "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ffreyya.jpeg?alt=media"
+  "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/freyya.jpeg"
 
 export function Hero() {
   return (

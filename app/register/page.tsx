@@ -73,7 +73,7 @@ export default function RegisterPage() {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.03]"
           style={{
-            backgroundImage: "url('https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg')",
+            backgroundImage: "url('https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/arrowdown.svg')",
           }}
         />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

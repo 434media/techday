@@ -45,7 +45,7 @@ const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns=
   <rect x="45" y="75" width="10" height="10" fill="#c73030"/>
 </svg>`
 
-const BETO_SIGNATURE_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
+const BETO_SIGNATURE_URL = "https://storage.googleapis.com/c434-techday.firebasestorage.app/signature.PNG"
 
 // Zoom details come from server-side env vars (ZOOM_SEMIFINALS_<YYYYMMDD>_URL,
 // _MEETING_ID, _PASSCODE in .env.local) and are never committed. See lib/zoom-meetings.ts.

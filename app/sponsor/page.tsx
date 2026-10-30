@@ -32,7 +32,7 @@ export default function SponsorPage() {
         {/* Background image */}
         <div className="absolute inset-0">
           <Image
-            src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/sponsor3.jpg"
+            src="https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/sponsor3.jpg"
             alt="Tech Bloc community event — kids in line receiving backpacks and computers"
             fill
             className="object-cover"

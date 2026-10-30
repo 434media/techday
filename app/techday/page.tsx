@@ -10,7 +10,7 @@ import { Editable } from "@/components/editable"
 import { motion } from "motion/react"
 
 const TECHDAY_HERO_IMAGE =
-  "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ftechday.jpeg?alt=media"
+  "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/techday.jpeg"
 
 export default function TechDayPage() {
   const [speakers, setSpeakers] = useState<Speaker[]>([])

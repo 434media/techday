@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
 
   images: {
     remotePatterns: [
+      // Tech Day's own bucket in c434-techday (Security Policy 7.2 move).
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+        pathname: "/c434-techday.firebasestorage.app/**",
+      },
+      // The old copy in 434's project. Kept only until the switch's dry run
+      // shows no Firestore content still pointing here; remove it before the
+      // old copy is deleted (switch + 7 days).
       {
         protocol: "https",
         hostname: "storage.googleapis.com",

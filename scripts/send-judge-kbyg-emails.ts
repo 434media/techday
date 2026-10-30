@@ -29,7 +29,7 @@ const FROM_EMAIL = "Beto Altamirano <ceo@send.satechbloc.com>"
 const REPLY_TO = "ceo@satechbloc.com"
 
 const BETO_SIGNATURE_URL =
-  "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
+  "https://storage.googleapis.com/c434-techday.firebasestorage.app/signature.PNG"
 
 const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.15;">
   <rect x="45" y="5" width="10" height="10" fill="#c73030"/>
