@@ -12,7 +12,7 @@ export function Footer() {
           <div className="md:col-span-1">
             <div className="flex items-center gap-3 mb-5">
               <Image
-                src="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/10Years_Red.svg"
+                src="https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/10Years_Red.svg"
                 alt="Tech Day 10 Years"
                 width={48}
                 height={48}

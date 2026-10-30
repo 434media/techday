@@ -291,7 +291,7 @@ function getCalendarSection(eventType: "techfuel" | "techday" | "both"): string 
 
 // Generate KBYG (Know Before You Go) content based on event type
 function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: string): string {
-  const BETO_SIG_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
+  const BETO_SIG_URL = "https://storage.googleapis.com/c434-techday.firebasestorage.app/signature.PNG"
 
   let intro = ""
   switch (eventType) {
@@ -1480,7 +1480,7 @@ export async function sendJudgeInvitationEmail(
 
 // Beto Altamirano signature image URL (hosted on Firebase Storage)
 // To update: upload new signature PNG to Firebase Storage and update this URL
-const BETO_SIGNATURE_URL = "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/signature.PNG?alt=media"
+const BETO_SIGNATURE_URL = "https://storage.googleapis.com/c434-techday.firebasestorage.app/signature.PNG"
 
 // Pitch semifinals notification email — notifies accepted pitches they're moving to semifinals
 // Now includes admin-assigned date/time and Beto's signature

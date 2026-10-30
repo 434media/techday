@@ -24,7 +24,7 @@ interface PixelData {
   offsetY: number
 }
 
-const SVG_URL = "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg"
+const SVG_URL = "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/arrowdown.svg"
 const SVG_PROXY_URL = "/api/svg"
 
 export function PixelArrow({
@@ -302,7 +302,7 @@ export function PixelArrow({
         <VideoModal
           isOpen={isVideoOpen}
           onClose={() => setIsVideoOpen(false)}
-          videoSrc="https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/techbloc-anniversary.mov"
+          videoSrc="https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/techbloc-anniversary.mov"
         />
       </>
     )

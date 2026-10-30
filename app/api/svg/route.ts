@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-const SVG_URL = "https://storage.googleapis.com/groovy-ego-462522-v2.firebasestorage.app/techday/arrowdown.svg"
+const SVG_URL = "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/arrowdown.svg"
 
 export async function GET() {
   try {

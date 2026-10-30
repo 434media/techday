@@ -9,38 +9,38 @@ import { motion, AnimatePresence } from "motion/react"
 import Link from "next/link"
 
 const TECHFUEL_HERO_IMAGE =
-  "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ffreyya.jpeg?alt=media"
+  "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/freyya.jpeg"
 
 const finalists2026 = [
   {
     name: "ComeBack Mobility",
     description: "Rehabilitation, redefined. Using real-time biomechanical data to guide safer, faster recovery.",
-    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Fcomback.png?alt=media",
+    image: "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/comback.png",
     website: "https://www.comebackmobility.com",
   },
   {
     name: "Freyya",
     description: "Advancing women's health with real-time, data-driven pelvic care.",
-    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Ffreyya.png?alt=media",
+    image: "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/freyya.png",
     website: "https://www.freyya.com",
     winner: true,
   },
   {
     name: "Openlane",
     description: "An open-source, AI-native platform helping companies get compliant faster.",
-    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Fopenlane.png?alt=media",
+    image: "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/openlane.png",
     website: "https://www.theopenlane.io",
   },
   {
     name: "Bytewhisper Security",
     description: "Turning security policies into actionable intelligence — analyzed and improved in hours, not weeks.",
-    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Fbytewhisper.png?alt=media",
+    image: "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/bytewhisper.png",
     website: "https://www.bytewhispersecurity.com",
   },
   {
     name: "RentBamboo",
     description: "Automating the leasing process — from first inquiry to signed lease — so teams can scale without added headcount.",
-    image: "https://firebasestorage.googleapis.com/v0/b/groovy-ego-462522-v2.firebasestorage.app/o/techday%2Frentbamboo.png?alt=media",
+    image: "https://storage.googleapis.com/c434-techday.firebasestorage.app/techday/rentbamboo.png",
     website: "https://www.rentbamboo.com",
   },
 ]
