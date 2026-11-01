@@ -14,7 +14,9 @@ export async function POST(request: Request) {
       }
     }
 
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    // Keyless when BLOB_STORE_ID is set: @vercel/blob then authenticates with the
+    // deployment's Vercel OIDC token. BLOB_READ_WRITE_TOKEN is the fallback.
+    if (!process.env.BLOB_STORE_ID && !process.env.BLOB_READ_WRITE_TOKEN) {
       return NextResponse.json(
         { error: "Storage not configured" },
         { status: 503 }
