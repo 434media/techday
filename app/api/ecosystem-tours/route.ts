@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { ECOSYSTEM_TOURS_OPEN, intakeClosed } from "@/lib/intake"
 import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, ECOSYSTEM_TOURS_LIMIT } from "@/lib/firebase/collections"
@@ -30,6 +31,10 @@ async function getEcosystemToursCount(): Promise<number> {
 
 export async function POST(request: Request) {
   try {
+    if (!ECOSYSTEM_TOURS_OPEN) {
+      return intakeClosed("Ecosystem tours were part of Tech Fuel 2026 on April 20, 2026, and sign-ups are now closed. Thanks for your interest!")
+    }
+
     if (process.env.DISABLE_BOT_PROTECTION !== "true") {
       const verification = await checkBotId()
       if (verification.isBot) {

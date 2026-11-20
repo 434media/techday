@@ -1,11 +1,25 @@
 import { NextResponse } from "next/server"
+import { PITCH_INTAKE_OPEN, intakeClosed } from "@/lib/intake"
 import { checkBotId } from "botid/server"
 import { put } from "@vercel/blob"
 
 export const dynamic = "force-dynamic"
 
+function detectImageType(b: Uint8Array): { mime: string; ext: string } | null {
+  const starts = (sig: number[], offset = 0) => sig.every((v, i) => b[offset + i] === v)
+  if (starts([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return { mime: "image/png", ext: "png" }
+  if (starts([0xff, 0xd8, 0xff])) return { mime: "image/jpeg", ext: "jpg" }
+  if (starts([0x47, 0x49, 0x46, 0x38])) return { mime: "image/gif", ext: "gif" } // GIF8
+  if (starts([0x52, 0x49, 0x46, 0x46]) && starts([0x57, 0x45, 0x42, 0x50], 8)) return { mime: "image/webp", ext: "webp" } // RIFF....WEBP
+  return null
+}
+
 export async function POST(request: Request) {
   try {
+    if (!PITCH_INTAKE_OPEN) {
+      return intakeClosed("Tech Fuel 2026 pitch applications are closed, so logo uploads are no longer accepted.")
+    }
+
     // Bot protection
     if (process.env.DISABLE_BOT_PROTECTION !== "true") {
       const verification = await checkBotId()
@@ -24,19 +38,10 @@ export async function POST(request: Request) {
     }
 
     const formData = await request.formData()
-    const file = formData.get("file") as File
+    const file = formData.get("file")
 
-    if (!file) {
+    if (!file || typeof file === "string") {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
-    }
-
-    // Only allow images
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/svg+xml"]
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Invalid file type. Allowed: JPEG, PNG, WebP, SVG" },
-        { status: 400 }
-      )
     }
 
     // Max 2MB for logos
@@ -48,13 +53,24 @@ export async function POST(request: Request) {
       )
     }
 
-    const timestamp = Date.now()
-    const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_")
-    const filename = `pitch-logos/${timestamp}-${sanitizedName}`
+    // Only raster images, identified by their magic bytes (file.type is
+    // client-supplied). SVG is not accepted: it can carry script.
+    const bytes = new Uint8Array(await file.arrayBuffer())
+    const detected = detectImageType(bytes)
+    if (!detected) {
+      return NextResponse.json(
+        { error: "Invalid file type. Allowed: JPEG, PNG, WebP, GIF" },
+        { status: 400 }
+      )
+    }
 
-    const blob = await put(filename, file, {
+    const baseName = file.name.replace(/\.[^.]*$/, "").replace(/[^a-zA-Z0-9-]/g, "_").slice(0, 60) || "logo"
+    const filename = `pitch-logos/${baseName}.${detected.ext}`
+
+    const blob = await put(filename, Buffer.from(bytes), {
       access: "public",
-      addRandomSuffix: false,
+      addRandomSuffix: true,
+      contentType: detected.mime,
     })
 
     return NextResponse.json({ success: true, url: blob.url })

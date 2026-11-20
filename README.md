@@ -161,12 +161,6 @@ FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY----
 # email, can open /admin; 434media.com staff must be listed too. Unset = nobody.
 ADMIN_EMAILS=someone@example.com,other@example.com
 
-# Admin Session Secret (generate with: openssl rand -base64 32)
-ADMIN_SESSION_SECRET=your-secure-random-string
-
-# Admin Users (format: email|role|name|question|answer|pin)
-ADMIN_USERS=admin@example.com|superadmin|Admin|What is 2+2?|4|1234
-
 # Vercel Blob (for file uploads)
 BLOB_READ_WRITE_TOKEN=your-vercel-blob-token
 
@@ -296,8 +290,6 @@ Add the following environment variables in your Vercel project settings:
 - `FIREBASE_CLIENT_EMAIL`
 - `FIREBASE_PRIVATE_KEY`
 - `ADMIN_EMAILS` (admin allowlist; see lib/admin/allowlist.ts)
-- `ADMIN_SESSION_SECRET`
-- `ADMIN_USERS`
 - `BLOB_READ_WRITE_TOKEN`
 - `ZOOM_SEMIFINALS_<YYYYMMDD>_URL`, `_MEETING_ID`, `_PASSCODE` (see lib/zoom-meetings.ts)
 - `SEMIFINALS_JUDGE_EMAILS` (see lib/semifinal-judge-emails.ts)

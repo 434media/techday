@@ -31,12 +31,6 @@ Copy `.env.example` to `.env.local` and fill in your values:
 FIREBASE_PROJECT_ID=your-project-id
 FIREBASE_CLIENT_EMAIL=your-service-account@your-project.iam.gserviceaccount.com
 FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-
-# Admin Session Secret (generate with: openssl rand -base64 32)
-ADMIN_SESSION_SECRET=your-secure-random-string
-
-# Admin Users (format: email|role|name|question|answer|pin)
-ADMIN_USERS=jesse@434media.com|superadmin|Jesse|What year was Tech Day founded?|2023|1234
 ```
 
 > ⚠️ **Important**: The `FIREBASE_PRIVATE_KEY` must be wrapped in double quotes and use `\n` for newlines.
@@ -79,8 +73,6 @@ Add these environment variables in your Vercel project settings:
 - `FIREBASE_PROJECT_ID`
 - `FIREBASE_CLIENT_EMAIL`
 - `FIREBASE_PRIVATE_KEY`
-- `ADMIN_SESSION_SECRET`
-- `ADMIN_USERS`
 
 ## Troubleshooting
 

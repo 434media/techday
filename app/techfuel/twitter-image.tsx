@@ -95,7 +95,7 @@ export default async function Image() {
             textTransform: "uppercase",
           }}
         >
-          sanantoniotechday.com/techfuel
+          www.sanantoniotechday.com/techfuel
         </div>
       </div>
     ),

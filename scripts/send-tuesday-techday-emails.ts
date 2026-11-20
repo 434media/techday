@@ -73,7 +73,7 @@ function getEmailTemplate(content: string) {
             <div style="position: absolute; top: 20px; right: 20px; opacity: 0.15;">${DOWN_ARROW_SVG}</div>
             <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">TECH DAY <span style="color: #c73030;">2026</span></h1>
             <p style="margin: 10px 0 0; color: rgba(255,255,255,0.7); font-size: 14px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">April 21, 2026 • 1:00–4:00 PM • Boeing Center at Tech Port</p>
-            <p style="margin: 6px 0 0;"><a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">sanantoniotechday.com</a></p>
+            <p style="margin: 6px 0 0;"><a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">www.sanantoniotechday.com</a></p>
           </td>
         </tr>
         <tr><td style="padding: 40px;">${content}</td></tr>
@@ -81,7 +81,7 @@ function getEmailTemplate(content: string) {
           <td style="background-color: #0a0a0a; padding: 30px 40px; text-align: center;">
             <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 12px;">&copy; 2026 Tech Bloc &amp; 434 MEDIA &bull; San Antonio, TX</p>
             <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-              <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
+              <a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
             </p>
           </td>
         </tr>
@@ -155,7 +155,7 @@ function getTuesdayContent(firstName: string) {
             </tr>
           </table>
           <p style="margin: 15px 0 0; color: #525252; font-size: 14px;">
-            Full schedule at <a href="https://sanantoniotechday.com/techday#schedule" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+            Full schedule at <a href="https://www.sanantoniotechday.com/techday#schedule" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
           </p>
         </td>
       </tr>

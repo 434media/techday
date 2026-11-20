@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { SITE_URL } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Tech Day 2026 — Conference",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
     title: "Tech Day 2026 — Conference",
     description:
       "April 21, 2026 at Boeing Center at Tech Port. Three tracks powering San Antonio's future: Emerging Industries, Founders & Investors, and AI.",
-    url: "https://sanantoniotechday.com/techday",
+    url: `${SITE_URL}/techday`,
   },
   twitter: {
     card: "summary_large_image",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
       "April 21, 2026 at Boeing Center at Tech Port. Emerging Industries, Founders & Investors, and AI.",
   },
   alternates: {
-    canonical: "https://sanantoniotechday.com/techday",
+    canonical: `${SITE_URL}/techday`,
   },
 }
 

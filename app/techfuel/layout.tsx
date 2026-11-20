@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { SITE_URL } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Tech Fuel 2026 — $100K Startup Pitch Competition",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
     title: "Tech Fuel 2026 — $100K Startup Pitch Competition",
     description:
       "San Antonio's flagship $100K startup pitch competition. 8 years, $700K+ invested, 349+ applicants. Meet the 2026 finalists.",
-    url: "https://sanantoniotechday.com/techfuel",
+    url: `${SITE_URL}/techfuel`,
   },
   twitter: {
     card: "summary_large_image",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
       "San Antonio's flagship $100K startup pitch competition. Meet the 2026 finalists.",
   },
   alternates: {
-    canonical: "https://sanantoniotechday.com/techfuel",
+    canonical: `${SITE_URL}/techfuel`,
   },
 }
 

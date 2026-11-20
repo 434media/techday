@@ -96,7 +96,7 @@ export default async function Image() {
             textTransform: "uppercase",
           }}
         >
-          sanantoniotechday.com/ecosystem-tours
+          www.sanantoniotechday.com/ecosystem-tours
         </div>
       </div>
     ),

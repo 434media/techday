@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { SITE_URL } from "@/lib/site"
 
 export async function GET() {
   const content = `# Tech Day San Antonio — Full Documentation
@@ -25,8 +26,8 @@ export async function GET() {
   2. **Founders & Investors** — Startup ecosystem, venture capital, angel investing
   3. **AI** — Applied artificial intelligence, enterprise AI, generative AI
 - **Format**: Keynote speakers, panel discussions, networking
-- **Registration**: Free — https://sanantoniotechday.com/register
-- **Website**: https://sanantoniotechday.com/techday
+- **Registration**: Free — ${SITE_URL}/register
+- **Website**: ${SITE_URL}/techday
 
 ---
 
@@ -56,7 +57,7 @@ export async function GET() {
 5. **RentBamboo** — Automating the leasing process from first inquiry to signed lease. Website: https://www.rentbamboo.com
 
 ### People's Choice Award
-Attendees can vote for their favorite finalist at https://sanantoniotechday.com/techfuel/vote
+Attendees can vote for their favorite finalist at ${SITE_URL}/techfuel/vote
 
 ### Past Winners
 | Year | 1st Place | 2nd Place | 3rd Place | Applicants |
@@ -74,7 +75,7 @@ During Tech Fuel (April 20, 2026), attendees can participate in guided tours of 
 1. **Port San Antonio** — A 1,900-acre industrial campus and one of the nation's leading hubs for cyber, aerospace, and advanced manufacturing
 2. **VelocityTX** — An internationally recognized bioscience innovation campus for translational research and commercialization
 
-These tours are included with Tech Fuel registration. Sign up: https://sanantoniotechday.com/ecosystem-tours
+These tours are included with Tech Fuel registration. Sign up: ${SITE_URL}/ecosystem-tours
 
 ---
 
@@ -82,7 +83,7 @@ These tours are included with Tech Fuel registration. Sign up: https://sanantoni
 
 Organizations can partner with Tech Bloc to sponsor Tech Day and Tech Fuel 2026. Sponsors gain visibility among hundreds of San Antonio technologists, founders, and investors.
 
-Sponsorship inquiries: https://sanantoniotechday.com/sponsor
+Sponsorship inquiries: ${SITE_URL}/sponsor
 
 ---
 
@@ -90,16 +91,16 @@ Sponsorship inquiries: https://sanantoniotechday.com/sponsor
 
 2025 marked Tech Bloc San Antonio's 10th anniversary — a decade of building and supporting the San Antonio technology community.
 
-Learn more: https://sanantoniotechday.com/anniversary
+Learn more: ${SITE_URL}/anniversary
 
 ---
 
 ## Contact & Links
 
-- **Website**: https://sanantoniotechday.com
+- **Website**: ${SITE_URL}
 - **Organization**: Tech Bloc San Antonio
 - **Location**: San Antonio, Texas, USA
-- **Sitemap**: https://sanantoniotechday.com/sitemap.xml
+- **Sitemap**: ${SITE_URL}/sitemap.xml
 `
 
   return new NextResponse(content, {

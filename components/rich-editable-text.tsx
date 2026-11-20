@@ -12,6 +12,7 @@ import {
   Undo,
   Redo,
 } from "lucide-react"
+import { sanitizeHtml } from "@/lib/sanitize-html"
 
 // Props for the rich editable text component
 interface RichEditableTextProps {
@@ -99,8 +100,9 @@ export function RichEditableText({
         if (res.ok && isMounted) {
           const data = await res.json()
           if (data.content) {
-            setContent(data.content)
-            originalContent.current = data.content
+            const safe = sanitizeHtml(data.content)
+            setContent(safe)
+            originalContent.current = safe
           }
         }
       } catch {
@@ -156,7 +158,7 @@ export function RichEditableText({
   const handleSave = useCallback(async () => {
     if (!editorRef.current) return
     
-    const newContent = editorRef.current.innerHTML.trim()
+    const newContent = sanitizeHtml(editorRef.current.innerHTML.trim())
     
     // Don't save if content hasn't changed
     if (newContent === originalContent.current) {
@@ -262,7 +264,7 @@ export function RichEditableText({
     return (
       <div 
         className={className}
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
       />
     )
   }
@@ -348,7 +350,7 @@ export function RichEditableText({
             suppressContentEditableWarning
             onKeyDown={handleKeyDown}
             className={`${className} outline-none ring-2 ring-blue-500 ring-offset-2 rounded-sm px-2 py-1 bg-blue-50/50 min-h-[2em]`}
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
           />
         </div>
       ) : (
@@ -358,7 +360,7 @@ export function RichEditableText({
             className={`${className} ${isHovered ? "ring-2 ring-blue-300 ring-offset-1 rounded-sm bg-blue-50/30" : ""} transition-all cursor-pointer`}
             onClick={() => setIsEditing(true)}
             title="Click to edit (supports rich text)"
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
           />
           
           {/* Edit indicator on hover */}

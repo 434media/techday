@@ -7,6 +7,7 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Providers } from "@/components/providers"
 import "./globals.css"
+import { SITE_URL } from "@/lib/site"
 
 const protectedRoutes = [
   { path: "/api/register", method: "POST" },
@@ -17,6 +18,7 @@ const protectedRoutes = [
   { path: "/api/semifinals-judges", method: "POST" },
   { path: "/api/semifinals-pitches", method: "POST" },
   { path: "/api/ecosystem-tours", method: "POST" },
+  { path: "/api/vote", method: "POST" },
 ]
 
 const spaceGrotesk = Space_Grotesk({
@@ -41,7 +43,7 @@ const bebasNeue = Bebas_Neue({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://sanantoniotechday.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Tech Day 2026 | Invented Here - San Antonio",
     template: "%s | Tech Day San Antonio",
@@ -71,7 +73,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Tech Day San Antonio",
     locale: "en_US",
-    url: "https://sanantoniotechday.com",
+    url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
@@ -90,9 +92,8 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: {
-    canonical: "https://sanantoniotechday.com",
-  },
+  // No root canonical: it would be inherited by every page that lacks its own
+  // and point them all at the homepage. Each indexable page sets its own.
 }
 
 export const viewport: Viewport = {
@@ -131,17 +132,17 @@ export default function RootLayout({
         organizer: {
           "@type": "Organization",
           name: "Tech Bloc San Antonio",
-          url: "https://sanantoniotechday.com",
+          url: SITE_URL,
         },
         offers: {
           "@type": "Offer",
           price: "0",
           priceCurrency: "USD",
-          url: "https://sanantoniotechday.com/register",
+          url: `${SITE_URL}/register`,
           availability: "https://schema.org/InStock",
         },
-        image: "https://sanantoniotechday.com/opengraph-image",
-        url: "https://sanantoniotechday.com/techday",
+        image: `${SITE_URL}/opengraph-image`,
+        url: `${SITE_URL}/techday`,
         isAccessibleForFree: true,
         subEvent: {
           "@type": "Event",
@@ -149,13 +150,13 @@ export default function RootLayout({
           description:
             "San Antonio's flagship $100K startup pitch competition. 8th year, $700K+ invested, 349+ total applicants. 5 finalists compete for the prize pool.",
           startDate: "2026-04-20",
-          url: "https://sanantoniotechday.com/techfuel",
+          url: `${SITE_URL}/techfuel`,
         },
       },
       {
         "@type": "Organization",
         name: "Tech Bloc San Antonio",
-        url: "https://sanantoniotechday.com",
+        url: SITE_URL,
         description:
           "Nonprofit organization building and supporting San Antonio's technology community through events, advocacy, and startup investment since 2015.",
         foundingDate: "2015",
@@ -171,7 +172,7 @@ export default function RootLayout({
       {
         "@type": "WebSite",
         name: "Tech Day San Antonio",
-        url: "https://sanantoniotechday.com",
+        url: SITE_URL,
         description:
           "Official website for Tech Day, San Antonio's premier technology conference produced by Tech Bloc.",
       },

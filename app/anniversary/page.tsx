@@ -1,5 +1,6 @@
 import { AnniversaryCarousel } from "@/components/anniversary-carousel"
 import type { Metadata } from "next"
+import { SITE_URL } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "10th Anniversary Celebration",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
     title: "San Antonio Tech Bloc 10th Anniversary",
     description:
       "Celebrate 10 years of San Antonio Tech Bloc — a decade of building and supporting the San Antonio technology community.",
-    url: "https://sanantoniotechday.com/anniversary",
+    url: `${SITE_URL}/anniversary`,
   },
   twitter: {
     card: "summary_large_image",
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
       "Celebrate 10 years of San Antonio Tech Bloc — a decade of building and supporting the San Antonio technology community.",
   },
   alternates: {
-    canonical: "https://sanantoniotechday.com/anniversary",
+    canonical: `${SITE_URL}/anniversary`,
   },
 }
 

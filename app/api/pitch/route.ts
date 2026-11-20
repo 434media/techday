@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { PITCH_INTAKE_OPEN, intakeClosed } from "@/lib/intake"
 import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type PitchSubmissionDocument } from "@/lib/firebase/collections"
@@ -9,6 +10,10 @@ import { isValidEmail } from "@/lib/validate-email"
 
 export async function POST(request: Request) {
   try {
+    if (!PITCH_INTAKE_OPEN) {
+      return intakeClosed("Tech Fuel 2026 pitch applications are closed. Follow Tech Bloc for news about the next competition.")
+    }
+
     // Verify the request is not from a bot using BotID
     // Can be disabled via DISABLE_BOT_PROTECTION=true env var for debugging
     if (process.env.DISABLE_BOT_PROTECTION !== "true") {

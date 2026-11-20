@@ -88,9 +88,9 @@ export function PitchSubmissionForm() {
     if (!file) return
 
     // Client-side validation
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/svg+xml"]
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"]
     if (!allowedTypes.includes(file.type)) {
-      setError("Logo must be JPEG, PNG, WebP, or SVG")
+      setError("Logo must be JPEG, PNG, WebP, or GIF")
       return
     }
     if (file.size > 2 * 1024 * 1024) {
@@ -283,7 +283,7 @@ export function PitchSubmissionForm() {
               <input
                 ref={logoInputRef}
                 type="file"
-                accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                accept="image/jpeg,image/png,image/webp,image/gif"
                 onChange={handleLogoUpload}
                 className="hidden"
                 id="logoUpload"
@@ -308,7 +308,7 @@ export function PitchSubmissionForm() {
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                JPEG, PNG, WebP, or SVG. Max 2MB.
+                JPEG, PNG, WebP, or GIF. Max 2MB.
               </p>
             </div>
           </div>
