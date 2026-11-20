@@ -33,7 +33,7 @@ function getEmailTemplate(content: string, footerText: string = "", eventType: "
   const dates = getEmailDates(eventType)
   const subtextLine = eventType === "both"
     ? `<p style="margin: 6px 0 0; color: rgba(255,255,255,0.5); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">Tech Fuel 2–6 PM • Tech Day 1–4 PM (Doors Open 12:30 PM)</p>`
-    : `<p style="margin: 6px 0 0;"><a href=SITE_URL style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">www.sanantoniotechday.com</a></p>`
+    : `<p style="margin: 6px 0 0;"><a href="${SITE_URL}" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">www.sanantoniotechday.com</a></p>`
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -80,7 +80,7 @@ function getEmailTemplate(content: string, footerText: string = "", eventType: "
                 © 2026 Tech Bloc & 434 MEDIA • San Antonio, TX
               </p>
               <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-                <a href=SITE_URL style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
+                <a href="${SITE_URL}" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
               </p>
             </td>
           </tr>
@@ -189,7 +189,7 @@ function getEventEmailTemplate(content: string, eventType: "techfuel" | "techday
                 © 2026 Tech Bloc & 434 MEDIA • San Antonio, TX
               </p>
               <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-                <a href=SITE_URL style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
+                <a href="${SITE_URL}" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
               </p>
             </td>
           </tr>
@@ -388,7 +388,7 @@ function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: s
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, sessions, speakers, and more at <a href=SITE_URL style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
+      Explore the agenda, sessions, speakers, and more at <a href="${SITE_URL}" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   } else if (eventType === "techfuel") {
     scheduleSection = `
@@ -406,7 +406,7 @@ function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: s
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, speakers, and more at <a href=`${SITE_URL}/techfuel` style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
+      Explore the agenda, speakers, and more at <a href="${SITE_URL}/techfuel" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   } else {
     scheduleSection = `
@@ -424,7 +424,7 @@ function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: s
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, sessions, speakers, and more at <a href=`${SITE_URL}/techday` style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
+      Explore the agenda, sessions, speakers, and more at <a href="${SITE_URL}/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   }
 
@@ -799,7 +799,7 @@ export async function sendPitchConfirmation(
     </table>
     
     <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-      While you wait, make sure to <a href=`${SITE_URL}/register` style="color: #c73030; text-decoration: none;">register for Tech Day</a> if you haven't already!
+      While you wait, make sure to <a href="${SITE_URL}/register" style="color: #c73030; text-decoration: none;">register for Tech Day</a> if you haven't already!
     </p>
   `
 
@@ -937,7 +937,7 @@ export async function sendSponsorInquiryConfirmation(
     </table>
     
     <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-      In the meantime, check out <a href=SITE_URL style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a> to learn more about what we're building in San Antonio.
+      In the meantime, check out <a href="${SITE_URL}" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a> to learn more about what we're building in San Antonio.
     </p>
   `
 
@@ -1394,7 +1394,7 @@ export async function sendJudgeInvitationEmail(
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
       <tr>
         <td align="center">
-          <a href=`${SITE_URL}/semifinals-judges` target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
+          <a href="${SITE_URL}/semifinals-judges" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
             Schedule Your Judging Session
           </a>
         </td>
@@ -1665,7 +1665,7 @@ export async function sendEcosystemToursNotification(
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
       <tr>
         <td align="center">
-          <a href=`${SITE_URL}/ecosystem-tours` target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
+          <a href="${SITE_URL}/ecosystem-tours" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
             Add Ecosystem Tours
           </a>
         </td>
@@ -1770,7 +1770,7 @@ export async function sendPitchNonSelectNotification(
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
       <tr>
         <td align="center">
-          <a href=`${SITE_URL}/register` style="display: inline-block; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 6px; letter-spacing: 0.5px;">
+          <a href="${SITE_URL}/register" style="display: inline-block; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 6px; letter-spacing: 0.5px;">
             Get Your Tickets
           </a>
         </td>
@@ -1954,7 +1954,7 @@ export async function sendFinalistNotification(
             3rd and 4th place may be determined by live audience vote. We encourage you to invite your network:
           </p>
           <p style="margin: 0;">
-            <a href=SITE_URL style="color: #c73030; text-decoration: none; font-weight: 500; font-size: 15px;">www.sanantoniotechday.com</a>
+            <a href="${SITE_URL}" style="color: #c73030; text-decoration: none; font-weight: 500; font-size: 15px;">www.sanantoniotechday.com</a>
           </p>
         </td>
       </tr>
