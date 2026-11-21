@@ -14,7 +14,10 @@ const images = [
     width: 1200,
     height: 800,
     type: "banner",
-    videoUrl: "https://storage.googleapis.com/c434-techday.firebasestorage.app/TechDay2024.mp4",
+    // TechDay2024.mp4 was never copied to the c434-techday bucket and answers 404 there and in the old bucket
+    // (security log TD-8). Upload it to c434-techday.firebasestorage.app/TechDay2024.mp4 and restore this URL to bring
+    // the button back.
+    videoUrl: "",
   },
   {
     id: 2,
@@ -217,13 +220,15 @@ export default function ImageGallery() {
                   Our incredible tech community gathered for an amazing day of learning, sharing, and connecting!
                 </p>
               </div>
-              <Button
-                onClick={() => setIsVideoModalOpen(true)}
-                variant="secondary"
-                className="w-fit"
-              >
-                <span className="relative top-px">Watch Video</span>
-              </Button>
+              {bannerImage?.videoUrl ? (
+                <Button
+                  onClick={() => setIsVideoModalOpen(true)}
+                  variant="secondary"
+                  className="w-fit"
+                >
+                  <span className="relative top-px">Watch Video</span>
+                </Button>
+              ) : null}
             </div>
             <div className="relative aspect-[16/9] overflow-hidden order-1 md:order-2">
               <img
