@@ -655,7 +655,7 @@ async function generateTrackCard(
   ctx.fillStyle = "rgba(255,255,255,0.35)"
   ctx.font = "400 17px system-ui, -apple-system, sans-serif"
   ctx.textAlign = "left"
-  ctx.fillText("sanantoniotechday.com", px, footerTextY)
+  ctx.fillText("www.sanantoniotechday.com", px, footerTextY)
 
   ctx.fillStyle = meta.color
   ctx.font = "700 17px system-ui, -apple-system, sans-serif"

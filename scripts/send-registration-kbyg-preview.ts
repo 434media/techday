@@ -77,7 +77,7 @@ function getEmailTemplate(content: string, eventType: EventType) {
   const subtextLine =
     eventType === "both"
       ? `<p style="margin: 6px 0 0; color: rgba(255,255,255,0.5); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">Tech Fuel 2–6 PM • Tech Day 1–4 PM (Doors Open 12:30 PM)</p>`
-      : `<p style="margin: 6px 0 0;"><a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">sanantoniotechday.com</a></p>`
+      : `<p style="margin: 6px 0 0;"><a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">www.sanantoniotechday.com</a></p>`
 
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tech Day 2026</title></head>
 <body style="margin: 0; padding: 0; background-color: #fafafa; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
@@ -98,7 +98,7 @@ function getEmailTemplate(content: string, eventType: EventType) {
             <p style="margin: 0 0 15px; color: rgba(255,255,255,0.7); font-size: 13px;">Keep this email handy — it has everything you need for event day</p>
             <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 12px;">© 2026 Tech Bloc & 434 MEDIA • San Antonio, TX</p>
             <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-              <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
+              <a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
             </p>
           </td>
         </tr>
@@ -113,12 +113,12 @@ function getEmailTemplate(content: string, eventType: EventType) {
 // Tech Day: April 21, 2026 12:30-4:00 PM CDT (17:30-21:00 UTC)
 const CALENDAR_LINKS = {
   techfuel: {
-    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Fuel%202026&dates=20260420T190000Z/20260420T230000Z&details=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
-    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Fuel%202026&startdt=2026-04-20T19:00:00Z&enddt=2026-04-20T23:00:00Z&body=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
+    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Fuel%202026&dates=20260420T190000Z/20260420T230000Z&details=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
+    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Fuel%202026&startdt=2026-04-20T19:00:00Z&enddt=2026-04-20T23:00:00Z&body=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
   },
   techday: {
-    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Day%202026&dates=20260421T173000Z/20260421T210000Z&details=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
-    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Day%202026&startdt=2026-04-21T17:30:00Z&enddt=2026-04-21T21:00:00Z&body=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
+    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Day%202026&dates=20260421T173000Z/20260421T210000Z&details=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
+    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Day%202026&startdt=2026-04-21T17:30:00Z&enddt=2026-04-21T21:00:00Z&body=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
   },
 }
 
@@ -263,7 +263,7 @@ function getKBYGContent(eventType: EventType, firstName: string): string {
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, sessions, speakers, and more at <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, sessions, speakers, and more at <a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   } else if (eventType === "techfuel") {
     scheduleSection = `
@@ -281,7 +281,7 @@ function getKBYGContent(eventType: EventType, firstName: string): string {
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, speakers, and more at <a href="https://sanantoniotechday.com/techfuel" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, speakers, and more at <a href="https://www.sanantoniotechday.com/techfuel" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   } else {
     scheduleSection = `
@@ -299,7 +299,7 @@ function getKBYGContent(eventType: EventType, firstName: string): string {
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, sessions, speakers, and more at <a href="https://sanantoniotechday.com/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, sessions, speakers, and more at <a href="https://www.sanantoniotechday.com/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   }
 

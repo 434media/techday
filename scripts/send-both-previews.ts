@@ -69,7 +69,7 @@ function techFuelHeader() {
         April 20, 2026 • 2:00–6:00 PM • UTSA SP1
       </p>
       <p style="margin: 6px 0 0;">
-        <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">sanantoniotechday.com</a>
+        <a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">www.sanantoniotechday.com</a>
       </p>
     </td>`
 }
@@ -80,7 +80,7 @@ function footer(footerText = "") {
       ${footerText ? `<p style="margin: 0 0 15px; color: rgba(255,255,255,0.7); font-size: 13px;">${footerText}</p>` : ""}
       <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 12px;">© 2026 Tech Bloc & 434 MEDIA • San Antonio, TX</p>
       <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-        <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
+        <a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
       </p>
     </td>`
 }
@@ -201,7 +201,7 @@ const nonSelectHtml = wrap(techFuelHeader(), `
   </p>
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
     <tr><td align="center">
-      <a href="https://sanantoniotechday.com/register" style="display: inline-block; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 6px; letter-spacing: 0.5px;">Get Your Tickets</a>
+      <a href="https://www.sanantoniotechday.com/register" style="display: inline-block; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 6px; letter-spacing: 0.5px;">Get Your Tickets</a>
     </td></tr>
   </table>
   <p style="margin: 0 0 20px; color: #525252; font-size: 16px; line-height: 1.6;">

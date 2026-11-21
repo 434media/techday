@@ -114,7 +114,7 @@ function getEmailTemplate(content: string, eventType: EventType) {
   const subtextLine =
     eventType === "both"
       ? `<p style="margin: 6px 0 0; color: rgba(255,255,255,0.5); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">Tech Fuel 2–6 PM • Tech Day 1–4 PM (Doors Open 12:30 PM)</p>`
-      : `<p style="margin: 6px 0 0;"><a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">sanantoniotechday.com</a></p>`
+      : `<p style="margin: 6px 0 0;"><a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">www.sanantoniotechday.com</a></p>`
 
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tech Day 2026</title></head>
 <body style="margin: 0; padding: 0; background-color: #fafafa; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
@@ -135,7 +135,7 @@ function getEmailTemplate(content: string, eventType: EventType) {
             <p style="margin: 0 0 15px; color: rgba(255,255,255,0.7); font-size: 13px;">Keep this email handy — it has everything you need for event day</p>
             <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 12px;">© 2026 Tech Bloc & 434 MEDIA • San Antonio, TX</p>
             <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-              <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
+              <a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
             </p>
           </td>
         </tr>
@@ -240,7 +240,7 @@ function getKBYGContent(eventType: EventType, firstName: string): string {
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, sessions, speakers, and more at <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, sessions, speakers, and more at <a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   } else if (eventType === "techfuel") {
     scheduleSection = `
@@ -258,7 +258,7 @@ function getKBYGContent(eventType: EventType, firstName: string): string {
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, speakers, and more at <a href="https://sanantoniotechday.com/techfuel" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, speakers, and more at <a href="https://www.sanantoniotechday.com/techfuel" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   } else {
     scheduleSection = `
@@ -276,7 +276,7 @@ function getKBYGContent(eventType: EventType, firstName: string): string {
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, sessions, speakers, and more at <a href="https://sanantoniotechday.com/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, sessions, speakers, and more at <a href="https://www.sanantoniotechday.com/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   }
 

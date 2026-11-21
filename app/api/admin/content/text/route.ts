@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type TextBlockContent, type TextBlockVersion } from "@/lib/firebase/collections"
 import { verifyAdminSession } from "@/lib/admin/session"
+import { sanitizeHtml } from "@/lib/sanitize-html"
 
 export const dynamic = "force-dynamic"
 
@@ -54,11 +55,15 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json()
-    const { id, content, element, page, section, restoreVersion } = body
+    const { id, element, page, section, restoreVersion } = body
 
-    if (!id || typeof content !== "string") {
+    if (!id || typeof body.content !== "string") {
       return NextResponse.json({ error: "ID and content are required" }, { status: 400 })
     }
+
+    // Rich blocks are rendered as HTML (dangerouslySetInnerHTML): allowlist them
+    // here. Plain blocks are rendered as React text, so they are stored as-is.
+    const content = element === "rich" ? sanitizeHtml(body.content) : body.content
 
     // Get existing document to determine version
     const existingDoc = await adminDb.collection(COLLECTIONS.SITE_TEXT).doc(id).get()

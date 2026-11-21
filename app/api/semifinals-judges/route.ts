@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { SEMIFINALS_SIGNUPS_OPEN, intakeClosed } from "@/lib/intake"
 import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type JudgeSchedulingDocument } from "@/lib/firebase/collections"
@@ -68,6 +69,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    if (!SEMIFINALS_SIGNUPS_OPEN) {
+      return intakeClosed("Tech Fuel 2026 semi-finals scheduling is closed. The semi-finals took place in April 2026.")
+    }
+
     // Bot protection
     if (process.env.DISABLE_BOT_PROTECTION !== "true") {
       const verification = await checkBotId()

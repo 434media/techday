@@ -47,9 +47,9 @@ const DOWN_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 100 100" xmlns=
 
 // Tech Day calendar links (April 21, 2026 12:30-4:00 PM CDT = 17:30-21:00 UTC)
 const GOOGLE_CAL_URL =
-  "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Day%202026&dates=20260421T173000Z/20260421T210000Z&details=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX"
+  "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Day%202026&dates=20260421T173000Z/20260421T210000Z&details=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX"
 const OUTLOOK_CAL_URL =
-  "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Day%202026&startdt=2026-04-21T17:30:00Z&enddt=2026-04-21T21:00:00Z&body=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX"
+  "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Day%202026&startdt=2026-04-21T17:30:00Z&enddt=2026-04-21T21:00:00Z&body=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX"
 
 function getEmailTemplate(content: string) {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tech Day 2026</title></head>
@@ -62,7 +62,7 @@ function getEmailTemplate(content: string) {
             <div style="position: absolute; top: 20px; right: 20px; opacity: 0.15;">${DOWN_ARROW_SVG}</div>
             <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">TECH DAY <span style="color: #c73030;">2026</span></h1>
             <p style="margin: 10px 0 0; color: rgba(255,255,255,0.7); font-size: 14px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase;">April 21, 2026 • 1:00–4:00 PM • Boeing Center at Tech Port</p>
-            <p style="margin: 6px 0 0;"><a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">sanantoniotechday.com</a></p>
+            <p style="margin: 6px 0 0;"><a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">www.sanantoniotechday.com</a></p>
           </td>
         </tr>
         <tr><td style="padding: 40px;">${content}</td></tr>
@@ -71,7 +71,7 @@ function getEmailTemplate(content: string) {
             <p style="margin: 0 0 15px; color: rgba(255,255,255,0.7); font-size: 13px;">Keep this email handy — it has everything you need for event day</p>
             <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 12px;">© 2026 Tech Bloc & 434 MEDIA • San Antonio, TX</p>
             <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-              <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
+              <a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
             </p>
           </td>
         </tr>
@@ -110,7 +110,7 @@ function getSpeakerContent(): string {
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, sessions, and more at <a href="https://sanantoniotechday.com/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, sessions, and more at <a href="https://www.sanantoniotechday.com/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>
 
     <!-- Event Location -->

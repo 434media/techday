@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { Editable } from "@/components/editable"
 import { SponsorContactForm } from "@/components/forms/sponsor-contact-form"
+import { SITE_URL } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Become a Sponsor",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
     title: "Become a Sponsor | Tech Bloc",
     description:
       "Partner with Tech Bloc to support San Antonio's tech community. Sponsorship opportunities for Tech Day and Tech Fuel 2026.",
-    url: "https://sanantoniotechday.com/sponsor",
+    url: `${SITE_URL}/sponsor`,
   },
   twitter: {
     card: "summary_large_image",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
       "Partner with Tech Bloc to support San Antonio's tech community. Sponsorship opportunities for Tech Day and Tech Fuel 2026.",
   },
   alternates: {
-    canonical: "https://sanantoniotechday.com/sponsor",
+    canonical: `${SITE_URL}/sponsor`,
   },
 }
 

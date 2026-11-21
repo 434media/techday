@@ -94,7 +94,7 @@ function getEmailTemplate(content: string, eventType: EventType) {
   const dates = getEmailDates(eventType)
   const subtextLine = eventType === "both"
     ? `<p style="margin: 6px 0 0; color: rgba(255,255,255,0.5); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">Tech Fuel 2–6 PM &bull; Tech Day 1–4 PM (Doors 12:30 PM)</p>`
-    : `<p style="margin: 6px 0 0;"><a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">sanantoniotechday.com</a></p>`
+    : `<p style="margin: 6px 0 0;"><a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">www.sanantoniotechday.com</a></p>`
 
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tech Day 2026</title></head>
 <body style="margin: 0; padding: 0; background-color: #fafafa; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
@@ -114,7 +114,7 @@ function getEmailTemplate(content: string, eventType: EventType) {
           <td style="background-color: #0a0a0a; padding: 30px 40px; text-align: center;">
             <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 12px;">&copy; 2026 Tech Bloc &amp; 434 MEDIA &bull; San Antonio, TX</p>
             <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-              <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
+              <a href="https://www.sanantoniotechday.com" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
             </p>
           </td>
         </tr>
@@ -284,7 +284,7 @@ function getFridayContent(firstName: string, eventType: EventType) {
             </tr>
           </table>
           <p style="margin: 15px 0 0; color: #525252; font-size: 14px;">
-            Full schedule at <a href="https://sanantoniotechday.com/techday#schedule" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+            Full schedule at <a href="https://www.sanantoniotechday.com/techday#schedule" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
           </p>
         </td>
       </tr>
@@ -335,8 +335,8 @@ function getFridayContent(firstName: string, eventType: EventType) {
     </table>`
   }
 
-  const GCAL_TECHFUEL = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Tech Fuel 2026')}&dates=20260420T183000Z/20260420T230000Z&location=${encodeURIComponent('UTSA San Pedro I, 506 Dolorosa St, San Antonio, TX 78204')}&details=${encodeURIComponent('Tech Fuel 2026 — Startup Pitch Competition. Doors open at 1:30 PM. sanantoniotechday.com')}`
-  const GCAL_TECHDAY = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Tech Day 2026')}&dates=20260421T173000Z/20260421T210000Z&location=${encodeURIComponent('Boeing Center at Tech Port, 3331 General Hudnell Dr, San Antonio, TX 78226')}&details=${encodeURIComponent('Tech Day 2026 — Three tracks of programming. Doors open at 12:30 PM. sanantoniotechday.com')}`
+  const GCAL_TECHFUEL = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Tech Fuel 2026')}&dates=20260420T183000Z/20260420T230000Z&location=${encodeURIComponent('UTSA San Pedro I, 506 Dolorosa St, San Antonio, TX 78204')}&details=${encodeURIComponent('Tech Fuel 2026 — Startup Pitch Competition. Doors open at 1:30 PM. www.sanantoniotechday.com')}`
+  const GCAL_TECHDAY = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Tech Day 2026')}&dates=20260421T173000Z/20260421T210000Z&location=${encodeURIComponent('Boeing Center at Tech Port, 3331 General Hudnell Dr, San Antonio, TX 78226')}&details=${encodeURIComponent('Tech Day 2026 — Three tracks of programming. Doors open at 12:30 PM. www.sanantoniotechday.com')}`
 
   let calendarSection = ""
   if (eventType === "both") {

@@ -2,6 +2,7 @@ import { Resend } from "resend"
 import { escapeHtml, safeHref } from "@/lib/email/escape"
 import { getZoomMeeting, ZOOM_DETAILS_FALLBACK, type ZoomMeeting } from "@/lib/zoom-meetings"
 import { maskEmail } from "@/lib/mask-email"
+import { SITE_URL } from "@/lib/site"
 
 // Initialize Resend with API key
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -32,7 +33,7 @@ function getEmailTemplate(content: string, footerText: string = "", eventType: "
   const dates = getEmailDates(eventType)
   const subtextLine = eventType === "both"
     ? `<p style="margin: 6px 0 0; color: rgba(255,255,255,0.5); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">Tech Fuel 2–6 PM • Tech Day 1–4 PM (Doors Open 12:30 PM)</p>`
-    : `<p style="margin: 6px 0 0;"><a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">sanantoniotechday.com</a></p>`
+    : `<p style="margin: 6px 0 0;"><a href="${SITE_URL}" style="color: #c73030; text-decoration: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;">www.sanantoniotechday.com</a></p>`
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -79,7 +80,7 @@ function getEmailTemplate(content: string, footerText: string = "", eventType: "
                 © 2026 Tech Bloc & 434 MEDIA • San Antonio, TX
               </p>
               <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-                <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
+                <a href="${SITE_URL}" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
               </p>
             </td>
           </tr>
@@ -188,7 +189,7 @@ function getEventEmailTemplate(content: string, eventType: "techfuel" | "techday
                 © 2026 Tech Bloc & 434 MEDIA • San Antonio, TX
               </p>
               <p style="margin: 10px 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-                <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a>
+                <a href="${SITE_URL}" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a>
               </p>
             </td>
           </tr>
@@ -211,7 +212,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
         description: "Your registration for <strong>Tech Fuel 2026</strong> is confirmed. Get ready to witness the most exciting startup pitch competition in San Antonio!",
         dateInfo: "<strong>April 20, 2026 • 2:00–6:00 PM</strong>",
         locationInfo: "<strong>UTSA SP1</strong>, San Antonio",
-        scheduleLink: "https://sanantoniotechday.com/techfuel"
+        scheduleLink: `${SITE_URL}/techfuel`
       }
     case "techday":
       return {
@@ -219,7 +220,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
         description: "Your registration for <strong>Tech Day 2026</strong> is confirmed. We can't wait to see you at Boeing Center at Tech Port on April 21st!",
         dateInfo: "<strong>April 21, 2026 • 1:00–4:00 PM</strong><br/>Doors Open at 12:30 PM",
         locationInfo: "<strong>Boeing Center at Tech Port</strong>, San Antonio",
-        scheduleLink: "https://sanantoniotechday.com/techday"
+        scheduleLink: `${SITE_URL}/techday`
       }
     case "both":
       return {
@@ -227,7 +228,7 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
         description: "Your registration for <strong>Tech Fuel & Tech Day 2026</strong> is confirmed. Join us for two incredible days of innovation, pitches, and networking!",
         dateInfo: "<strong>April 20-21, 2026</strong><br/>Tech Fuel: 2:00–6:00 PM • Tech Day: 1:00–4:00 PM (Doors 12:30 PM)",
         locationInfo: "<strong>UTSA SP1</strong> (April 20) & <strong>Boeing Center at Tech Port</strong> (April 21), San Antonio",
-        scheduleLink: "https://sanantoniotechday.com/"
+        scheduleLink: `${SITE_URL}/`
       }
   }
 }
@@ -237,12 +238,12 @@ function getRegistrationMessage(eventType: "techfuel" | "techday" | "both", firs
 // Tech Day: April 21, 2026 12:30-4:00 PM CDT (17:30-21:00 UTC)
 const CALENDAR_LINKS = {
   techfuel: {
-    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Fuel%202026&dates=20260420T190000Z/20260420T230000Z&details=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
-    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Fuel%202026&startdt=2026-04-20T19:00:00Z&enddt=2026-04-20T23:00:00Z&body=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
+    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Fuel%202026&dates=20260420T190000Z/20260420T230000Z&details=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
+    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Fuel%202026&startdt=2026-04-20T19:00:00Z&enddt=2026-04-20T23:00:00Z&body=San%20Antonio%27s%20premier%20startup%20pitch%20competition.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechfuel&location=UTSA%20San%20Pedro%20I%20(SP1)%2C%20506%20Dolorosa%20St%2C%20San%20Antonio%2C%20TX%2078204",
   },
   techday: {
-    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Day%202026&dates=20260421T173000Z/20260421T210000Z&details=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
-    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Day%202026&startdt=2026-04-21T17:30:00Z&enddt=2026-04-21T21:00:00Z&body=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fsanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
+    google: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tech%20Day%202026&dates=20260421T173000Z/20260421T210000Z&details=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
+    outlook: "https://outlook.live.com/calendar/0/action/compose?subject=Tech%20Day%202026&startdt=2026-04-21T17:30:00Z&enddt=2026-04-21T21:00:00Z&body=San%20Antonio%27s%20premier%20tech%20conference.%20More%20info%3A%20https%3A%2F%2Fwww.sanantoniotechday.com%2Ftechday&location=Boeing%20Center%20at%20Tech%20Port%2C%203331%20General%20Hudnell%20Dr%2C%20San%20Antonio%2C%20TX",
   },
 }
 
@@ -387,7 +388,7 @@ function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: s
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, sessions, speakers, and more at <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, sessions, speakers, and more at <a href="${SITE_URL}" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   } else if (eventType === "techfuel") {
     scheduleSection = `
@@ -405,7 +406,7 @@ function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: s
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, speakers, and more at <a href="https://sanantoniotechday.com/techfuel" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, speakers, and more at <a href="${SITE_URL}/techfuel" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   } else {
     scheduleSection = `
@@ -423,7 +424,7 @@ function getKBYGContent(eventType: "techfuel" | "techday" | "both", firstName: s
       </tr>
     </table>
     <p style="margin: 0 0 25px; color: #525252; font-size: 15px; line-height: 1.6;">
-      Explore the agenda, sessions, speakers, and more at <a href="https://sanantoniotechday.com/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">sanantoniotechday.com</a>
+      Explore the agenda, sessions, speakers, and more at <a href="${SITE_URL}/techday" style="color: #c73030; text-decoration: none; font-weight: 500;">www.sanantoniotechday.com</a>
     </p>`
   }
 
@@ -798,7 +799,7 @@ export async function sendPitchConfirmation(
     </table>
     
     <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-      While you wait, make sure to <a href="https://sanantoniotechday.com/register" style="color: #c73030; text-decoration: none;">register for Tech Day</a> if you haven't already!
+      While you wait, make sure to <a href="${SITE_URL}/register" style="color: #c73030; text-decoration: none;">register for Tech Day</a> if you haven't already!
     </p>
   `
 
@@ -936,7 +937,7 @@ export async function sendSponsorInquiryConfirmation(
     </table>
     
     <p style="margin: 30px 0 0; color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-      In the meantime, check out <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none;">sanantoniotechday.com</a> to learn more about what we're building in San Antonio.
+      In the meantime, check out <a href="${SITE_URL}" style="color: #c73030; text-decoration: none;">www.sanantoniotechday.com</a> to learn more about what we're building in San Antonio.
     </p>
   `
 
@@ -1393,7 +1394,7 @@ export async function sendJudgeInvitationEmail(
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
       <tr>
         <td align="center">
-          <a href="https://sanantoniotechday.com/semifinals-judges" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
+          <a href="${SITE_URL}/semifinals-judges" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
             Schedule Your Judging Session
           </a>
         </td>
@@ -1664,7 +1665,7 @@ export async function sendEcosystemToursNotification(
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 25px 0;">
       <tr>
         <td align="center">
-          <a href="https://sanantoniotechday.com/ecosystem-tours" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
+          <a href="${SITE_URL}/ecosystem-tours" target="_blank" style="display: inline-block; padding: 16px 40px; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;">
             Add Ecosystem Tours
           </a>
         </td>
@@ -1769,7 +1770,7 @@ export async function sendPitchNonSelectNotification(
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
       <tr>
         <td align="center">
-          <a href="https://sanantoniotechday.com/register" style="display: inline-block; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 6px; letter-spacing: 0.5px;">
+          <a href="${SITE_URL}/register" style="display: inline-block; background-color: #c73030; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 6px; letter-spacing: 0.5px;">
             Get Your Tickets
           </a>
         </td>
@@ -1953,7 +1954,7 @@ export async function sendFinalistNotification(
             3rd and 4th place may be determined by live audience vote. We encourage you to invite your network:
           </p>
           <p style="margin: 0;">
-            <a href="https://sanantoniotechday.com" style="color: #c73030; text-decoration: none; font-weight: 500; font-size: 15px;">sanantoniotechday.com</a>
+            <a href="${SITE_URL}" style="color: #c73030; text-decoration: none; font-weight: 500; font-size: 15px;">www.sanantoniotechday.com</a>
           </p>
         </td>
       </tr>

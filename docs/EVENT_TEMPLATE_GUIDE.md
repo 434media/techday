@@ -111,7 +111,7 @@ RESEND_API_KEY=re_xxxxxxxxxxxxx
 ### Required for Admin
 
 ```bash
-ADMIN_SESSION_SECRET=<openssl rand -base64 32>
+ADMIN_EMAILS=someone@example.com,other@example.com  # /admin allowlist (lib/admin/allowlist.ts)
 ```
 
 ### Required for Vercel Services
@@ -124,7 +124,6 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_xxxxx  # For image uploads
 
 ```bash
 DISABLE_BOT_PROTECTION=true         # Skip BotID checks in dev
-ADMIN_USERS=email|role|name|q|a|pin # Legacy config-based admin auth
 ```
 
 ---

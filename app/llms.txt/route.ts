@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { SITE_URL } from "@/lib/site"
 
 export async function GET() {
   const content = `# Tech Day San Antonio
@@ -9,14 +10,14 @@ Tech Day 2026 takes place April 20–21, 2026 at the Boeing Center at Tech Port 
 
 ## Key Pages
 
-- [Home](https://sanantoniotechday.com/): Main landing page for Tech Day 2026
-- [Tech Day Conference](https://sanantoniotechday.com/techday): Conference schedule, speakers, and sponsors — April 21, 2026
-- [Tech Fuel](https://sanantoniotechday.com/techfuel): $100K startup pitch competition — 5 finalists, past winners, and competition history
-- [Vote](https://sanantoniotechday.com/techfuel/vote): People's Choice Award voting for Tech Fuel 2026 finalists
-- [Register](https://sanantoniotechday.com/register): Registration for Tech Day and Tech Fuel
-- [Sponsor](https://sanantoniotechday.com/sponsor): Sponsorship opportunities with Tech Bloc
-- [Ecosystem Tours](https://sanantoniotechday.com/ecosystem-tours): Guided tours of Port San Antonio and VelocityTX innovation hubs
-- [10th Anniversary](https://sanantoniotechday.com/anniversary): Celebrating a decade of Tech Bloc San Antonio
+- [Home](${SITE_URL}/): Main landing page for Tech Day 2026
+- [Tech Day Conference](${SITE_URL}/techday): Conference schedule, speakers, and sponsors — April 21, 2026
+- [Tech Fuel](${SITE_URL}/techfuel): $100K startup pitch competition — 5 finalists, past winners, and competition history
+- [Vote](${SITE_URL}/techfuel/vote): People's Choice Award voting for Tech Fuel 2026 finalists
+- [Register](${SITE_URL}/register): Registration for Tech Day and Tech Fuel
+- [Sponsor](${SITE_URL}/sponsor): Sponsorship opportunities with Tech Bloc
+- [Ecosystem Tours](${SITE_URL}/ecosystem-tours): Guided tours of Port San Antonio and VelocityTX innovation hubs
+- [10th Anniversary](${SITE_URL}/anniversary): Celebrating a decade of Tech Bloc San Antonio
 
 ## About Tech Bloc
 
@@ -36,7 +37,7 @@ Tech Bloc San Antonio is the nonprofit organization behind Tech Day. Founded in 
 - **Dates**: April 20 (Tech Fuel) and April 21 (Tech Day), 2026
 - **Venue**: Boeing Center at Tech Port, San Antonio, TX
 - **Organizer**: Tech Bloc San Antonio
-- **Website**: https://sanantoniotechday.com
+- **Website**: ${SITE_URL}
 `
 
   return new NextResponse(content, {

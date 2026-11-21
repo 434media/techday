@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { REGISTRATION_OPEN, intakeClosed } from "@/lib/intake"
 import { checkBotId } from "botid/server"
 import { adminDb, isFirebaseConfigured } from "@/lib/firebase/admin"
 import { COLLECTIONS, type RegistrationDocument, ECOSYSTEM_TOURS_LIMIT } from "@/lib/firebase/collections"
@@ -12,6 +13,17 @@ const REGISTRATION_LIMITS: Record<string, number> = {
   techfuel: 300,
   techday: 550,
 }
+
+// Values the registration form offers. "2day" is the legacy combined ticket.
+const ALLOWED_CATEGORIES = ["founder", "investor", "attendee", "student", "government"]
+const ALLOWED_EVENTS = ["techday", "techfuel", "2day"]
+const ALLOWED_DIETARY = ["none", "vegetarian", "vegan"]
+
+const MAX_FIELD_LENGTH = 200
+const MAX_EMAIL_LENGTH = 254
+
+// A repeat registration re-sends the ticket at most once per hour per address.
+const RESEND_INTERVAL_MS = 60 * 60 * 1000
 
 // The one success response for POST, identical for new and already-registered
 // emails. The ticket ID is delivered by email only, never in the response.
@@ -46,6 +58,10 @@ async function getEventCounts(): Promise<Record<string, number>> {
 
 export async function POST(request: Request) {
   try {
+    if (!REGISTRATION_OPEN) {
+      return intakeClosed("Registration for Tech Day 2026 is closed. Thank you to everyone who joined us on April 20–21, 2026!")
+    }
+
     // Verify the request is not from a bot using BotID
     // Can be disabled via DISABLE_BOT_PROTECTION=true env var for debugging
     if (process.env.DISABLE_BOT_PROTECTION !== "true") {
@@ -76,16 +92,52 @@ export async function POST(request: Request) {
       }
     }
 
+    // Length caps on free-text fields
+    for (const field of ["firstName", "lastName", "category", "company", "title", "dietaryRestrictions"]) {
+      if (data[field] != null && (typeof data[field] !== "string" || data[field].length > MAX_FIELD_LENGTH)) {
+        return NextResponse.json(
+          { error: `Invalid field: ${field}` },
+          { status: 400 }
+        )
+      }
+    }
+
     // Validate email format
-    if (!isValidEmail(data.email)) {
+    if (typeof data.email !== "string" || data.email.length > MAX_EMAIL_LENGTH || !isValidEmail(data.email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
         { status: 400 }
       )
     }
 
+    if (!ALLOWED_CATEGORIES.includes(data.category)) {
+      return NextResponse.json(
+        { error: "Invalid category" },
+        { status: 400 }
+      )
+    }
+
+    if (data.dietaryRestrictions && !ALLOWED_DIETARY.includes(data.dietaryRestrictions)) {
+      return NextResponse.json(
+        { error: "Invalid dietary restriction" },
+        { status: 400 }
+      )
+    }
+
+    if (
+      data.events != null &&
+      (!Array.isArray(data.events) ||
+        data.events.length === 0 ||
+        !data.events.every((e: unknown) => typeof e === "string" && ALLOWED_EVENTS.includes(e)))
+    ) {
+      return NextResponse.json(
+        { error: "Invalid event selection" },
+        { status: 400 }
+      )
+    }
+
     // Normalize events — convert "2day" to ["techday", "techfuel"]
-    let selectedEvents: string[] = data.events || ["techday"]
+    let selectedEvents: string[] = [...new Set<string>(data.events || ["techday"])]
     if (selectedEvents.includes("2day")) {
       selectedEvents = [...new Set([...selectedEvents.filter((e: string) => e !== "2day"), "techday", "techfuel"])]
     }
@@ -114,9 +166,14 @@ export async function POST(request: Request) {
       .get()
 
     if (!existingRegistration.empty) {
-      const existing = existingRegistration.docs[0].data() as RegistrationDocument
-      // A cancelled ticket is not re-sent; the response is still the same.
-      if (existing.status !== "cancelled" && existing.ticketId) {
+      const existingDoc = existingRegistration.docs[0]
+      const existing = existingDoc.data() as RegistrationDocument
+      const lastResent = (existing.lastResentAt as unknown as { toDate?: () => Date })?.toDate?.()
+      const recentlyResent = lastResent && Date.now() - lastResent.getTime() < RESEND_INTERVAL_MS
+      // A cancelled ticket is not re-sent, nor one re-sent within the last hour;
+      // the response is still the same.
+      if (existing.status !== "cancelled" && existing.ticketId && !recentlyResent) {
+        await existingDoc.ref.update({ lastResentAt: new Date() })
         const resendResult = await sendRegistrationConfirmation(
           existing.email,
           existing.firstName,

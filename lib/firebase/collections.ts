@@ -53,6 +53,8 @@ export interface RegistrationDocument {
   createdAt: Date
   updatedAt: Date
   source: string
+  // When the ticket email was last re-sent for a repeat registration attempt
+  lastResentAt?: Date
 }
 
 // Newsletter subscriber document structure

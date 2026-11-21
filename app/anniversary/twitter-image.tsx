@@ -97,7 +97,7 @@ export default async function Image() {
             textTransform: "uppercase",
           }}
         >
-          sanantoniotechday.com/anniversary
+          www.sanantoniotechday.com/anniversary
         </div>
       </div>
     ),
